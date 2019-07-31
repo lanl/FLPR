@@ -1,0 +1,4 @@
+syntax: glob
+*~
+compile_commands.json
+
