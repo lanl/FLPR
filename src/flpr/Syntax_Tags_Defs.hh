@@ -483,6 +483,8 @@
   X(SG_PARENT_STRING, "parent-string", 1)                               \
   X(SG_PART_REF, "part-ref", 1)                                         \
   X(SG_POINTER_ASSIGNMENT_STMT, "pointer-assignment-stmt", 1)           \
+  X(SG_POINTER_DECL, "pointer-decl", 1)                                 \
+  X(SG_POINTER_DECL_LIST, "pointer-decl-list", 1)                       \
   X(SG_POINTER_OBJECT, "pointer-object", 1)                             \
   X(SG_POINTER_OBJECT_LIST, "pointer-object-list", 1)                   \
   X(SG_POINTER_STMT, "pointer-stmt", 1)                                 \

@@ -91,7 +91,6 @@ current list includes:
 * *form-team-stmt*
 * *generic-stmt*
 * *lock-stmt*
-* *pointer-stmt*
 * *protected-stmt*
 * *submodule*
 * *sync-all-stmt*
