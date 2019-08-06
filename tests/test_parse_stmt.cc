@@ -377,6 +377,16 @@ bool pointer_assignment_stmt() {
   return true;
 }
 
+bool pointer_stmt() {
+  TSS(pointer_stmt, "pointer a");
+  TSS(pointer_stmt, "pointer a,b");
+  TSS(pointer_stmt, "pointer :: a");
+  TSS(pointer_stmt, "pointer :: a,b");
+  TSS(pointer_stmt, "pointer a(:),b");
+  TSS(pointer_stmt, "pointer::a(:,:),b(:)");
+  return true;
+}
+
 bool print_stmt() {
   TSS(print_stmt, "print *, foo");
   TSS(print_stmt, "print 100, foo");

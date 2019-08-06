@@ -2428,7 +2428,7 @@ Stmt_Tree other_specification_stmt(TT_Stream &ts) {
          rule(intrinsic_stmt),
          rule(namelist_stmt),
          rule(optional_stmt),
-         // FIX rule(pointer_stmt),
+         rule(pointer_stmt),
          // FIX rule(protected_stmt),
          rule(save_stmt),
          rule(target_stmt),
@@ -2521,6 +2521,17 @@ Stmt_Tree pointer_assignment_stmt(TT_Stream &ts) {
   EVAL(SG_POINTER_ASSIGNMENT_STMT, p(ts));
 }
 
+//! R854: pointer-decl (8.6.12)
+Stmt_Tree pointer_decl(TT_Stream &ts) {
+  RULE(SG_POINTER_DECL);
+  constexpr auto p =
+    seq(rule_tag,
+        name(),  // object-name or proc-entity-name
+        opt(h_parens(h_list(TOK(TK_COLON)))) // deferred-shape-spec-list
+        );
+  EVAL(SG_POINTER_DECL, p(ts));
+}
+
 //! R939: pointer-object (9.7.2)
 Stmt_Tree pointer_object(TT_Stream &ts) {
   RULE(SG_POINTER_OBJECT);
@@ -2531,6 +2542,20 @@ Stmt_Tree pointer_object(TT_Stream &ts) {
          // proc-pointer-name (equiv to previous alt)
          );
   EVAL(SG_POINTER_OBJECT, p(ts));
+}
+
+//! R853: pointer-stmt (8.6.12)
+Stmt_Tree pointer_stmt(TT_Stream &ts) {
+  RULE(SG_POINTER_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_POINTER),
+        opt(TOK(TK_DBL_COLON)),
+        list(TAG(SG_POINTER_DECL_LIST),
+             rule(pointer_decl)),
+        eol()
+        );
+  EVAL(SG_POINTER_STMT, p(ts));
 }
 
 //! R1526: prefix (15.6.2.1)
@@ -3648,7 +3673,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return pointer_assignment_stmt(ts);
     break;
   case TAG(SG_POINTER_STMT):
-    assert(0); /* return pointer_stmt(ts); */
+    return pointer_stmt(ts);
     break;
   case TAG(SG_PRINT_STMT):
     return print_stmt(ts);
