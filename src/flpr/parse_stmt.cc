@@ -3418,7 +3418,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return associate_stmt(ts);
     break;
   case TAG(SG_ASYNCHRONOUS_STMT):
-    assert(0); /* return asynchronous_stmt(ts); */
+    std::cerr << "Error: no parser for SG_ASYNCHRONOUS_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return asynchronous_stmt(ts); */
     break;
   case TAG(SG_ARITHMETIC_IF_STMT):
     return arithmetic_if_stmt(ts);
@@ -3427,7 +3429,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return backspace_stmt(ts);
     break;
   case TAG(SG_BIND_STMT):
-    assert(0); /* return bind_stmt(ts); */
+    std::cerr << "Error: no parser for SG_BIND_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return bind_stmt(ts); */
     break;
   case TAG(SG_BINDING_PRIVATE_STMT):
     return binding_private_stmt(ts);
@@ -3445,7 +3449,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return close_stmt(ts);
     break;
   case TAG(SG_CODIMENSION_STMT):
-    assert(0); /* return codimension_stmt(ts); */
+    std::cerr << "Error: no parser for SG_CODIMENSION_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return codimension_stmt(ts); */
     break;
   case TAG(SG_COMMON_STMT):
     return common_stmt(ts);
@@ -3528,6 +3534,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
   case TAG(SG_END_SELECT_STMT):
     return end_select_stmt(ts);
     break;
+  case TAG(SG_END_SELECT_RANK_STMT):
+    return end_select_rank_stmt(ts);
+    break;
   case TAG(SG_END_SELECT_TYPE_STMT):
     return end_select_type_stmt(ts);
     break;
@@ -3562,10 +3571,14 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return error_stop_stmt(ts);
     break;
   case TAG(SG_EVENT_POST_STMT):
-    assert(0); /* return event_post_stmt(ts); */
+    std::cerr << "Error: no parser for SG_EVENT_POST_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return event_post_stmt(ts); */
     break;
   case TAG(SG_EVENT_WAIT_STMT):
-    assert(0); /* return event_wait_stmt(ts); */
+    std::cerr << "Error: no parser for SG_EVENT_WAIT_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return event_wait_stmt(ts); */
     break;
   case TAG(SG_EXIT_STMT):
     return exit_stmt(ts);
@@ -3574,7 +3587,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return external_stmt(ts);
     break;
   case TAG(SG_FAIL_IMAGE_STMT):
-    assert(0); /* return fail_image_stmt(ts); */
+    std::cerr << "Error: no parser for SG_FAIL_IMAGE_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return fail_image_stmt(ts); */
     break;
   case TAG(SG_FLUSH_STMT):
     return flush_stmt(ts);
@@ -3589,7 +3604,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return forall_stmt(ts);
     break;
   case TAG(SG_FORM_TEAM_STMT):
-    assert(0); /* return form_team_stmt(ts); */
+    std::cerr << "Error: no parser for SG_FORM_TEAM_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return form_team_stmt(ts); */
     break;
   case TAG(SG_FORMAT_STMT):
     return format_stmt(ts);
@@ -3631,7 +3648,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return label_do_stmt(ts);
     break;
   case TAG(SG_LOCK_STMT):
-    assert(0); /* return lock_stmt(ts); */
+    std::cerr << "Error: no parser for SG_LOCK_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return lock_stmt(ts); */
     break;
   case TAG(SG_LOOP_CONTROL):
     return loop_control(ts);
@@ -3694,7 +3713,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return program_stmt(ts);
     break;
   case TAG(SG_PROTECTED_STMT):
-    assert(0); /* return protected_stmt(ts); */
+    std::cerr << "Error: no parser for SG_PROTECTED_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return protected_stmt(ts); */
     break;
   case TAG(SG_READ_STMT):
     return read_stmt(ts);
@@ -3710,6 +3731,12 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     break;
   case TAG(SG_SELECT_CASE_STMT):
     return select_case_stmt(ts);
+    break;
+  case TAG(SG_SELECT_RANK_CASE_STMT):
+    return select_rank_case_stmt(ts);
+    break;
+  case TAG(SG_SELECT_RANK_STMT):
+    return select_rank_stmt(ts);
     break;
   case TAG(SG_SELECT_TYPE_STMT):
     return select_type_stmt(ts);
@@ -3727,19 +3754,29 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return subroutine_stmt(ts);
     break;
   case TAG(SG_SYNC_ALL_STMT):
-    assert(0); /* return sync_all_stmt(ts); */
+    std::cerr << "Error: no parser for SG_SYNC_ALL_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return sync_all_stmt(ts); */
     break;
   case TAG(SG_SYNC_IMAGES_STMT):
-    assert(0); /* return sync_images_stmt(ts); */
+    std::cerr << "Error: no parser for SG_SYNC_IMAGES_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return sync_images_stmt(ts); */
     break;
   case TAG(SG_SYNC_MEMORY_STMT):
-    assert(0); /* return sync_memory_stmt(ts); */
+    std::cerr << "Error: no parser for SG_SYNC_MEMORY_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return sync_memory_stmt(ts); */
     break;
   case TAG(SG_SYNC_TEAM_STMT):
-    assert(0); /* return sync_team_stmt(ts); */
+    std::cerr << "Error: no parser for SG_SYNC_TEAM_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return sync_team_stmt(ts); */
     break;
   case TAG(SG_TARGET_STMT):
-    assert(0); /* return target_stmt(ts); */
+    std::cerr << "Error: no parser for SG_TARGET_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return target_stmt(ts); */
     break;
   case TAG(SG_TYPE_BOUND_GENERIC_STMT):
     return type_bound_generic_stmt(ts);
@@ -3757,19 +3794,25 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return type_param_def_stmt(ts);
     break;
   case TAG(SG_UNLOCK_STMT):
-    assert(0); /* return unlock_stmt(ts); */
+    std::cerr << "Error: no parser for SG_UNLOCK_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return unlock_stmt(ts); */
     break;
   case TAG(SG_USE_STMT):
     return use_stmt(ts);
     break;
   case TAG(SG_VALUE_STMT):
-    assert(0); /* return value_stmt(ts);*/
+    std::cerr << "Error: no parser for SG_VALUE_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return value_stmt(ts);*/
     break;
   case TAG(SG_VOLATILE_STMT):
     return volatile_stmt(ts);
     break;
   case TAG(SG_WAIT_STMT):
-    assert(0); /* return wait_stmt(ts); */
+    std::cerr << "Error: no parser for SG_WAIT_STMT" << std::endl;
+    return Stmt_Tree();
+    /* return wait_stmt(ts); */
     break;
   case TAG(SG_WHERE_CONSTRUCT_STMT):
     return where_construct_stmt(ts);

@@ -147,6 +147,14 @@ flpr-format.cc
    bar`` to ``foo; bar``), or split compound statements. See
    :ref:`FLPRApps-label` for details on why the structure of this file
    is unusual.
+
+flpr_show_cst.cc
+   Shows the concrete syntax trees (Stmt_Tree) generated
+   by all statement parsers that match statements entered on standard
+   input.  This can be used to verify the shape of the CST for some
+   statement.  Note that you can get multiple parsers that accept an
+   input.  For example, a string accepted by *assignment-stmt* is also
+   accepted by *action-stmt* and *forall-assignment-stmt*.
    
 module.cc
    Demonstrating how to selectively insert a *use-stmt* into

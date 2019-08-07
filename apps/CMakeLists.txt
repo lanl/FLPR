@@ -37,7 +37,8 @@ set(APPS_EXE
   "flpr-format"
   "parse_files"
   "module"
-  "ext_demo")
+  "ext_demo"
+  "flpr_show_cst")
 
 # Installation Info
 include(GNUInstallDirs)
