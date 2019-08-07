@@ -31,7 +31,7 @@ int main() {
             << "==============================\n"
             << "FLPR Show Concrete Syntax Tree\n"
             << "==============================\n\n"
-            << "Enter a Fortran statement, blank line or "
+            << "Enter free-form Fortran statements, blank line or "
                "Ctrl-D/EOF to end input: "
             << std::endl;
   while (std::getline(std::cin, line)) {
@@ -47,6 +47,11 @@ int main() {
 
   /* Scan text and produce a Logical_File (a sequence of Logical_Lines) */
   FLPR::Logical_File logical_file;
+  /* Set a fake filename just to make the output look pretty.  This isn't
+     required. */
+  logical_file.file_info =
+      std::make_shared<FLPR::File_Info>(std::string("Line"), file_type);
+
   bool scan_okay{false};
 
   switch (file_type) {
@@ -72,6 +77,9 @@ int main() {
      will also match against action-stmt and forall-assignment-stmt. */
   for (auto &stmt : logical_file.ll_stmts) {
     int results{0};
+    std::cerr << "--------------------------------------------------------\n"
+              << "Parsing statement: \"" << stmt << "\"\n"
+              << "--------------------------------------------------------\n";
     /* Build a token stream for this statement */
     FLPR::TT_Stream ts(stmt);
     /* Iterate across all the statement grammar (SG) parsers... */
