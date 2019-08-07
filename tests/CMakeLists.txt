@@ -28,6 +28,7 @@ set(TEST_EXE
   "test_tree"
   "test_file_line"
   "test_line_accum"
+  "test_syntag_sanity"
   "test_logical_line"
   "test_logical_file"
   "test_tt_stream"

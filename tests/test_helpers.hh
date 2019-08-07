@@ -100,6 +100,20 @@ inline bool expect_token(int const expected_val, int const test_val,
               << ") == " << B << ")" << std::endl;                             \
     return false;                                                              \
   }
+#define TEST_INT_LABEL(LAB, A, B)                                              \
+  if ((A) != (B)) {                                                            \
+    std::cerr << __FILE__ << ':' << __LINE__ << " Expecting " #A "(=" << A     \
+              << ", " << LAB << ") == " << B << ")" << std::endl;              \
+    return false;                                                              \
+  }
+#define TEST_OR_INT_LABEL(LAB, A, B, C)                                        \
+  if ((A) != (B) && (A) != (C)) {                                              \
+    std::cerr << __FILE__ << ':' << __LINE__ << " Expecting " #A "(=" << A     \
+              << ", " << LAB << ") == " << B << " or " << C << ")"             \
+              << std::endl;                                                    \
+    return false;                                                              \
+  }
+
 // Put this at the begining of main()
 #define TEST_MAIN_DECL                                                         \
   bool res{true};                                                              \
