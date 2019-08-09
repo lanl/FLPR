@@ -95,7 +95,6 @@ inline void Indent_Table::apply_emacs_indent() {
   set_continued_offset(5);
 }
 
-
 inline void Indent_Table::apply_constant_fixed_indent(int const spaces) {
   set_indent(FLPR::Syntax_Tags::PG_BLOCK, spaces);
   set_indent(FLPR::Syntax_Tags::PG_EXECUTION_PART, 0);
