@@ -42,10 +42,14 @@ void print_usage(std::ostream &os);
 
 int main(int argc, char *argv[]) {
 
-  vec_str only_names, fortran_filenames;
+  vec_str only_names;
+  vec_str fortran_filenames;
   std::string call_name, module_name;
   bool call_name_is_file{false};
 
+  /* only_names is the beginning of support for creating statements like "USE
+     <module_name>, ONLY: <only_name>+".  The logic for properly inserting ONLY
+     names isn't complete, so it isn't wired up to the command line yet */
   parse_cmd_line(argc, argv, only_names, call_name, call_name_is_file,
                  module_name, fortran_filenames);
 
@@ -86,11 +90,8 @@ void parse_cmd_line(int argc, char *const argv[], vec_str &only_names,
   call_name_is_file = false;
 
   int ch;
-  while ((ch = getopt(argc, argv, "f:o:")) != -1) {
+  while ((ch = getopt(argc, argv, "f:")) != -1) {
     switch (ch) {
-    case 'o':
-      only_names.emplace_back(std::string{optarg});
-      break;
     case 'f':
       call_name = std::string{optarg};
       call_name_is_file = true;
@@ -116,7 +117,7 @@ void parse_cmd_line(int argc, char *const argv[], vec_str &only_names,
   }
 
   module_name = std::string{argv[idx]};
-  for (int i = idx+1; i < argc; ++i) {
+  for (int i = idx + 1; i < argc; ++i) {
     fortran_filenames.emplace_back(std::string{argv[i]});
   }
 }
@@ -124,9 +125,8 @@ void parse_cmd_line(int argc, char *const argv[], vec_str &only_names,
 /*--------------------------------------------------------------------------*/
 
 void print_usage(std::ostream &os) {
-  os << "Usage: module (-o <only name>)* (-f <filename> | <call name>) "
+  os << "Usage: module (-f <filename> | <call name>) "
         "<module name> <filename> ... \n";
-  os << "\t-o <only name>\t(optional) a name in use-stmt only-list\n";
   os << "\t-f <filename>\tname of file containing call names\n";
   os << "\t<call name>\tthe subroutine name that triggers module addition\n";
   os << "\t<module name>\tthe module for which an use-stmt will be added\n";
