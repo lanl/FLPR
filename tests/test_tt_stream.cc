@@ -39,6 +39,65 @@ bool test_move_to_close_paren() {
   return true;
 }
 
+bool test_move_to_open_paren() {
+  {
+    LL_Helper l({"a"});
+    TT_Stream ts = l.stream1();
+    ts.consume_until_eol();
+    bool move_okay = ts.move_to_open_paren();
+    TEST_FALSE(move_okay);
+  }
+  {
+    LL_Helper l({"a)"});
+    TT_Stream ts = l.stream1();
+    ts.consume_until_eol();
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENR);
+    bool move_okay = ts.move_to_open_paren();
+    TEST_FALSE(move_okay);
+  }
+  {
+    LL_Helper l({"a()"});
+    TT_Stream ts = l.stream1();
+    ts.consume_until_eol();
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENR);
+    bool move_okay = ts.move_to_open_paren();
+    TEST_TRUE(move_okay);
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENL);
+    /* because move_to_open_paren makes curr() == TK_PARENL, it is as if the
+       TK_PARENL token was consumed, so we get a value of 2, rather than
+       position == 1. */
+    TEST_INT(ts.num_consumed(), 2);
+  }
+  {
+    LL_Helper l({"a(())"});
+    TT_Stream ts = l.stream1();
+    ts.consume_until_eol();
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENR);
+    bool move_okay = ts.move_to_open_paren();
+    TEST_TRUE(move_okay);
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENL);
+    /* because move_to_open_paren makes curr() == TK_PARENL, it is as if the
+       TK_PARENL token was consumed, so we get a value of 2, rather than
+       position == 1. */
+    TEST_INT(ts.num_consumed(), 2);
+  }
+  {
+    LL_Helper l({"a(b(),c(d()))"});
+    TT_Stream ts = l.stream1();
+    ts.consume_until_eol();
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENR);
+    bool move_okay = ts.move_to_open_paren();
+    TEST_TRUE(move_okay);
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENL);
+    /* because move_to_open_paren makes curr() == TK_PARENL, it is as if the
+       TK_PARENL token was consumed, so we get a value of 2, rather than
+       position == 1. */
+    TEST_INT(ts.num_consumed(), 2);
+  }
+
+  return true;
+}
+
 bool test_move_before_close_paren() {
   {
     LL_Helper l({"(test(()))="});
@@ -60,6 +119,7 @@ int main() {
   TEST_MAIN_DECL;
   TEST(test_consume_until_eol);
   TEST(test_move_to_close_paren);
+  TEST(test_move_to_open_paren);
   TEST(test_move_before_close_paren);
   TEST_MAIN_REPORT;
 }

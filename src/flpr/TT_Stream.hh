@@ -113,7 +113,7 @@ public:
   //! Advance until peek() is the close-paren
   bool move_before_close_paren();
   //! Reverse through a paren-delimited expression with subparen expressions
-  /*! Assuming curr() it TOK_PARENR, this will move curr() BACKWARDS
+  /*! Assuming curr() is TOK_PARENR, this will move curr() BACKWARDS
     to the matching TOK_PARENL (ignoring any other paren expressions). */
   bool move_to_open_paren();
   //! Advance through a bracket-delimited expression with bracket expressions
