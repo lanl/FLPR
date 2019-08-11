@@ -13,6 +13,16 @@
 
 using namespace FLPR;
 
+bool test_consume_until_eol() {
+  {
+    LL_Helper l({"(this is a test)"});
+    TT_Stream ts = l.stream1();
+    ts.consume_until_eol();
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENR);
+  }
+  return true;
+}
+
 bool test_move_to_close_paren() {
   {
     LL_Helper l({"(test(()))="});
@@ -48,6 +58,7 @@ bool test_move_before_close_paren() {
 
 int main() {
   TEST_MAIN_DECL;
+  TEST(test_consume_until_eol);
   TEST(test_move_to_close_paren);
   TEST(test_move_before_close_paren);
   TEST_MAIN_REPORT;

@@ -24,7 +24,6 @@ namespace FLPR {
 //! Represent a stream of Token_Text
 class TT_Stream {
 public:
-
   //! Represent a range of Token_Text in a stream
   struct Capture {
     using iterator = TT_Range::iterator;
@@ -231,9 +230,7 @@ inline void TT_Stream::consume(int const advance) {
   std::advance(next_tok_, advance);
 }
 
-inline void TT_Stream::consume_until_eol() {
-  next_tok_ = std::prev(ll_tt_range_.end());
-}
+inline void TT_Stream::consume_until_eol() { next_tok_ = ll_tt_range_.end(); }
 
 inline LL_TT_Range TT_Stream::digest(int const advance) {
   TT_Range::iterator beg = next_tok_;
