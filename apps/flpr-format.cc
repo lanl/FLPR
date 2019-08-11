@@ -16,8 +16,8 @@
   Prgm_Tree node data to store client application data.
 
   The code is split up in an unusual way to allow you to easily use the format
-  operations with extensions: just copy this file, add your extensions in
-  main(), and run.
+  operations with your own FLPR syntax extensions: just copy this file, add your
+  extensions in main(), and run.
 */
 
 #include "flpr_format_base.hh"
@@ -37,8 +37,14 @@ int main(int argc, char *const argv[]) {
     std::cerr << "exiting on error." << std::endl;
     return 1;
   }
-  /* Define the indents. You could set this up from a JSON configuration file */
+
+  /* You could register FLPR syntax extensions here */
+
+  /* Define the indentation pattern. It would be nice if this was setup from an
+     external configuration file, but, for now, we'll use a fixed Emacs
+     *fortran-mode* style of indenting.  */
   Indent_Table indents;
+  indents.apply_emacs_indent();
 
   /* Process each input file */
   for (auto const &fname : filenames) {
