@@ -12,7 +12,8 @@
 
 add_library(flprapp
   flpr_format_base.cc
-)
+  module_base.cc
+  )
 
 target_compile_features(flprapp PUBLIC cxx_std_17)
 set_target_properties(flprapp PROPERTIES CXX_EXTENSIONS OFF)
@@ -27,6 +28,7 @@ target_include_directories(flprapp
 # Install the application library header files
 set(APP_HEADERS
   "flpr_format_base.hh"
+  "module_base.hh"
   "Indent_Table.hh"
   "Timer.hh"
   )

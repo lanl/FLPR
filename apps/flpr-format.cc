@@ -16,8 +16,8 @@
   Prgm_Tree node data to store client application data.
 
   The code is split up in an unusual way to allow you to easily use the format
-  operations with extensions: just copy this file, add your extensions in
-  main(), and run.
+  operations with your own FLPR syntax extensions: just copy this file, add your
+  extensions in main(), and run.
 */
 
 #include "flpr_format_base.hh"
@@ -37,8 +37,12 @@ int main(int argc, char *const argv[]) {
     std::cerr << "exiting on error." << std::endl;
     return 1;
   }
-  /* Define the indents. You could set this up from a JSON configuration file */
-  Indent_Table indents;
+
+  /* You could register FLPR syntax extensions here */
+
+  /* The actual indentation pattern is selected on a file-by-file basis
+     below. */
+  Indent_Table indents;   
 
   /* Process each input file */
   for (auto const &fname : filenames) {
@@ -46,6 +50,8 @@ int main(int argc, char *const argv[]) {
     VERBOSE_BEGIN("read_file");
     file.read_file(fname);
     VERBOSE_END;
+    /* Define the indentation pattern based on the input format. It would be
+       nice if this was setup from an external configuration file */
     if (file.logical_file().is_fixed_format()) {
       indents.apply_constant_fixed_indent(4);
       indents.set_continued_offset(5);

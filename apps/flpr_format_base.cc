@@ -317,5 +317,3 @@ bool parse_cmd_line(std::vector<std::string> &filenames, Options &options,
   }
   return true;
 }
-
-

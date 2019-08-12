@@ -8,164 +8,127 @@
    BSD-3 License can be found in the LICENSE file of the repository.
 */
 
-/*
-   Demonstrating how to selectively insert a *use-stmt* into
-   subprograms that contain a *call-stmt* to a particular name.  You
-   may want functionality like this when moving old code into modules.
+/*!
+  \file module.cc
+
+  Demonstrating how to selectively insert a *use-stmt* into
+  subprograms that contain a *call-stmt* to a particular name.  You
+  may want functionality like this when moving old code into modules.
+
+  A backup copy of the original file contents will be made '.bak' extension,
+  then the changes will be made under the original file name.
+
+  The code is split up in an unusual way to allow you to easily use the module
+  operations with your own syntax extensions: just copy this file, add your
+  extensions in main(), and run.
 */
 
-#include "flpr/flpr.hh"
-#include <cassert>
+#include "module_base.hh"
+#include <fstream>
 #include <iostream>
-#include <set>
+#include <stdio.h>
+#include <unistd.h>
+
+using vec_str = std::vector<std::string>;
 
 /*--------------------------------------------------------------------------*/
 
-using File = FLPR::Parsed_File<>;
-#define TAG(T) FLPR::Syntax_Tags::T
-using Cursor = typename File::Parse_Tree::cursor_t;
-using Stmt_Cursor = typename File::Stmt_Cursor;
-using Stmt_Range = typename File::Parse_Tree::value::Stmt_Range;
-using Stmt_Iter = typename Stmt_Range::iterator;
-using Stmt_Const_Iter = typename Stmt_Range::const_iterator;
-using Procedure = FLPR::Procedure<File>;
-
-bool do_procedure(File &file, Cursor c, bool internal_procedure,
-                  bool module_procedure);
-bool do_file(std::string const &filename);
-void write_file(std::ostream &os, File const &f);
-bool has_call_named(FLPR::LL_Stmt const &stmt,
-                    std::string const &lowercase_name);
+void parse_cmd_line(int argc, char *const argv[], vec_str &only_names,
+                    std::string &call_name, bool &call_name_is_file,
+                    std::string &module_name, vec_str &fortran_filenames);
+void print_usage(std::ostream &os);
 
 /*--------------------------------------------------------------------------*/
 
-int main(int argc, char const *argv[]) {
-  if (argc != 2) {
-    std::cerr << "Usage: module <filename>" << std::endl;
-    return 1;
+int main(int argc, char *argv[]) {
+
+  vec_str only_names;
+  vec_str fortran_filenames;
+  std::string call_name, module_name;
+  bool call_name_is_file{false};
+
+  /* only_names is the beginning of support for creating statements like "USE
+     <module_name>, ONLY: <only_name>+".  The logic for properly inserting ONLY
+     names isn't complete, so it isn't wired up to the command line yet */
+  parse_cmd_line(argc, argv, only_names, call_name, call_name_is_file,
+                 module_name, fortran_filenames);
+
+  /* You could register FLPR syntax extensions here */
+
+  FLPR_Module::Module_Action action(std::move(module_name),
+                                    std::move(only_names));
+
+  if (call_name_is_file) {
+    /* The list of CALL procedure-designators that trigger the USE <module_name>
+       insertion is given in a file */
+    std::ifstream is(call_name.c_str());
+    std::string name;
+    while (is >> name) {
+      action.add_subroutine_name(name);
+    }
+    is.close();
+  } else {
+    /* There is only one name that triggers the action */
+    action.add_subroutine_name(call_name);
   }
-  if (!do_file(std::string{argv[1]}))
-    return 2;
+
+  for (std::string const &filename : fortran_filenames) {
+    /* you could change to an alternative file_type_from_ext function here */
+    FLPR_Module::do_file(filename, FLPR::file_type_from_extension(filename),
+                         action);
+  }
+
   return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-bool do_file(std::string const &filename) {
-  File file(filename);
-  if (!file)
-    return false;
+void parse_cmd_line(int argc, char *const argv[], vec_str &only_names,
+                    std::string &call_name, bool &call_name_is_file,
+                    std::string &module_name, vec_str &fortran_filenames) {
 
-  /* Contruct a procedure visitor */
-  FLPR::Procedure_Visitor puv(file, do_procedure);
+  call_name_is_file = false;
 
-  /* Apply the do_procedure() function to each procedure in the file */
-  bool const changed = puv.visit();
-  if (changed) {
-    write_file(std::cout, file);
-  }
-  return changed;
-}
-
-/*--------------------------------------------------------------------------*/
-
-bool do_procedure(File &file, Cursor c, bool internal_procedure,
-                  bool module_procedure) {
-  if (internal_procedure) {
-    return false;
-  }
-
-  /* A FLPR::Procedure is a simplified view of the structure of a Parse_Tree,
-     where all of the subregions of a procedure have already been identified. */
-  Procedure proc(file);
-
-  /* The Procedure ingests the Parse_Tree starting at a cursor position, which
-     is assumed to be at the start of a procedure.  */
-  if (!proc.ingest(c)) {
-    std::cerr << "\n******** Unable to ingest procedure *******\n" << std::endl;
-    return false;
-  }
-
-  /* Skip procedures that don't have an *execution-part* (they aren't
-     required) */
-  if (!proc.has_region(Procedure::EXECUTION_PART)) {
-    std::cerr << "skipping " << proc.name() << ": no execution part"
-              << std::endl;
-    return false;
-  }
-
-  /* Iterate through the statements, looking for a "CALL foo" statement.
-     has_call_named() handles cases where the *call-stmt* is the action of an
-     *if-stmt*. */
-  auto execution_part{proc.crange(Procedure::EXECUTION_PART)};
-  bool found{false};
-  for (auto const &stmt : execution_part) {
-    if (has_call_named(stmt, "foo")) {
-      found = true;
+  int ch;
+  while ((ch = getopt(argc, argv, "f:")) != -1) {
+    switch (ch) {
+    case 'f':
+      call_name = std::string{optarg};
+      call_name_is_file = true;
       break;
+    default:
+      print_usage(std::cerr);
+      exit(1);
     }
   }
-  if (!found)
-    return false;
 
-  /* If we found a "call foo", we insert a new *use-stmt*.  Note that this does
-     not check to see if that *use-stmt* already exists or not: that would be a
-     useful feature. */
-  auto use_it = proc.emplace_stmt(proc.end(Procedure::USES),
-                                  FLPR::Logical_Line{"use :: foo_mod"},
-                                  TAG(SG_USE_STMT), false);
-  use_it->set_leading_spaces(std::next(use_it)->get_leading_spaces(), 2);
+  int idx = optind;
+  if (!call_name_is_file) {
+    if (argc < 4) {
+      print_usage(std::cerr);
+      exit(1);
+    }
+    call_name = std::string{argv[idx++]};
+  } else {
+    if (argc < 3) {
+      print_usage(std::cerr);
+      exit(1);
+    }
+  }
 
-  return true;
+  module_name = std::string{argv[idx]};
+  for (int i = idx + 1; i < argc; ++i) {
+    fortran_filenames.emplace_back(std::string{argv[i]});
+  }
 }
 
 /*--------------------------------------------------------------------------*/
 
-bool has_call_named(FLPR::LL_Stmt const &stmt,
-                    std::string const &lowercase_name) {
-  int const stmt_tag = stmt.syntax_tag();
-  if (TAG(SG_CALL_STMT) != stmt_tag && TAG(SG_IF_STMT) != stmt_tag)
-    return false;
-
-  auto c{stmt.stmt_tree().ccursor()};
-
-  /* If this is an *if-stmt*, advance the cursor to the *action-stmt* */
-  if (TAG(SG_IF_STMT) == stmt_tag) {
-    assert(TAG(SG_ACTION_STMT) == c->syntag);
-    c.down();
-    assert(TAG(SG_IF_STMT) == c->syntag);
-    c.down();
-    assert(TAG(KW_IF) == c->syntag);
-    c.next(4);
-  }
-
-  assert(TAG(SG_ACTION_STMT) == c->syntag);
-  c.down(1);
-  if (TAG(SG_CALL_STMT) != c->syntag)
-    return false;
-
-  /* Walk the cursor over to the *call-stmt* name */
-  assert(TAG(SG_CALL_STMT) == c->syntag);
-  c.down(1);
-  assert(TAG(KW_CALL) == c->syntag);
-  c.next(1);
-  assert(TAG(SG_PROCEDURE_DESIGNATOR) == c->syntag);
-  c.down();
-  assert(TAG(SG_DATA_REF));
-  c.down();
-  assert(TAG(SG_PART_REF));
-  c.down();
-  assert(TAG(TK_NAME));
-
-  /* Compare the name against the one we are looking for */
-  std::string lname = c->token_range.front().lower();
-  return (lowercase_name == lname);
-}
-
-/*--------------------------------------------------------------------------*/
-
-void write_file(std::ostream &os, File const &f) {
-  for (auto const &ll : f.logical_lines()) {
-    os << ll;
-  }
+void print_usage(std::ostream &os) {
+  os << "Usage: module (-f <filename> | <call name>) "
+        "<module name> <filename> ... \n";
+  os << "\t-f <filename>\tname of file containing call names\n";
+  os << "\t<call name>\tthe subroutine name that triggers module addition\n";
+  os << "\t<module name>\tthe module for which an use-stmt will be added\n";
+  os << "\t<filename>\tthe Fortran source file to operate on\n";
 }
