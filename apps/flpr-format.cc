@@ -40,11 +40,9 @@ int main(int argc, char *const argv[]) {
 
   /* You could register FLPR syntax extensions here */
 
-  /* Define the indentation pattern. It would be nice if this was setup from an
-     external configuration file, but, for now, we'll use a fixed Emacs
-     *fortran-mode* style of indenting.  */
-  Indent_Table indents;
-  indents.apply_emacs_indent();
+  /* The actual indentation pattern is selected on a file-by-file basis
+     below. */
+  Indent_Table indents;   
 
   /* Process each input file */
   for (auto const &fname : filenames) {
@@ -52,6 +50,8 @@ int main(int argc, char *const argv[]) {
     VERBOSE_BEGIN("read_file");
     file.read_file(fname);
     VERBOSE_END;
+    /* Define the indentation pattern based on the input format. It would be
+       nice if this was setup from an external configuration file */
     if (file.logical_file().is_fixed_format()) {
       indents.apply_constant_fixed_indent(4);
       indents.set_continued_offset(5);
