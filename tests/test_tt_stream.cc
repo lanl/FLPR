@@ -13,6 +13,73 @@
 
 using namespace FLPR;
 
+bool test_chop_at_open_paren() {
+  /* This is less of a unit test, and more a test of a strange pattern used
+     in the procedure-designator parser. */
+  {
+    LL_Helper l({"call foo(bar)"});
+    TT_Stream ts = l.stream1();
+
+    TEST_EQ(ts.peek(), Syntax_Tags::KW_CALL);
+    ts.consume();
+    TEST_EQ(ts.peek(), Syntax_Tags::TK_NAME);
+
+    /* Hold this location */
+    auto designator = ts.capture_begin();
+    ts.consume_until_eol();
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENR);
+    bool move_okay = ts.move_to_open_paren();
+    TEST_TRUE(move_okay);
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_PARENL);
+
+    /* Hold this location */
+    ts.put_back();
+    ts.capture_end(designator);
+
+    TT_Stream ts2(ts.capture_to_range(designator));
+    TEST_EQ(ts2.peek(), Syntax_Tags::TK_NAME);
+    ts2.consume();
+    TEST_TRUE(ts2.is_eol());
+
+    TEST_EQ(ts.peek(1), Syntax_Tags::TK_PARENL);
+    TEST_EQ(ts.peek(2), Syntax_Tags::TK_NAME);
+    TEST_EQ(ts.peek(3), Syntax_Tags::TK_PARENR);
+    ts.consume(3);
+    TEST_TRUE(ts.is_eol());
+  }
+
+  {
+    LL_Helper l({"call foo"});
+    TT_Stream ts = l.stream1();
+
+    TEST_EQ(ts.peek(), Syntax_Tags::KW_CALL);
+    ts.consume();
+    TEST_EQ(ts.peek(), Syntax_Tags::TK_NAME);
+
+    /* Hold this location */
+    auto designator = ts.capture_begin();
+    ts.consume_until_eol();
+    TEST_EQ(ts.curr(), Syntax_Tags::TK_NAME);
+    bool move_okay = ts.move_to_open_paren();
+    TEST_FALSE(move_okay);
+
+    /* Hold this location */
+    if (move_okay)
+      ts.put_back();
+    ts.capture_end(designator);
+
+    TT_Stream ts2(ts.capture_to_range(designator));
+    TEST_EQ(ts2.peek(), Syntax_Tags::TK_NAME);
+    ts2.consume();
+    TEST_STR("foo", ts2.curr_tt().text());
+    TEST_TRUE(ts2.is_eol());
+
+    TEST_TRUE(ts.is_eol());
+  }
+
+  return true;
+}
+
 bool test_consume_until_eol() {
   {
     LL_Helper l({"(this is a test)"});
@@ -121,5 +188,7 @@ int main() {
   TEST(test_move_to_close_paren);
   TEST(test_move_to_open_paren);
   TEST(test_move_before_close_paren);
+
+  TEST(test_chop_at_open_paren);
   TEST_MAIN_REPORT;
 }
