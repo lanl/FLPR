@@ -83,7 +83,7 @@ public:
   inline void rewind();
   //! seek back to a specified token
   inline void rewind(TT_Range::iterator it);
-  //! mark a point that can be returned to with reset()
+  //! mark a point that can be returned to with rewind()
   inline TT_Range::iterator mark();
   //! returns true if there are no more tokens in the line
   inline bool is_eol();
