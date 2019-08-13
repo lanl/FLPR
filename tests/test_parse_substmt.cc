@@ -78,8 +78,7 @@ bool proc_component_ref() {
 bool test_variable() {
   TPS(variable, "a", BAD);
   TPS(variable, "a+", TK_PLUS);
-  TPS(function_reference, "a()=", TK_EQUAL);
-  TPS(variable, "a()=", TK_EQUAL);
+  TPS(variable, "a=", TK_EQUAL);
   TPS(variable, "a%b(:)=", TK_EQUAL);
   TPS(variable, "b[2,3,4,stat=var]=", TK_EQUAL);
   return true;
