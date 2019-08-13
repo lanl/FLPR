@@ -145,7 +145,6 @@ bool TT_Stream::move_before_close_paren() {
 
 bool TT_Stream::move_to_open_paren() {
   if (curr() != Syntax_Tags::TK_PARENR) {
-    std::cout << "not on parenr" << std::endl;
     return false;
   }
   int nesting_depth = 1;
