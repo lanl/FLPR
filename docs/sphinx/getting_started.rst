@@ -176,7 +176,7 @@ The sample application ``apps/flpr-format.cc`` is a thin wrapper
 around calls to ``apps/flpr_format_base.hh``.  The idea behind this is
 to give you the opportunity to extend the input grammar, without
 having to replicate all of the flpr-format functionality.  This
-structure will be extended to the ``module`` demonstration as well.
+structure applies to the ``module`` demonstration utility as well.
 
 The flpr_format_base files are exported as a CMake package called
 FLPRApp, which contains application-related includes and libraries.
