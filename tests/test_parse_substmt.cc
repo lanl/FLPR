@@ -84,6 +84,23 @@ bool test_variable() {
   return true;
 }
 
+bool procedure_designator() {
+  TSS(procedure_designator, "a");                     // procedure-name
+  TSS(procedure_designator, "a%b");                   // proc-component-ref
+  TSS(procedure_designator, "a(1)%b");                // data-ref % binding-name
+  TSS(procedure_designator, "a(::)%b");               // data-ref % binding-name
+  TSS(procedure_designator, "q%a(:)[z, STAT=foo]%b"); // data-ref % binding-name
+
+  TPS(procedure_designator, "a()", TK_PARENL);       // procedure-name
+  TPS(procedure_designator, "a%b()", TK_PARENL);     // proc-component-ref
+  TPS(procedure_designator, "a(1)%b()", TK_PARENL);  // data-ref % binding-name
+  TPS(procedure_designator, "a(::)%b()", TK_PARENL); // data-ref % binding-name
+  TPS(procedure_designator, "q%a(:)[z, STAT=foo]%b()",
+      TK_PARENL); // data-ref % binding-name
+
+  return true;
+}
+
 int main() {
   TEST_MAIN_DECL;
   TEST(test_allocate_coarray_spec);
@@ -92,6 +109,7 @@ int main() {
   TEST(test_expr);
   TEST(test_image_selector);
   TEST(proc_component_ref);
+  TEST(procedure_designator);
   TEST(test_variable);
   TEST_MAIN_REPORT;
 }
