@@ -294,7 +294,7 @@ public:
       std::cerr << "Unrecognized statement\n";
       state.ss->print_me(std::cerr, false) << "\nwhile parsing ";
       FLPR::Syntax_Tags::print(std::cerr, syntag_) << std::endl;
-      std::exit(1);
+      return PP_Result{};
     }
     if (root)
       cover_branches(*root);
@@ -345,7 +345,7 @@ public:
         std::cerr << "Unrecognized statement\n";
         state.ss->print_me(std::cerr, false) << "\nwhile parsing ";
         FLPR::Syntax_Tags::print(std::cerr, syntag_) << std::endl;
-        std::exit(1);
+        return PP_Result{};
       }
       if (root)
         cover_branches(*root);
