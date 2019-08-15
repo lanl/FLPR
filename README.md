@@ -20,6 +20,15 @@ Docs](https://flpr.readthedocs.io), or in the
 
 Any questions? Please file an issue on GitHub, or email <flpr-dev@lanl.gov>.
 
+## Project status
+
+FLPR is undergoing active development, and isn't ready for a formal
+release yet.  In general, the default `develop` branch is expected to
+be functional at all times, but all other branches are "as-is."  Feel
+free to fork FLPR and submit PRs for new features or fixes, but please
+file an issue in the tracker before starting, just so we know what
+people are thinking about.
+
 ## Authors
 
 FLPR was created by Paul Henning (<phenning@lanl.gov>).
