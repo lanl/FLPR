@@ -24,7 +24,6 @@ namespace FLPR {
 //! Represent a stream of Token_Text
 class TT_Stream {
 public:
-
   //! Represent a range of Token_Text in a stream
   struct Capture {
     using iterator = TT_Range::iterator;
@@ -84,7 +83,7 @@ public:
   inline void rewind();
   //! seek back to a specified token
   inline void rewind(TT_Range::iterator it);
-  //! mark a point that can be returned to with reset()
+  //! mark a point that can be returned to with rewind()
   inline TT_Range::iterator mark();
   //! returns true if there are no more tokens in the line
   inline bool is_eol();
@@ -114,7 +113,7 @@ public:
   //! Advance until peek() is the close-paren
   bool move_before_close_paren();
   //! Reverse through a paren-delimited expression with subparen expressions
-  /*! Assuming curr() it TOK_PARENR, this will move curr() BACKWARDS
+  /*! Assuming curr() is TOK_PARENR, this will move curr() BACKWARDS
     to the matching TOK_PARENL (ignoring any other paren expressions). */
   bool move_to_open_paren();
   //! Advance through a bracket-delimited expression with bracket expressions
@@ -231,9 +230,7 @@ inline void TT_Stream::consume(int const advance) {
   std::advance(next_tok_, advance);
 }
 
-inline void TT_Stream::consume_until_eol() {
-  next_tok_ = std::prev(ll_tt_range_.end());
-}
+inline void TT_Stream::consume_until_eol() { next_tok_ = ll_tt_range_.end(); }
 
 inline LL_TT_Range TT_Stream::digest(int const advance) {
   TT_Range::iterator beg = next_tok_;

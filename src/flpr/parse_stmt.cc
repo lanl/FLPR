@@ -2757,11 +2757,47 @@ Stmt_Tree procedure_declaration_stmt(TT_Stream &ts) {
 //! R1520: procedure-designator (15.5.1)
 Stmt_Tree procedure_designator(TT_Stream &ts) {
   RULE(SG_PROCEDURE_DESIGNATOR);
-  /* Another place where the three alternatives (procedure-name,
-     proc-component-ref, and data-ref%binding-name) all reduce to data-ref. */
+
+  /* This is unfortunately tricky, and this implementation will only really work
+     for call-stmt.  The problem is that it is impossible to distinguish between
+     a paren delimited actual-arg-spec-list at the end of a call-stmt rule, from
+     a section-subset-list in a part-ref.  So, we try chopping off the last
+     paren-delimited term, and see if we can still match.  However, it isn't a
+     full data-ref, but more like: (<part-ref> '%')* <name>, which will math all
+     three definitions of procedure-designator, but is unable to distinguish
+     between them. */
+
+  /* We start by creating a TT_Stream::Capture that should cover the
+     procedure-designator by: */
+
+  //     - Capture where we start
+  auto designator = ts.capture_begin();
+
+  //     - Move to the last token
+  ts.consume_until_eol();
+
+  //     - Assuming that the token is ')', move back to preceding matching '('
+  bool move_okay = ts.move_to_open_paren();
+
+  //     - If we found one, curr is on '(', move back one so peek() is '('
+  if (move_okay)
+    ts.put_back();
+
+  //     - Mark this as the end of the (possible) designator sequence
+  ts.capture_end(designator);
+
+  //     - Create a stream that covers that token range
+  TT_Stream designator_ts(ts.capture_to_range(designator));
+
+  //     - Make a parser that can match our designator rule
   constexpr auto p =
-    tag_if(rule_tag, rule(data_ref));
-  EVAL(SG_PROCEDURE_DESIGNATOR, p(ts));
+    seq(rule_tag,
+        opt(h_seq(star(h_seq(rule(part_ref),
+                             TOK(TK_PERCENT))))),
+        name(),
+        eol()  // This is the EOL for the sub-stream
+        );
+  EVAL(SG_PROCEDURE_DESIGNATOR, p(designator_ts));
 }
 
 //! R1506: procedure-stmt (15.4.3.2)

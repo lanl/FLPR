@@ -24,7 +24,6 @@
 
 namespace FLPR_Module {
 
-
 /*--------------------------------------------------------------------------*/
 
 bool do_file(std::string const &filename, FLPR::File_Type file_type,
@@ -116,6 +115,7 @@ bool has_call_named(FLPR::LL_Stmt const &stmt,
 
   auto c{stmt.stmt_tree().ccursor()};
 
+  /* If we are on an if-stmt, we need to move over to the action-stmt */
   if (TAG(SG_IF_STMT) == stmt_tag) {
     assert(TAG(SG_ACTION_STMT) == c->syntag);
     c.down();
@@ -125,23 +125,39 @@ bool has_call_named(FLPR::LL_Stmt const &stmt,
     c.next(4);
   }
 
+  /* Enter the action-stmt */
   assert(TAG(SG_ACTION_STMT) == c->syntag);
   c.down(1);
+
+  /* If it is not a call-stmt, return */
   if (TAG(SG_CALL_STMT) != c->syntag)
     return false;
-  assert(TAG(SG_CALL_STMT) == c->syntag);
+
+  /* Enter the call-stmt */
   c.down(1);
+
+  /* First, we should have a CALL keyword */
   assert(TAG(KW_CALL) == c->syntag);
   c.next(1);
+
+  /* Then, a procedure-designator, which we will enter */
   assert(TAG(SG_PROCEDURE_DESIGNATOR) == c->syntag);
   c.down();
-  assert(TAG(SG_DATA_REF));
-  c.down();
-  assert(TAG(SG_PART_REF));
-  c.down();
-  assert(TAG(TK_NAME));
-  std::string lname = c->token_range.front().lower();
 
+  /* See if we have a "fancy" procedure-designator */
+  if (TAG(SG_PART_REF) == c->syntag) {
+    /* This is some elaborated name (proc-component-ref or data-ref %
+       binding-name), so we move to the last item in the list, which should be a
+       name) */
+    while (c.has_next())
+      c.next(1);
+  }
+
+  /* Now, we are on the procedure-name, the procedure-component-name, or the
+     binding-name (depending on the type of procedure-designator).  See if it is
+     listed in our set of matchers */
+  assert(TAG(TK_NAME) == c->syntag);
+  std::string lname = c->token_range.front().lower();
   return (lowercase_names.count(lname) == 1);
 }
 

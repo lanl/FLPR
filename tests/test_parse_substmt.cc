@@ -78,10 +78,26 @@ bool proc_component_ref() {
 bool test_variable() {
   TPS(variable, "a", BAD);
   TPS(variable, "a+", TK_PLUS);
-  TPS(function_reference, "a()=", TK_EQUAL);
-  TPS(variable, "a()=", TK_EQUAL);
+  TPS(variable, "a=", TK_EQUAL);
   TPS(variable, "a%b(:)=", TK_EQUAL);
   TPS(variable, "b[2,3,4,stat=var]=", TK_EQUAL);
+  return true;
+}
+
+bool procedure_designator() {
+  TSS(procedure_designator, "a");                     // procedure-name
+  TSS(procedure_designator, "a%b");                   // proc-component-ref
+  TSS(procedure_designator, "a(1)%b");                // data-ref % binding-name
+  TSS(procedure_designator, "a(::)%b");               // data-ref % binding-name
+  TSS(procedure_designator, "q%a(:)[z, STAT=foo]%b"); // data-ref % binding-name
+
+  TPS(procedure_designator, "a()", TK_PARENL);       // procedure-name
+  TPS(procedure_designator, "a%b()", TK_PARENL);     // proc-component-ref
+  TPS(procedure_designator, "a(1)%b()", TK_PARENL);  // data-ref % binding-name
+  TPS(procedure_designator, "a(::)%b()", TK_PARENL); // data-ref % binding-name
+  TPS(procedure_designator, "q%a(:)[z, STAT=foo]%b()",
+      TK_PARENL); // data-ref % binding-name
+
   return true;
 }
 
@@ -93,6 +109,7 @@ int main() {
   TEST(test_expr);
   TEST(test_image_selector);
   TEST(proc_component_ref);
+  TEST(procedure_designator);
   TEST(test_variable);
   TEST_MAIN_REPORT;
 }

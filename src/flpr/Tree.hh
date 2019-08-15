@@ -269,6 +269,15 @@ std::ostream &operator<<(std::ostream &os, Tree_Node<Tp, Alloc> const &tn) {
   return os;
 }
 
+//! A convenience mechanism for moving around a Tree
+/*! A Tree_Node Cursor, or TN_Cursor, is intended to simplify the tasks of
+    moving around a Tree and accessing node data.  The basic model is a
+    multi-dimensional iterator.  Starting on some node, the TN_Cursor provides
+    neighbor existence queries (has_up(), has_down(), has_prev(), has_next()),
+    checked updates (up(), down(), prev(), next()), Tree_Node characteristics
+    (is_root(), is_fork() (has children), is_leaf() (has no children)), and data
+    access members.
+ */
 template <class Tp, class Alloc> class TN_Cursor {
 public:
   using node_t = Tree_Node<Tp, Alloc>;
@@ -283,16 +292,32 @@ public:
   constexpr TN_Cursor() : iter_{}, assoc_{false} {}
   constexpr explicit TN_Cursor(iterator pos) : iter_{pos}, assoc_{true} {}
 
-  constexpr bool is_root() const noexcept { return iter_->is_root(); }
-  constexpr bool is_fork() const noexcept { return iter_->is_fork(); }
-  constexpr bool is_leaf() const noexcept { return iter_->is_leaf(); }
-
+  //! Return true if this node is the root of the Tree
+  constexpr bool is_root() const noexcept {
+    assert(assoc_);
+    return iter_->is_root();
+  }
+  //! Return true if this node has descendent branches
+  constexpr bool is_fork() const noexcept {
+    assert(assoc_);
+    return iter_->is_fork();
+  }
+  //! Return true if this node has no descendent branches
+  constexpr bool is_leaf() const noexcept {
+    assert(assoc_);
+    return iter_->is_leaf();
+  }
+  //! Return true if this TN_Cursor is associated with a Tree_Node
   constexpr operator bool() const noexcept { return assoc_; }
+  //! Unassociate from any Tree_Node
   constexpr void clear() noexcept { assoc_ = false; }
 
+  //! Return true if there is an ascendant node (a level above this one)
   [[nodiscard]] constexpr bool has_up() const noexcept {
+    assert(assoc_);
     return !iter_->is_root();
   }
+  //! Move up \p count levels
   constexpr TN_Cursor &up(int const count = 1) noexcept {
     for (int i = 0; i < count; ++i) {
       assert(has_up());
@@ -300,9 +325,12 @@ public:
     }
     return *this;
   }
+  //! Return true if there is a predecessor in the list of nodes at this level
   [[nodiscard]] constexpr bool has_prev() const noexcept {
+    assert(assoc_);
     return !iter_->is_root() && (iter_->parent_->branches().begin() != iter_);
   }
+  //! Move backwards \p count predecessors
   constexpr TN_Cursor &prev(int const count = 1) noexcept {
     for (int i = 0; i < count; ++i) {
       assert(has_prev());
@@ -310,10 +338,13 @@ public:
     }
     return *this;
   }
+  //! Return true is there is a successor in the list of nodes at this level
   [[nodiscard]] constexpr bool has_next() const noexcept {
+    assert(assoc_);
     return !iter_->is_root() &&
            (iter_->parent_->branches().end() != std::next(iter_));
   }
+  //! Move forward \p count successors
   constexpr TN_Cursor &next(int const count = 1) noexcept {
     for (int i = 0; i < count; ++i) {
       assert(has_next());
@@ -321,6 +352,7 @@ public:
     }
     return *this;
   }
+  //! Try to move forward \p count successors
   constexpr bool try_next(int const count = 1) noexcept {
     int i{0};
     for (i = 0; i < count && has_next(); ++i) {
@@ -328,9 +360,12 @@ public:
     }
     return i == count;
   }
+  //! Return true if there is a descendent node (a level below this one)
   [[nodiscard]] constexpr bool has_down() const noexcept {
+    assert(assoc_);
     return iter_->is_fork();
   }
+  //! Move down \p count descendent levels
   constexpr TN_Cursor &down(int const count = 1) noexcept {
     for (int i = 0; i < count; ++i) {
       assert(has_down());
@@ -338,6 +373,7 @@ public:
     }
     return *this;
   }
+  //! Try to move down \p count descendent levels
   constexpr bool try_down(int const count = 1) noexcept {
     int i{0};
     for (i = 0; i < count && has_down(); ++i) {
@@ -345,24 +381,31 @@ public:
     }
     return i == count;
   }
+  //! Return a reference to the Tree_Node that the cursor is currently on
   [[nodiscard]] constexpr typename iterator::reference node() noexcept {
     assert(assoc_);
     return *iter_;
   }
+  //! Return a const reference to the Tree_Node that the cursor is currently on
   [[nodiscard]] constexpr typename const_iterator::reference node() const
       noexcept {
     assert(assoc_);
     return *iter_;
   }
+  //! Return a reference to the current Tree_Node DATA
   [[nodiscard]] constexpr reference operator*() noexcept { return *node(); }
+  //! Return a pointer to the current Tree_Node DATA
   [[nodiscard]] constexpr pointer operator->() noexcept { return &(*node()); }
+  //! Return a const pointer to the current Tree_Node DATA
   [[nodiscard]] constexpr const_pointer operator->() const noexcept {
     return &(*node());
   }
+  //! Return the current Tree_Node::node_list::iterator
   [[nodiscard]] constexpr iterator self() noexcept {
     assert(assoc_);
     return iter_;
   }
+  //! Return the current Tree_Node::node_list::const_iterator
   [[nodiscard]] constexpr const_iterator self() const noexcept {
     assert(assoc_);
     return iter_;
@@ -373,6 +416,7 @@ private:
   bool assoc_;
 };
 
+//! A const version of TN_Cursor
 template <class Tp, class Alloc> class TN_Const_Cursor {
 public:
   using node_t = Tree_Node<Tp, Alloc>;
@@ -386,17 +430,32 @@ public:
   constexpr explicit TN_Const_Cursor(iterator pos) : iter_{pos}, assoc_{true} {}
   constexpr TN_Const_Cursor(TN_Cursor<Tp, Alloc> const &c)
       : iter_{c.self()}, assoc_{true} {}
-
-  constexpr bool is_root() const noexcept { return iter_->is_root(); }
-  constexpr bool is_fork() const noexcept { return iter_->is_fork(); }
-  constexpr bool is_leaf() const noexcept { return iter_->is_leaf(); }
-
+  //! Return true if this node is the root of the Tree
+  constexpr bool is_root() const noexcept {
+    assert(assoc_);
+    return iter_->is_root();
+  }
+  //! Return true if this node has descendent branches
+  constexpr bool is_fork() const noexcept {
+    assert(assoc_);
+    return iter_->is_fork();
+  }
+  //! Return true if this node has no descendent branches
+  constexpr bool is_leaf() const noexcept {
+    assert(assoc_);
+    return iter_->is_leaf();
+  }
+  //! Return true if this TN_Const_Cursor is associated with a Tree_Node
   constexpr operator bool() const noexcept { return assoc_; }
+  //! Unassociate from any Tree_Node
   constexpr void clear() noexcept { assoc_ = false; }
 
+  //! Return true if there is an ascendant node (a level above this one)
   [[nodiscard]] constexpr bool has_up() const noexcept {
+    assert(assoc_);
     return !iter_->is_root();
   }
+  //! Move up \p count levels
   constexpr TN_Const_Cursor &up(int const count = 1) noexcept {
     for (int i = 0; i < count; ++i) {
       assert(has_up());
@@ -404,9 +463,12 @@ public:
     }
     return *this;
   }
+  //! Return true if there is a predecessor in the list of nodes at this level
   [[nodiscard]] constexpr bool has_prev() const noexcept {
+    assert(assoc_);
     return !iter_->is_root() && (iter_->parent_->branches().begin() != iter_);
   }
+  //! Move backwards \p count predecessors
   constexpr TN_Const_Cursor &prev(int const count = 1) noexcept {
     for (int i = 0; i < count; ++i) {
       assert(has_prev());
@@ -414,10 +476,13 @@ public:
     }
     return *this;
   }
+  //! Return true is there is a successor in the list of nodes at this level
   [[nodiscard]] constexpr bool has_next() const noexcept {
+    assert(assoc_);
     return !iter_->is_root() &&
            (iter_->parent_->branches().end() != std::next(iter_));
   }
+  //! Move forward \p count successors
   constexpr TN_Const_Cursor &next(int const count = 1) noexcept {
     for (int i = 0; i < count; ++i) {
       assert(has_next());
@@ -425,6 +490,7 @@ public:
     }
     return *this;
   }
+  //! Try to move forward \p count successors
   constexpr bool try_next(int const count = 1) noexcept {
     int i{0};
     for (i = 0; i < count && has_next(); ++i) {
@@ -432,9 +498,12 @@ public:
     }
     return i == count;
   }
+  //! Return true if there is a descendent node (a level below this one)
   [[nodiscard]] constexpr bool has_down() const noexcept {
+    assert(assoc_);
     return iter_->is_fork();
   }
+  //! Move down \p count descendent levels
   constexpr TN_Const_Cursor &down(int const count = 1) noexcept {
     for (int i = 0; i < count; ++i) {
       assert(has_down());
@@ -442,6 +511,7 @@ public:
     }
     return *this;
   }
+  //! Try to move down \p count descendent levels
   constexpr bool try_down(int const count = 1) noexcept {
     int i{0};
     for (i = 0; i < count && has_down(); ++i) {
@@ -449,15 +519,16 @@ public:
     }
     return i == count;
   }
+  //! Return a reference to the Tree_Node that the cursor is currently on
   [[nodiscard]] constexpr typename iterator::reference node() noexcept {
     assert(assoc_);
     return *iter_;
   }
+  //! Return a reference to the current Tree_Node DATA
   [[nodiscard]] constexpr reference operator*() noexcept { return *node(); }
+  //! Return a pointer to the current Tree_Node DATA
   [[nodiscard]] constexpr pointer operator->() noexcept { return &(*node()); }
-  [[nodiscard]] constexpr pointer operator->() const noexcept {
-    return &(*node());
-  }
+  //! Return the current Tree_Node::node_list::iterator
   [[nodiscard]] constexpr iterator self() noexcept {
     assert(assoc_);
     return iter_;
