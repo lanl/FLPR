@@ -397,6 +397,14 @@ bool print_stmt() {
   return true;
 }
 
+bool protected_stmt() {
+  TSS(protected_stmt, "protected a");
+  TSS(protected_stmt, "protected :: a");
+  TSS(protected_stmt, "protected a,b,c");
+  TSS(protected_stmt, "protected :: a,b,c");
+  return true;
+}
+
 bool read_stmt() {
   TSS(read_stmt, "read (6, *) size");
   TSS(read_stmt, "read 10, a, b");
@@ -537,6 +545,7 @@ int main() {
   TEST(parameter_stmt);
   TEST(pointer_assignment_stmt);
   TEST(print_stmt);
+  TEST(protected_stmt);
   TEST(read_stmt);
   TEST(return_stmt);
   TEST(select_case_stmt);

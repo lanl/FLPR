@@ -2429,7 +2429,7 @@ Stmt_Tree other_specification_stmt(TT_Stream &ts) {
          rule(namelist_stmt),
          rule(optional_stmt),
          rule(pointer_stmt),
-         // FIX rule(protected_stmt),
+         rule(protected_stmt),
          rule(save_stmt),
          rule(target_stmt),
          rule(volatile_stmt),
@@ -2823,6 +2823,18 @@ Stmt_Tree program_stmt(TT_Stream &ts) {
         name(),  // program-name
         eol());
   EVAL(SG_PROGRAM_STMT, p(ts));
+}
+
+//! R855: protected-stmt (8.6.13)
+Stmt_Tree protected_stmt(TT_Stream &ts) {
+  RULE(SG_PROTECTED_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_PROTECTED),
+        opt(TOK(TK_DBL_COLON)),
+        h_list(name()),
+        eol());
+  EVAL(SG_PROTECTED_STMT, p(ts));
 }
 
 /* I:Q */
@@ -3749,9 +3761,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return program_stmt(ts);
     break;
   case TAG(SG_PROTECTED_STMT):
-    std::cerr << "Error: no parser for SG_PROTECTED_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return protected_stmt(ts); */
+    return protected_stmt(ts);
     break;
   case TAG(SG_READ_STMT):
     return read_stmt(ts);
