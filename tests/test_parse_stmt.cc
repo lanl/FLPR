@@ -497,6 +497,14 @@ bool sync_all_stmt() {
   return true;
 }
 
+bool sync_images_stmt() {
+  TSS(sync_images_stmt, "sync images(*)");
+  TSS(sync_images_stmt, "sync images(1+2)");
+  TSS(sync_images_stmt, "sync images(*, STAT=statvar, ERRMSG=errmsgvar)");
+  TSS(sync_images_stmt, "sync images(1+2, errmsg=ha)");
+  return true;
+}
+
 bool type_bound_generic_stmt() {
   TSS(type_bound_generic_stmt, "generic :: foo=>bar");
   TSS(type_bound_generic_stmt, "generic,public :: foo=>bar");
@@ -565,8 +573,9 @@ int main() {
   TEST(allocatable_stmt);
   TEST(allocate_stmt);
   TEST(arithmetic_if_stmt);
-  TEST(asynchronous_stmt);
   TEST(assignment_stmt);
+  TEST(associate_stmt);
+  TEST(asynchronous_stmt);
   TEST(bind_stmt);
   TEST(block_stmt);
   TEST(call_stmt);
@@ -579,8 +588,8 @@ int main() {
   TEST(deallocate_stmt);
   TEST(derived_type_stmt);
   TEST(do_stmt);
-  TEST(else_stmt);
   TEST(else_if_stmt);
+  TEST(else_stmt);
   TEST(elsewhere_stmt);
   TEST(end_block_stmt);
   TEST(end_do);
@@ -600,9 +609,9 @@ int main() {
   TEST(if_stmt);
   TEST(if_then_stmt);
   TEST(implicit_stmt);
+  TEST(inquire_stmt);
   TEST(intent_stmt);
   TEST(interface_stmt);
-  TEST(inquire_stmt);
   TEST(masked_elsewhere_stmt);
   TEST(namelist_stmt);
   TEST(parameter_stmt);
@@ -612,10 +621,11 @@ int main() {
   TEST(read_stmt);
   TEST(return_stmt);
   TEST(select_case_stmt);
-  TEST(select_rank_stmt);
   TEST(select_rank_case_stmt);
+  TEST(select_rank_stmt);
   TEST(subroutine_stmt);
   TEST(sync_all_stmt);
+  TEST(sync_images_stmt);
   // test_type_declaration_stmt is handled in test_parse_type_decl.cc
   TEST(type_bound_generic_stmt);
   TEST(type_bound_proc_binding);
@@ -624,6 +634,6 @@ int main() {
   TEST(where_construct_stmt);
   TEST(where_stmt);
   TEST(write_stmt);
-  TEST(associate_stmt);
+
   TEST_MAIN_REPORT;
 }
