@@ -75,6 +75,14 @@ bool associate_stmt() {
   return true;
 }
 
+bool asynchronous_stmt() {
+  TSS(asynchronous_stmt, "asynchronous a");
+  TSS(asynchronous_stmt, "asynchronous :: a");
+  TSS(asynchronous_stmt, "asynchronous a,b,c");
+  TSS(asynchronous_stmt, "asynchronous :: a,b,c");
+  return true;
+}
+
 bool bind_stmt() {
   TSS(bind_stmt, "bind(c) entity_name");
   TSS(bind_stmt, "bind(c) entity_name,/cblockname/");
@@ -535,6 +543,7 @@ int main() {
   TEST(allocatable_stmt);
   TEST(allocate_stmt);
   TEST(arithmetic_if_stmt);
+  TEST(asynchronous_stmt);
   TEST(assignment_stmt);
   TEST(bind_stmt);
   TEST(block_stmt);
