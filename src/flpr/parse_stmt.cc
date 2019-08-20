@@ -199,7 +199,7 @@ Stmt_Tree action_stmt(TT_Stream &ts) {
          rule(goto_stmt),
          rule(if_stmt),
          rule(inquire_stmt),
-         // FIX rule(lock_stmt),
+         rule(lock_stmt),
          rule(nullify_stmt),
          rule(open_stmt),
          rule(pointer_assignment_stmt),
@@ -211,8 +211,8 @@ Stmt_Tree action_stmt(TT_Stream &ts) {
          rule(sync_all_stmt),
          rule(sync_images_stmt),
          rule(sync_memory_stmt),
-         // FIX rule(sync_team_stmt),
-         // FIX rule(unlock_stmt),
+         rule(sync_team_stmt),
+         rule(unlock_stmt),
          // FIX rule(wait_stmt),
          rule(where_stmt),
          rule(write_stmt),
@@ -2293,6 +2293,22 @@ Stmt_Tree locality_spec(TT_Stream &ts) {
   EVAL(SG_LOCALITY_SPEC, p(ts));
 }
 
+//! R1179: lock-stmt (11.6.10)
+Stmt_Tree lock_stmt(TT_Stream &ts) {
+  RULE(SG_LOCK_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_LOCK),
+        h_parens(rule(variable), // lock-variable
+                 opt(h_seq(TOK(TK_COMMA),
+                           h_list(h_alts(h_seq(TOK(KW_ACQUIRED_LOCK),
+                                               TOK(TK_EQUAL),
+                                               rule(variable)),
+                                         rule(sync_stat)))))),
+        eol());
+  EVAL(SG_LOCK_STMT, p(ts));
+}
+
 //! R1024: logical-expr (10.1.9.1)
 Stmt_Tree logical_expr(TT_Stream &ts) {
   RULE(SG_LOGICAL_EXPR);
@@ -3492,6 +3508,19 @@ Stmt_Tree type_spec(TT_Stream &ts) {
 
 /* I:U */
 
+//! R1181: unlock-stmt (11.6.10)
+Stmt_Tree unlock_stmt(TT_Stream &ts) {
+  RULE(SG_UNLOCK_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_UNLOCK),
+        h_parens(rule(variable), // lock-variable
+                 opt(h_seq(TOK(TK_COMMA),
+                           h_list(rule(sync_stat))))),
+        eol());
+  EVAL(SG_UNLOCK_STMT, p(ts));
+}
+
 //! R935: upper-bound-expr (9.7.1.1)
 Stmt_Tree upper_bound_expr(TT_Stream &ts) {
   RULE(SG_UPPER_BOUND_EXPR);
@@ -3857,9 +3886,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return label_do_stmt(ts);
     break;
   case TAG(SG_LOCK_STMT):
-    std::cerr << "Error: no parser for SG_LOCK_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return lock_stmt(ts); */
+    return lock_stmt(ts); 
     break;
   case TAG(SG_LOOP_CONTROL):
     return loop_control(ts);
@@ -3995,9 +4022,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return type_param_def_stmt(ts);
     break;
   case TAG(SG_UNLOCK_STMT):
-    std::cerr << "Error: no parser for SG_UNLOCK_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return unlock_stmt(ts); */
+    return unlock_stmt(ts); 
     break;
   case TAG(SG_USE_STMT):
     return use_stmt(ts);

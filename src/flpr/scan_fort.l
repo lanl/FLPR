@@ -28,6 +28,7 @@ EXPONENT     [ed][-+]?{DIGIT}+
 %%
   /* Keywords */
 abstract { return Syntax_Tags::KW_ABSTRACT; }
+acquired_lock { return Syntax_Tags::KW_ACQUIRED_LOCK; }
 all { return Syntax_Tags::KW_ALL; }
 allocatable { return Syntax_Tags::KW_ALLOCATABLE; }
 allocate { return Syntax_Tags::KW_ALLOCATE; }
@@ -100,6 +101,7 @@ kind { return Syntax_Tags::KW_KIND; }
 len { return Syntax_Tags::KW_LEN; }
 local { return Syntax_Tags::KW_LOCAL; }
 local_init { return Syntax_Tags::KW_LOCAL_INIT; }
+lock { return Syntax_Tags::KW_LOCK; }
 logical { return Syntax_Tags::KW_LOGICAL; }
 memory { return Syntax_Tags::KW_MEMORY; }
 module { return Syntax_Tags::KW_MODULE; }
@@ -153,6 +155,7 @@ then { return Syntax_Tags::KW_THEN; }
 to { return Syntax_Tags::KW_TO; }
 type { return Syntax_Tags::KW_TYPE; }
 unformatted { return Syntax_Tags::KW_UNFORMATTED; }
+unlock { return Syntax_Tags::KW_UNLOCK; }
 use { return Syntax_Tags::KW_USE; }
 value { return Syntax_Tags::KW_VALUE; }
 volatile { return Syntax_Tags::KW_VOLATILE; }
