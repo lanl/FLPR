@@ -505,6 +505,16 @@ bool sync_images_stmt() {
   return true;
 }
 
+bool sync_memory_stmt() {
+  TSS(sync_memory_stmt, "sync memory");
+  TSS(sync_memory_stmt, "sync memory()");
+  TSS(sync_memory_stmt, "sync memory(STAT=statvar)");
+  TSS(sync_memory_stmt, "sync memory(ERRMSG=errmsgvar)");
+  TSS(sync_memory_stmt, "sync memory(STAT=statvar, ERRMSG=errmsgvar)");
+  TSS(sync_memory_stmt, "sync memory(ERRMSG=errmsgvar, STAT=statvar)");
+  return true;
+}
+
 bool type_bound_generic_stmt() {
   TSS(type_bound_generic_stmt, "generic :: foo=>bar");
   TSS(type_bound_generic_stmt, "generic,public :: foo=>bar");
@@ -626,6 +636,7 @@ int main() {
   TEST(subroutine_stmt);
   TEST(sync_all_stmt);
   TEST(sync_images_stmt);
+  TEST(sync_memory_stmt);
   // test_type_declaration_stmt is handled in test_parse_type_decl.cc
   TEST(type_bound_generic_stmt);
   TEST(type_bound_proc_binding);

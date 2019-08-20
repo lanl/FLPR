@@ -130,6 +130,7 @@
   X(KW_LOCAL, "LOCAL", 4)                                               \
   X(KW_LOCAL_INIT, "LOCAL_INIT", 4)                                     \
   X(KW_LOGICAL, "LOGICAL", 4)                                           \
+  X(KW_MEMORY, "MEMORY", 4)                                             \
   X(KW_MODULE, "MODULE", 4)                                             \
   X(KW_MOLD, "MOLD", 4)                                                 \
   X(KW_NAME, "NAME", 4)                                                 \
