@@ -83,6 +83,7 @@ generic { return Syntax_Tags::KW_GENERIC; }
 go  { return Syntax_Tags::KW_GO; }
 if { return Syntax_Tags::KW_IF; }
 image { return Syntax_Tags::KW_IMAGE; }
+images { return Syntax_Tags::KW_IMAGES; }
 implicit { return Syntax_Tags::KW_IMPLICIT; }
 import { return Syntax_Tags::KW_IMPORT; }
 impure { return Syntax_Tags::KW_IMPURE; }

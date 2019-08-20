@@ -112,6 +112,7 @@
   X(KW_GO, "GO", 4)                                                     \
   X(KW_IF, "IF", 4)                                                     \
   X(KW_IMAGE, "IMAGE", 4)                                               \
+  X(KW_IMAGES, "IMAGES", 4)                                             \
   X(KW_IMPLICIT, "IMPLICIT", 4)                                         \
   X(KW_IMPORT, "IMPORT", 4)                                             \
   X(KW_IMPURE, "IMPURE", 4)                                             \

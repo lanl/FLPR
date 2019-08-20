@@ -209,7 +209,7 @@ Stmt_Tree action_stmt(TT_Stream &ts) {
          rule(rewind_stmt),
          rule(stop_stmt),
          rule(sync_all_stmt),
-         // FIX rule(sync_images_stmt),
+         rule(sync_images_stmt),
          // FIX rule(sync_memory_stmt),
          // FIX rule(sync_team_stmt),
          // FIX rule(unlock_stmt),
@@ -3227,6 +3227,23 @@ Stmt_Tree sync_all_stmt(TT_Stream &ts) {
   EVAL(SG_SYNC_ALL_STMT, p(ts));
 }
 
+//! R1164: sync-images-stmt (11.6.3)
+Stmt_Tree sync_images_stmt(TT_Stream &ts) {
+  RULE(SG_SYNC_ALL_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_SYNC),
+        TOK(KW_IMAGES),
+        h_parens(h_alts(rule(expr),  // image-set
+                        TOK(TK_ASTERISK)),
+                 opt(h_seq(TOK(TK_COMMA),
+                           h_list(rule(sync_stat))))
+                 ),
+        eol()
+        );
+  EVAL(SG_SYNC_IMAGES_STMT, p(ts));
+}
+
 //! R1165: sync-stat (11.6.3)
 Stmt_Tree sync_stat(TT_Stream &ts) {
   RULE(SG_SYNC_STAT);
@@ -3918,9 +3935,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return sync_all_stmt(ts); 
     break;
   case TAG(SG_SYNC_IMAGES_STMT):
-    std::cerr << "Error: no parser for SG_SYNC_IMAGES_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return sync_images_stmt(ts); */
+    return sync_images_stmt(ts); 
     break;
   case TAG(SG_SYNC_MEMORY_STMT):
     std::cerr << "Error: no parser for SG_SYNC_MEMORY_STMT" << std::endl;

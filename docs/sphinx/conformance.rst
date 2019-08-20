@@ -87,7 +87,6 @@ current list includes:
 * *form-team-stmt*
 * *lock-stmt*
 * *submodule*
-* *sync-images-stmt*
 * *sync-memory-stmt*
 * *sync-team-stmt*
 * *unlock-stmt*
