@@ -388,6 +388,13 @@ bool interface_stmt() {
   return true;
 }
 
+bool lock_stmt() {
+  TSS(lock_stmt, "lock (var)");
+  TSS(lock_stmt, "lock (var, acquired_lock=al(i), errmsg=foo(1))");
+  TSS(lock_stmt, "lock (var(i),  errmsg=errvar(i))");
+  return true;
+}
+
 bool masked_elsewhere_stmt() {
   TSS(masked_elsewhere_stmt, "else where (a < 3)");
   TSS(masked_elsewhere_stmt, "elsewhere (a < 3)");
@@ -550,6 +557,13 @@ bool use_stmt() {
   return true;
 }
 
+bool unlock_stmt() {
+  TSS(unlock_stmt, "unlock (var)");
+  TSS(unlock_stmt, "unlock (var, errmsg=foo(1))");
+  TSS(unlock_stmt, "unlock (var(i),  errmsg=errvar(i))");
+  return true;
+}
+
 bool value_stmt() {
   TSS(value_stmt, "value a");
   TSS(value_stmt, "value :: a");
@@ -629,6 +643,7 @@ int main() {
   TEST(inquire_stmt);
   TEST(intent_stmt);
   TEST(interface_stmt);
+  TEST(lock_stmt);
   TEST(masked_elsewhere_stmt);
   TEST(namelist_stmt);
   TEST(parameter_stmt);
@@ -648,6 +663,7 @@ int main() {
   // test_type_declaration_stmt is handled in test_parse_type_decl.cc
   TEST(type_bound_generic_stmt);
   TEST(type_bound_proc_binding);
+  TEST(unlock_stmt);
   TEST(use_stmt);
   TEST(value_stmt);
   TEST(where_construct_stmt);

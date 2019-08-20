@@ -57,6 +57,7 @@
   X(HOIST, "<HOIST>", 0)                                                \
   X(KW_000_LB, "<keyword grammar enum lower bound>", 0)                 \
   X(KW_ABSTRACT, "ABSTRACT", 4)                                         \
+  X(KW_ACQUIRED_LOCK, "ACQUIRED_LOCK", 4)                               \
   X(KW_ALL, "ALL", 4)                                                   \
   X(KW_ALLOCATABLE, "ALLOCATABLE", 4)                                   \
   X(KW_ALLOCATE, "ALLOCATE", 4)                                         \
@@ -129,6 +130,7 @@
   X(KW_LEN, "LEN", 4)                                                   \
   X(KW_LOCAL, "LOCAL", 4)                                               \
   X(KW_LOCAL_INIT, "LOCAL_INIT", 4)                                     \
+  X(KW_LOCK, "LOCK", 4)                                                 \
   X(KW_LOGICAL, "LOGICAL", 4)                                           \
   X(KW_MEMORY, "MEMORY", 4)                                             \
   X(KW_MODULE, "MODULE", 4)                                             \
@@ -182,6 +184,7 @@
   X(KW_TO, "TO", 4)                                                     \
   X(KW_TYPE, "TYPE", 4)                                                 \
   X(KW_UNFORMATTED, "UNFORMATTED", 4)                                   \
+  X(KW_UNLOCK, "UNLOCK", 4)                                             \
   X(KW_USE, "USE", 4)                                                   \
   X(KW_VALUE, "VALUE", 4)                                               \
   X(KW_VOLATILE, "VOLATILE", 4)                                         \

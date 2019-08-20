@@ -85,9 +85,7 @@ current list includes:
 * *event-post-stmt*
 * *event-wait-stmt*
 * *form-team-stmt*
-* *lock-stmt*
 * *submodule*
-* *unlock-stmt*
 * *wait-stmt*  
 
 These will be implemented soon, but if one in particular is holding
