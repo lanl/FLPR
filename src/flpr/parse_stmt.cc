@@ -3267,6 +3267,23 @@ Stmt_Tree sync_stat(TT_Stream &ts) {
   EVAL(SG_SYNC_STAT, p(ts));
 }
 
+//! R1169: sync-team-stmt (11.6.6)
+Stmt_Tree sync_team_stmt(TT_Stream &ts) {
+  RULE(SG_SYNC_TEAM_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_SYNC),
+        TOK(KW_TEAM),
+        h_parens(rule(expr),  // team-value
+                 opt(h_seq(TOK(TK_COMMA),
+                           h_list(rule(sync_stat))))
+                 ),
+        eol()
+        );
+  EVAL(SG_SYNC_TEAM_STMT, p(ts));
+}
+
+
 /* I:T */
 
 //! R860: target-decl (8.6.15)

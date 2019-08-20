@@ -515,6 +515,13 @@ bool sync_memory_stmt() {
   return true;
 }
 
+bool sync_team_stmt() {
+  TSS(sync_team_stmt, "sync team(1+2)");
+  TSS(sync_team_stmt, "sync team(a, STAT=statvar, ERRMSG=errmsgvar)");
+  TSS(sync_team_stmt, "sync team(1+2, errmsg=ha)");
+  return true;
+}
+
 bool type_bound_generic_stmt() {
   TSS(type_bound_generic_stmt, "generic :: foo=>bar");
   TSS(type_bound_generic_stmt, "generic,public :: foo=>bar");
@@ -637,6 +644,7 @@ int main() {
   TEST(sync_all_stmt);
   TEST(sync_images_stmt);
   TEST(sync_memory_stmt);
+  TEST(sync_team_stmt);
   // test_type_declaration_stmt is handled in test_parse_type_decl.cc
   TEST(type_bound_generic_stmt);
   TEST(type_bound_proc_binding);
