@@ -75,6 +75,16 @@ bool associate_stmt() {
   return true;
 }
 
+bool bind_stmt() {
+  TSS(bind_stmt, "bind(c) entity_name");
+  TSS(bind_stmt, "bind(c) entity_name,/cblockname/");
+  TSS(bind_stmt, "bind(c) :: entity_name");
+  TSS(bind_stmt, "bind(c) :: entity_name,/cblockname/");
+  TSS(bind_stmt, "bind(c,name='foo') :: entity_name");
+  TSS(bind_stmt, "bind(c,name='foo') :: /cblockname/");
+  return true;
+}
+
 bool block_stmt() {
   TSS(block_stmt, "block");
   TSS(block_stmt, "name: block");
@@ -526,6 +536,7 @@ int main() {
   TEST(allocate_stmt);
   TEST(arithmetic_if_stmt);
   TEST(assignment_stmt);
+  TEST(bind_stmt);
   TEST(block_stmt);
   TEST(call_stmt);
   TEST(case_stmt);

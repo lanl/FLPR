@@ -80,7 +80,6 @@ There are some parsers that simply have not been implemented yet.  The
 current list includes:
 
 * *asynchronous-stmt*
-* *bind-stmt*
 * *block-data*
 * *change-team-construct*
 * *codimension-stmt*
