@@ -505,7 +505,7 @@ PPARSER(specification_construct) {
     alts(rule_tag,
          derived_type_def,
          enum_def,
-         // FIX STMT(generic_stmt),
+         STMT(generic_stmt),
          interface_block,
          STMT(parameter_stmt),
          STMT(procedure_declaration_stmt),

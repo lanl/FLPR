@@ -101,6 +101,19 @@ bool procedure_designator() {
   return true;
 }
 
+bool generic_spec() {
+  TSS(generic_spec, "foo");              // generic-name
+  TSS(generic_spec, "write");            // generic-name
+  TSS(generic_spec, "OPERATOR(.def.)");  // defined-operator
+  TSS(generic_spec, "assignment(=)");    // assignment-operator
+  TSS(generic_spec, "READ(FORMATTED)");
+  TSS(generic_spec, "READ(UNFORMATTED)");
+  TSS(generic_spec, "WRITE(FORMATTED)");
+  TSS(generic_spec, "WRITE(UNFORMATTED)");
+  return true;
+}
+    
+
 int main() {
   TEST_MAIN_DECL;
   TEST(test_allocate_coarray_spec);
@@ -111,5 +124,6 @@ int main() {
   TEST(proc_component_ref);
   TEST(procedure_designator);
   TEST(test_variable);
+  TEST(generic_spec);
   TEST_MAIN_REPORT;
 }

@@ -287,6 +287,16 @@ bool function_stmt() {
   return true;
 }
 
+bool generic_stmt() {
+  TSS(generic_stmt, "generic::foo=>bar1");
+  TSS(generic_stmt, "generic::foo=>bar1,bar2");
+  TSS(generic_stmt, "generic,private::foo=>bar1");
+  TSS(generic_stmt, "generic,public::foo=>bar1,bar2");
+  TSS(generic_stmt, "generic,public::write(unformatted)=>bar1,bar2");
+  TSS(generic_stmt, "generic,public::assignment(=)=>bar1");
+  return true;
+}
+
 bool goto_stmt() {
   TSS(goto_stmt, "go to 1");
   TSS(goto_stmt, "go to 12");
@@ -533,6 +543,7 @@ int main() {
   TEST(forall_construct_stmt);
   TEST(format_stmt);
   TEST(function_stmt);
+  TEST(generic_stmt);
   TEST(goto_stmt);
   TEST(if_stmt);
   TEST(if_then_stmt);
