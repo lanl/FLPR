@@ -485,6 +485,14 @@ bool use_stmt() {
   return true;
 }
 
+bool value_stmt() {
+  TSS(value_stmt, "value a");
+  TSS(value_stmt, "value :: a");
+  TSS(value_stmt, "value a, b,c");
+  TSS(value_stmt, "value ::a,b,c");
+  return true;
+}
+
 bool where_construct_stmt() {
   TSS(where_construct_stmt, "where(.true.)");
   TSS(where_construct_stmt, "lbl: where(.true.)");
@@ -567,6 +575,7 @@ int main() {
   TEST(type_bound_generic_stmt);
   TEST(type_bound_proc_binding);
   TEST(use_stmt);
+  TEST(value_stmt);
   TEST(where_construct_stmt);
   TEST(where_stmt);
   TEST(write_stmt);

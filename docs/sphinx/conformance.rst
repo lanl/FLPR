@@ -96,7 +96,6 @@ current list includes:
 * *sync-memory-stmt*
 * *sync-team-stmt*
 * *unlock-stmt*
-* *value-stmt*
 * *wait-stmt*  
 
 These will be implemented soon, but if one in particular is holding
