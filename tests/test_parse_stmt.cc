@@ -289,6 +289,11 @@ bool external_stmt() {
   return true;
 }
 
+bool fail_image_stmt() {
+  TSS(fail_image_stmt, "FAIL image");
+  return true;
+}
+
 bool forall_construct_stmt() {
   TSS(forall_construct_stmt, "forall(i=1:strln)");
   FSS(forall_stmt, "forall(i=1:strln)");
@@ -577,6 +582,7 @@ int main() {
   TEST(entry_stmt);
   TEST(exit_stmt);
   TEST(external_stmt);
+  TEST(fail_image_stmt);
   TEST(forall_construct_stmt);
   TEST(format_stmt);
   TEST(function_stmt);

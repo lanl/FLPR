@@ -193,7 +193,7 @@ Stmt_Tree action_stmt(TT_Stream &ts) {
          // FIX rule(event_post_stmt),
          // FIX rule(event_wait_stmt),
          rule(exit_stmt),
-         // FIX rule(fail_image_stmt),
+         rule(fail_image_stmt),
          rule(flush_stmt),
          // FIX rule(form_team_stmt),
          rule(goto_stmt),
@@ -1714,6 +1714,17 @@ Stmt_Tree external_stmt(TT_Stream &ts) {
 }
 
 /* I:F */
+
+//! R1163: fail-image-stmt (11.5)
+Stmt_Tree fail_image_stmt(TT_Stream &ts) {
+  RULE(SG_FAIL_IMAGE_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_FAIL),
+        TOK(KW_IMAGE),
+        eol());
+  EVAL(SG_FAIL_IMAGE_STMT, p(ts));
+}
 
 //! R753: final-procedure-stmt (7.5.6.1)
 Stmt_Tree final_procedure_stmt(TT_Stream &ts) {
@@ -3715,9 +3726,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return external_stmt(ts);
     break;
   case TAG(SG_FAIL_IMAGE_STMT):
-    std::cerr << "Error: no parser for SG_FAIL_IMAGE_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return fail_image_stmt(ts); */
+    return fail_image_stmt(ts); 
     break;
   case TAG(SG_FLUSH_STMT):
     return flush_stmt(ts);

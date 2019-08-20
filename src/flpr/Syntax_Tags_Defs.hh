@@ -100,6 +100,7 @@
   X(KW_EXIT, "EXIT", 4)                                                 \
   X(KW_EXTENDS, "EXTENDS", 4)                                           \
   X(KW_EXTERNAL, "EXTERNAL", 4)                                         \
+  X(KW_FAIL, "FAIL", 4)                                                 \
   X(KW_FILE, "FILE", 4)                                                 \
   X(KW_FINAL, "FINAL", 4)                                               \
   X(KW_FLUSH, "FLUSH", 4)                                               \
@@ -110,6 +111,7 @@
   X(KW_GENERIC, "GENERIC", 4)                                           \
   X(KW_GO, "GO", 4)                                                     \
   X(KW_IF, "IF", 4)                                                     \
+  X(KW_IMAGE, "IMAGE", 4)                                               \
   X(KW_IMPLICIT, "IMPLICIT", 4)                                         \
   X(KW_IMPORT, "IMPORT", 4)                                             \
   X(KW_IMPURE, "IMPURE", 4)                                             \
