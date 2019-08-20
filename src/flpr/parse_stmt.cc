@@ -507,6 +507,18 @@ Stmt_Tree assumed_size_spec(TT_Stream &ts) {
   EVAL(SG_ASSUMED_SIZE_SPEC, p(ts));
 }
 
+//! R831: asynchronous-stmt (8.6.3)
+Stmt_Tree asynchronous_stmt(TT_Stream &ts) {
+  RULE(SG_ASYNCHRONOUS_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_ASYNCHRONOUS),
+        opt(TOK(TK_DBL_COLON)),
+        h_list(name()), // object-name-list
+        eol());
+  EVAL(SG_ASYNCHRONOUS_STMT, p(ts));
+}
+
 //! R802: attr-spec (8.2)
 Stmt_Tree attr_spec(TT_Stream &ts) {
   RULE(SG_ATTR_SPEC);
@@ -2458,7 +2470,7 @@ Stmt_Tree other_specification_stmt(TT_Stream &ts) {
     alts(rule_tag,
          rule(access_stmt),
          rule(allocatable_stmt),
-         // FIX rule(asynchronous_stmt),
+         rule(asynchronous_stmt),
          rule(bind_stmt),
          // FIX rule(codimension_stmt),
          rule(dimension_stmt),
@@ -3517,9 +3529,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return associate_stmt(ts);
     break;
   case TAG(SG_ASYNCHRONOUS_STMT):
-    std::cerr << "Error: no parser for SG_ASYNCHRONOUS_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return asynchronous_stmt(ts); */
+    return asynchronous_stmt(ts); 
     break;
   case TAG(SG_ARITHMETIC_IF_STMT):
     return arithmetic_if_stmt(ts);
