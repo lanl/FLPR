@@ -117,6 +117,14 @@ bool case_stmt() {
   return true;
 }
 
+bool codimension_stmt() {
+  TSS(codimension_stmt, "codimension a[*]");
+  TSS(codimension_stmt, "codimension :: a[:]");
+  TSS(codimension_stmt, "codimension :: a[:], b[1:*]");
+  TSS(codimension_stmt, "codimension :: a[:], b[1:*], c[3,1:2,1:*]");
+  return true;
+}
+  
 bool common_stmt() {
   TSS(common_stmt, "common a");
   TSS(common_stmt, "common a,b");
@@ -549,6 +557,7 @@ int main() {
   TEST(block_stmt);
   TEST(call_stmt);
   TEST(case_stmt);
+  TEST(codimension_stmt);
   TEST(common_stmt);
   TEST(component_def_stmt);
   TEST(cycle_stmt);

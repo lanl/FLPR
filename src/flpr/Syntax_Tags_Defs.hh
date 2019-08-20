@@ -291,6 +291,7 @@
   X(SG_CHAR_SELECTOR, "char-selector", 2)                               \
   X(SG_CLOSE_STMT, "close-stmt", 5)                                     \
   X(SG_COARRAY_SPEC, "coarray-spec", 1)                                 \
+  X(SG_CODIMENSION_DECL, "codimension-decl", 1)                         \
   X(SG_CODIMENSION_STMT, "codimension-stmt", 5)                         \
   X(SG_COINDEXED_NAMED_OBJECT, "coindexed-named-object", 1)             \
   X(SG_COMMON_BLOCK_OBJECT, "common-block-object", 1)                   \

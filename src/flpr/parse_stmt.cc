@@ -737,10 +737,33 @@ Stmt_Tree coarray_spec(TT_Stream &ts) {
   RULE(SG_COARRAY_SPEC);
   constexpr auto p =
     alts(rule_tag,
+         rule(explicit_coshape_spec),
          list(TAG(SG_DEFERRED_COSHAPE_SPEC_LIST),
-              tag_if(TAG(SG_DEFERRED_COSHAPE_SPEC), TOK(TK_COLON))),
-         rule(explicit_coshape_spec));
+              tag_if(TAG(SG_DEFERRED_COSHAPE_SPEC), TOK(TK_COLON)))
+         );
   EVAL(SG_COARRAY_SPEC, p(ts));
+}
+
+//! R835: codimension-decl (8.6.5)
+Stmt_Tree codimension_decl(TT_Stream &ts) {
+  RULE(SG_CODIMENSION_DECL);
+  constexpr auto p =
+    seq(rule_tag,
+        name(), // coarray-name
+        h_brackets(rule(coarray_spec)));
+  EVAL(SG_CODIMENSION_DECL, p(ts));
+}
+
+//! R834: codimension-stmt (8.6.5)
+Stmt_Tree codimension_stmt(TT_Stream &ts) {
+  RULE(SG_CODIMENSION_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_CODIMENSION),
+        opt(TOK(TK_DBL_COLON)),
+        h_list(rule(codimension_decl)),
+        eol());
+  EVAL(SG_CODIMENSION_STMT, p(ts));
 }
 
 //! R914: coindexed-named-object (9.4.3)
@@ -2472,7 +2495,7 @@ Stmt_Tree other_specification_stmt(TT_Stream &ts) {
          rule(allocatable_stmt),
          rule(asynchronous_stmt),
          rule(bind_stmt),
-         // FIX rule(codimension_stmt),
+         rule(codimension_stmt),
          rule(dimension_stmt),
          rule(external_stmt),
          rule(intent_stmt),
@@ -3556,9 +3579,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return close_stmt(ts);
     break;
   case TAG(SG_CODIMENSION_STMT):
-    std::cerr << "Error: no parser for SG_CODIMENSION_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return codimension_stmt(ts); */
+    return codimension_stmt(ts); 
     break;
   case TAG(SG_COMMON_STMT):
     return common_stmt(ts);
