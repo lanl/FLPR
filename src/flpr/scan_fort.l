@@ -71,6 +71,7 @@ error { return Syntax_Tags::KW_ERROR; }
 exit { return Syntax_Tags::KW_EXIT; }
 extends { return Syntax_Tags::KW_EXTENDS; }
 external { return Syntax_Tags::KW_EXTERNAL; }
+fail { return Syntax_Tags::KW_FAIL; }
 file { return Syntax_Tags::KW_FILE; }
 final { return Syntax_Tags::KW_FINAL; }
 flush { return Syntax_Tags::KW_FLUSH; }
@@ -81,6 +82,7 @@ function { return Syntax_Tags::KW_FUNCTION; }
 generic { return Syntax_Tags::KW_GENERIC; }
 go  { return Syntax_Tags::KW_GO; }
 if { return Syntax_Tags::KW_IF; }
+image { return Syntax_Tags::KW_IMAGE; }
 implicit { return Syntax_Tags::KW_IMPLICIT; }
 import { return Syntax_Tags::KW_IMPORT; }
 impure { return Syntax_Tags::KW_IMPURE; }

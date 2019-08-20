@@ -84,7 +84,6 @@ current list includes:
 * *critical-construct*
 * *event-post-stmt*
 * *event-wait-stmt*
-* *fail-image-stmt*
 * *form-team-stmt*
 * *lock-stmt*
 * *submodule*
