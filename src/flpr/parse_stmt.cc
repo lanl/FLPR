@@ -547,6 +547,30 @@ Stmt_Tree backspace_stmt(TT_Stream &ts) {
   EVAL(SG_BACKSPACE_STMT, p(ts));
 }
 
+//! R833: bind-entity (8.6.4)
+Stmt_Tree bind_entity(TT_Stream &ts) {
+  RULE(SG_BIND_ENTITY);
+  constexpr auto p =
+    alts(rule_tag,
+         h_seq(TOK(TK_SLASHF),
+               name(),             // common-block-name
+               TOK(TK_SLASHF)),
+         name());                  // entity-name
+  EVAL(SG_BIND_ENTITY, p(ts));
+}
+
+//! R832: bind-stmt (8.6.4)
+Stmt_Tree bind_stmt(TT_Stream &ts) {
+  RULE(SG_BIND_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        rule(language_binding_spec),
+        opt(TOK(TK_DBL_COLON)),
+        h_list(rule(bind_entity)),
+        eol());
+  EVAL(SG_BIND_STMT, p(ts));
+}
+
 //! R752: binding-attr (7.5.5)
 Stmt_Tree binding_attr(TT_Stream &ts) {
   RULE(SG_BINDING_ATTR);
@@ -2435,7 +2459,7 @@ Stmt_Tree other_specification_stmt(TT_Stream &ts) {
          rule(access_stmt),
          rule(allocatable_stmt),
          // FIX rule(asynchronous_stmt),
-         // FIX rule(bind_stmt),
+         rule(bind_stmt),
          // FIX rule(codimension_stmt),
          rule(dimension_stmt),
          rule(external_stmt),
@@ -3504,9 +3528,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return backspace_stmt(ts);
     break;
   case TAG(SG_BIND_STMT):
-    std::cerr << "Error: no parser for SG_BIND_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return bind_stmt(ts); */
+    return bind_stmt(ts); 
     break;
   case TAG(SG_BINDING_PRIVATE_STMT):
     return binding_private_stmt(ts);

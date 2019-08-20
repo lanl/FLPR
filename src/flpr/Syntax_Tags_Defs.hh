@@ -273,6 +273,7 @@
   X(SG_BINDING_ATTR_LIST, "binding-attr-list", 1)                       \
   X(SG_BINDING_NAME_LIST, "binding-name-list", 1)                       \
   X(SG_BINDING_PRIVATE_STMT, "binding-private-stmt", 5)                 \
+  X(SG_BIND_ENTITY, "bind-entity", 1)                                   \
   X(SG_BIND_STMT, "bind-stmt", 5)                                       \
   X(SG_BLOCK_STMT, "block-stmt", 5)                                     \
   X(SG_BOUNDS_REMAPPING, "bounds-remapping", 1)                         \
