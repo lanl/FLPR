@@ -22,7 +22,8 @@ bool actual_arg_spec() {
 bool allocate_coarray_spec() {
   // No brackets
   TSS(allocate_coarray_spec, "*");
-  // The first 1 is to confuse the label parser
+  /* The first 1 is a label to feed to the File_Line parser so it doesn't
+     eat the first scalar-int */
   TSS(allocate_coarray_spec, "1 1,*");
   TSS(allocate_coarray_spec, "1 1,2,3,*");
   TSS(allocate_coarray_spec, "1 1:1,2,3,*");
@@ -41,6 +42,20 @@ bool array_element() {
   FPS(array_element, "a=", TK_NAME);
   FPS(array_element, "a%b", TK_NAME);
   TPS(array_element, "c(2)[5,2,STAT=var]%d[1]%a(b)[3](1)", TK_PARENL);
+  return true;
+}
+
+bool coarray_spec() {
+  TPS(coarray_spec, ":]", TK_BRACKETR);   // deferred-coshape-spec-list
+  TPS(coarray_spec, ":,:]", TK_BRACKETR); // deferred-coshape-spec-list
+  TPS(coarray_spec, "*]", TK_BRACKETR);   // explict-coshape-spec
+
+  /* The first 1 is a label to feed to the File_Line parser so it doesn't
+     eat the first scalar-int */
+  TPS(coarray_spec, "1 3,*]", TK_BRACKETR);     // explict-coshape-spec
+  TPS(coarray_spec, "1 3:*]", TK_BRACKETR);     // explict-coshape-spec
+  TPS(coarray_spec, "1 1,3:*]", TK_BRACKETR);   // explict-coshape-spec
+  TPS(coarray_spec, "1 1:2,3:*]", TK_BRACKETR); // explict-coshape-spec
   return true;
 }
 
@@ -118,6 +133,7 @@ int main() {
   TEST(actual_arg_spec);
   TEST(allocate_coarray_spec);
   TEST(array_element);
+  TEST(coarray_spec);
   TEST(expr);
   TEST(image_selector);
   TEST(proc_component_ref);
