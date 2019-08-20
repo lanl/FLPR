@@ -257,6 +257,7 @@ Stmt_Tree structure_constructor(TT_Stream &ts);
 Stmt_Tree substring(TT_Stream &ts);
 Stmt_Tree substring_range(TT_Stream &ts);
 Stmt_Tree suffix(TT_Stream &ts);
+Stmt_Tree sync_stat(TT_Stream &ts);
 Stmt_Tree type_attr_spec(TT_Stream &ts);
 Stmt_Tree type_bound_proc_binding(TT_Stream &ts);
 Stmt_Tree type_param_spec(TT_Stream &ts);

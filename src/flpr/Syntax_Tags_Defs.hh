@@ -172,6 +172,7 @@
   X(KW_STOP, "STOP", 4)                                                 \
   X(KW_SUBMODULE, "SUBMODULE", 4)                                       \
   X(KW_SUBROUTINE, "SUBROUTINE", 4)                                     \
+  X(KW_SYNC, "SYNC", 4)                                                 \
   X(KW_TARGET, "TARGET", 4)                                             \
   X(KW_TEAM, "TEAM", 4)                                                 \
   X(KW_TEAM_NUMBER, "TEAM_NUMBER", 4)                                   \
@@ -552,6 +553,7 @@
   X(SG_SYNC_ALL_STMT, "sync-all-stmt", 5)                               \
   X(SG_SYNC_IMAGES_STMT, "sync-images-stmt", 5)                         \
   X(SG_SYNC_MEMORY_STMT, "sync-memory-stmt", 5)                         \
+  X(SG_SYNC_STAT, "sync-stat", 1)                                       \
   X(SG_SYNC_TEAM_STMT, "sync-team-stmt", 5)                             \
   X(SG_TARGET_DECL, "target-decl", 1)                                   \
   X(SG_TARGET_DECL_LIST, "target-decl-list", 1)                         \
