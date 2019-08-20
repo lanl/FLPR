@@ -101,6 +101,7 @@ len { return Syntax_Tags::KW_LEN; }
 local { return Syntax_Tags::KW_LOCAL; }
 local_init { return Syntax_Tags::KW_LOCAL_INIT; }
 logical { return Syntax_Tags::KW_LOGICAL; }
+memory { return Syntax_Tags::KW_MEMORY; }
 module { return Syntax_Tags::KW_MODULE; }
 mold { return Syntax_Tags::KW_MOLD; }
 name { return Syntax_Tags::KW_NAME; }
