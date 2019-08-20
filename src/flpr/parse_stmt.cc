@@ -1789,6 +1789,21 @@ Stmt_Tree generic_spec(TT_Stream &ts) {
   EVAL(SG_GENERIC_SPEC, p(ts));
 }
 
+//! R1510: generic-stmt (15.4.3.3)
+Stmt_Tree generic_stmt(TT_Stream &ts) {
+  RULE(SG_GENERIC_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_GENERIC),
+        opt(h_seq(TOK(TK_COMMA), rule(access_spec))),
+        TOK(TK_DBL_COLON),
+        rule(generic_spec),
+        TOK(TK_ARROW),
+        h_list(name()), // specific-procedure-list
+        eol());
+  EVAL(SG_GENERIC_STMT, p(ts));
+}       
+
 //! R1157: goto-stmt (11.2.2)
 Stmt_Tree goto_stmt(TT_Stream &ts) {
   RULE(SG_GOTO_STMT);
@@ -3664,6 +3679,9 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     break;
   case TAG(SG_FUNCTION_STMT):
     return function_stmt(ts);
+    break;
+  case TAG(SG_GENERIC_STMT):
+    return generic_stmt(ts);
     break;
   case TAG(SG_GOTO_STMT):
     return goto_stmt(ts);

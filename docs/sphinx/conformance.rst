@@ -89,7 +89,6 @@ current list includes:
 * *event-wait-stmt*
 * *fail-image-stmt*
 * *form-team-stmt*
-* *generic-stmt*
 * *lock-stmt*
 * *submodule*
 * *sync-all-stmt*

@@ -412,6 +412,7 @@
   X(SG_FUNCTION_REFERENCE, "function-reference", 1)                     \
   X(SG_FUNCTION_STMT, "function-stmt", 5)                               \
   X(SG_GENERIC_SPEC, "generic-spec", 1)                                 \
+  X(SG_GENERIC_STMT, "generic-stmt", 5)                                 \
   X(SG_GOTO_STMT, "goto-stmt", 5)                                       \
   X(SG_IF_STMT, "if-stmt", 5)                                           \
   X(SG_IF_THEN_STMT, "if-then-stmt", 5)                                 \

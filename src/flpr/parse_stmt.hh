@@ -1,3 +1,4 @@
+
 /*
    Copyright (c) 2019, Triad National Security, LLC. All rights reserved.
 
@@ -99,6 +100,7 @@ Stmt_Tree forall_stmt(TT_Stream &ts);
 Stmt_Tree form_team_stmt(TT_Stream &ts);
 Stmt_Tree format_stmt(TT_Stream &ts);
 Stmt_Tree function_stmt(TT_Stream &ts);
+Stmt_Tree generic_stmt(TT_Stream &ts);
 Stmt_Tree goto_stmt(TT_Stream &ts);
 Stmt_Tree if_stmt(TT_Stream &ts);
 Stmt_Tree if_then_stmt(TT_Stream &ts);
