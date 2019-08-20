@@ -2448,7 +2448,7 @@ Stmt_Tree other_specification_stmt(TT_Stream &ts) {
          rule(save_stmt),
          rule(target_stmt),
          rule(volatile_stmt),
-         // FIX rule(value_stmt),
+         rule(value_stmt),
          rule(common_stmt),
          rule(equivalence_stmt)
          );
@@ -3386,6 +3386,18 @@ Stmt_Tree use_stmt(TT_Stream &ts) {
 
 /* I:V */
 
+//! R861: value-stmt (8.6.16)
+Stmt_Tree value_stmt(TT_Stream &ts) {
+  RULE(SG_VALUE_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_VALUE),
+        opt(TOK(TK_DBL_COLON)),
+        h_list(name()), // dummy-arg-name-list
+        eol());
+  EVAL(SG_VALUE_STMT, p(ts));
+}
+
 //! R902: variable (9.2)
 Stmt_Tree variable(TT_Stream &ts) {
   RULE(SG_VARIABLE);
@@ -3866,9 +3878,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return use_stmt(ts);
     break;
   case TAG(SG_VALUE_STMT):
-    std::cerr << "Error: no parser for SG_VALUE_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return value_stmt(ts);*/
+    return value_stmt(ts);
     break;
   case TAG(SG_VOLATILE_STMT):
     return volatile_stmt(ts);
