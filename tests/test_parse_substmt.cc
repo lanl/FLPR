@@ -14,19 +14,20 @@
 using namespace FLPR;
 using FLPR::Stmt::Stmt_Tree;
 
-bool test_allocate_coarray_spec() {
+bool actual_arg_spec() {
+  TPS(actual_arg_spec, "a+7, p=foo", TK_COMMA);
+  return true;
+}
+
+bool allocate_coarray_spec() {
   // No brackets
   TSS(allocate_coarray_spec, "*");
-  // The first 1 is to confuse the label parser
+  /* The first 1 is a label to feed to the File_Line parser so it doesn't
+     eat the first scalar-int */
   TSS(allocate_coarray_spec, "1 1,*");
   TSS(allocate_coarray_spec, "1 1,2,3,*");
   TSS(allocate_coarray_spec, "1 1:1,2,3,*");
   TSS(allocate_coarray_spec, "1 1:1,1:2,1:3,1:*");
-  return true;
-}
-
-bool actual_arg_spec() {
-  TPS(actual_arg_spec, "a+7, p=foo", TK_COMMA);
   return true;
 }
 
@@ -44,7 +45,21 @@ bool array_element() {
   return true;
 }
 
-bool test_expr() {
+bool coarray_spec() {
+  TPS(coarray_spec, ":]", TK_BRACKETR);   // deferred-coshape-spec-list
+  TPS(coarray_spec, ":,:]", TK_BRACKETR); // deferred-coshape-spec-list
+  TPS(coarray_spec, "*]", TK_BRACKETR);   // explict-coshape-spec
+
+  /* The first 1 is a label to feed to the File_Line parser so it doesn't
+     eat the first scalar-int */
+  TPS(coarray_spec, "1 3,*]", TK_BRACKETR);     // explict-coshape-spec
+  TPS(coarray_spec, "1 3:*]", TK_BRACKETR);     // explict-coshape-spec
+  TPS(coarray_spec, "1 1,3:*]", TK_BRACKETR);   // explict-coshape-spec
+  TPS(coarray_spec, "1 1:2,3:*]", TK_BRACKETR); // explict-coshape-spec
+  return true;
+}
+
+bool expr() {
   TPS(expr, "a", BAD);
   TPS(expr, "'a b c',", TK_COMMA);
   TPS(expr, "\"a b c\",", TK_COMMA);
@@ -60,7 +75,19 @@ bool test_expr() {
   return true;
 }
 
-bool test_image_selector() {
+bool generic_spec() {
+  TSS(generic_spec, "foo");             // generic-name
+  TSS(generic_spec, "write");           // generic-name
+  TSS(generic_spec, "OPERATOR(.def.)"); // defined-operator
+  TSS(generic_spec, "assignment(=)");   // assignment-operator
+  TSS(generic_spec, "READ(FORMATTED)");
+  TSS(generic_spec, "READ(UNFORMATTED)");
+  TSS(generic_spec, "WRITE(FORMATTED)");
+  TSS(generic_spec, "WRITE(UNFORMATTED)");
+  return true;
+}
+
+bool image_selector() {
   TPS(image_selector, "[1]", BAD);
   TPS(image_selector, "[a+1]", BAD);
   TPS(image_selector, "[a+1,b-1]", BAD);
@@ -72,15 +99,6 @@ bool test_image_selector() {
 
 bool proc_component_ref() {
   TPS(proc_component_ref, "a % b =>", TK_ARROW);
-  return true;
-}
-
-bool test_variable() {
-  TPS(variable, "a", BAD);
-  TPS(variable, "a+", TK_PLUS);
-  TPS(variable, "a=", TK_EQUAL);
-  TPS(variable, "a%b(:)=", TK_EQUAL);
-  TPS(variable, "b[2,3,4,stat=var]=", TK_EQUAL);
   return true;
 }
 
@@ -101,29 +119,26 @@ bool procedure_designator() {
   return true;
 }
 
-bool generic_spec() {
-  TSS(generic_spec, "foo");              // generic-name
-  TSS(generic_spec, "write");            // generic-name
-  TSS(generic_spec, "OPERATOR(.def.)");  // defined-operator
-  TSS(generic_spec, "assignment(=)");    // assignment-operator
-  TSS(generic_spec, "READ(FORMATTED)");
-  TSS(generic_spec, "READ(UNFORMATTED)");
-  TSS(generic_spec, "WRITE(FORMATTED)");
-  TSS(generic_spec, "WRITE(UNFORMATTED)");
+bool variable() {
+  TPS(variable, "a", BAD);
+  TPS(variable, "a+", TK_PLUS);
+  TPS(variable, "a=", TK_EQUAL);
+  TPS(variable, "a%b(:)=", TK_EQUAL);
+  TPS(variable, "b[2,3,4,stat=var]=", TK_EQUAL);
   return true;
 }
-    
 
 int main() {
   TEST_MAIN_DECL;
-  TEST(test_allocate_coarray_spec);
   TEST(actual_arg_spec);
+  TEST(allocate_coarray_spec);
   TEST(array_element);
-  TEST(test_expr);
-  TEST(test_image_selector);
+  TEST(coarray_spec);
+  TEST(expr);
+  TEST(image_selector);
   TEST(proc_component_ref);
   TEST(procedure_designator);
-  TEST(test_variable);
   TEST(generic_spec);
+  TEST(variable);
   TEST_MAIN_REPORT;
 }

@@ -81,7 +81,6 @@ current list includes:
 
 * *block-data*
 * *change-team-construct*
-* *codimension-stmt*
 * *critical-construct*
 * *event-post-stmt*
 * *event-wait-stmt*
