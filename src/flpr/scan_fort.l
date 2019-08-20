@@ -143,6 +143,7 @@ stat { return Syntax_Tags::KW_STAT; }
 stop { return Syntax_Tags::KW_STOP; }
 submodule { return Syntax_Tags::KW_SUBMODULE; }
 subroutine { return Syntax_Tags::KW_SUBROUTINE; }
+sync { return Syntax_Tags::KW_SYNC; }
 target { return Syntax_Tags::KW_TARGET; }
 team { return Syntax_Tags::KW_TEAM; }
 team_number { return Syntax_Tags::KW_TEAM_NUMBER; }

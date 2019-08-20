@@ -480,11 +480,20 @@ bool select_rank_case_stmt() {
   return true;
 }
 
-
 bool subroutine_stmt() {
   TSS(subroutine_stmt, "subroutine foo");
   TSS(subroutine_stmt,
       "recursive pure subroutine foo(a,b,c) bind(c, name=foo)");
+  return true;
+}
+
+bool sync_all_stmt() {
+  TSS(sync_all_stmt, "sync all");
+  TSS(sync_all_stmt, "sync all()");
+  TSS(sync_all_stmt, "sync all(STAT=statvar)");
+  TSS(sync_all_stmt, "sync all(ERRMSG=errmsgvar)");
+  TSS(sync_all_stmt, "sync all(STAT=statvar, ERRMSG=errmsgvar)");
+  TSS(sync_all_stmt, "sync all(ERRMSG=errmsgvar, STAT=statvar)");
   return true;
 }
 
@@ -606,6 +615,7 @@ int main() {
   TEST(select_rank_stmt);
   TEST(select_rank_case_stmt);
   TEST(subroutine_stmt);
+  TEST(sync_all_stmt);
   // test_type_declaration_stmt is handled in test_parse_type_decl.cc
   TEST(type_bound_generic_stmt);
   TEST(type_bound_proc_binding);
