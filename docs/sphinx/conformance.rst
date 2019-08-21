@@ -49,7 +49,7 @@ efforts:
 - *label-do-stmt*
 - *non-block-do*
 
-Note that Hollerith contants are *not* implemented. 
+Note that Hollerith constants are *not* implemented. 
 
    
 --------------------------------
