@@ -82,8 +82,6 @@ current list includes:
 * *block-data*
 * *change-team-construct*
 * *critical-construct*
-* *event-post-stmt*
-* *event-wait-stmt*
 * *submodule*
 
 These will be implemented soon, but if one in particular is holding
