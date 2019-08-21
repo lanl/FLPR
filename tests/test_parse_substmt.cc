@@ -71,6 +71,7 @@ bool expr() {
   TPS(expr, "a+b(3,[:])]", TK_BRACKETR);
   TPS(expr, "a+b%q(3,[:]),]", TK_COMMA);
   TPS(expr, "a**3+b(3,[:]):]", TK_COLON);
+  TSS(expr, "999 1");
   FPS(expr, ":", TK_COLON);
   return true;
 }
@@ -128,6 +129,23 @@ bool variable() {
   return true;
 }
 
+bool wait_spec() {
+  // Fake-out the line parser with a label
+  TSS(wait_spec, "9999 1");      // file-unit-number
+  TSS(wait_spec, "myfile");      // file-unit-number
+  TSS(wait_spec, "unit+1");      // file-unit-number
+  TSS(wait_spec, "unit=1");      // file-unit-number
+  TSS(wait_spec, "unit=unit+1"); // file-unit-number
+  TSS(wait_spec, "unit=myfile"); // file-unit-number
+  TSS(wait_spec, "end=3");       // label
+  TSS(wait_spec, "eor=32");      // label
+  TSS(wait_spec, "err=330");     // label
+  TSS(wait_spec, "id=a+3");      // scalar-int-expr
+  TSS(wait_spec, "iomsg=iomsg(i+1)");
+  TSS(wait_spec, "iostat=foo");
+  return true;
+}
+
 int main() {
   TEST_MAIN_DECL;
   TEST(actual_arg_spec);
@@ -140,5 +158,6 @@ int main() {
   TEST(procedure_designator);
   TEST(generic_spec);
   TEST(variable);
+  TEST(wait_spec);
   TEST_MAIN_REPORT;
 }

@@ -265,6 +265,7 @@ Stmt_Tree type_param_value(TT_Stream &ts);
 Stmt_Tree type_spec(TT_Stream &ts);
 Stmt_Tree upper_bound_expr(TT_Stream &ts);
 Stmt_Tree variable(TT_Stream &ts);
+Stmt_Tree wait_spec(TT_Stream &ts);
 
 Stmt_Tree consume_parens(TT_Stream &ts);
 

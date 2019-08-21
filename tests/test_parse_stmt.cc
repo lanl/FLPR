@@ -124,7 +124,7 @@ bool codimension_stmt() {
   TSS(codimension_stmt, "codimension :: a[:], b[1:*], c[3,1:2,1:*]");
   return true;
 }
-  
+
 bool common_stmt() {
   TSS(common_stmt, "common a");
   TSS(common_stmt, "common a,b");
@@ -305,7 +305,7 @@ bool form_team_stmt() {
   TSS(form_team_stmt, "form team(1+3*i, team_var(i))");
   TSS(form_team_stmt, "form team(1+3*i, team_var(i), new_index=3*i)");
   TSS(form_team_stmt, "form team((2**i)+1, team_var(i), errmsg=errm(i),"
-      " new_index=(3*i), stat=stat(i))");
+                      " new_index=(3*i), stat=stat(i))");
   return true;
 }
 
@@ -581,6 +581,16 @@ bool value_stmt() {
   return true;
 }
 
+bool wait_stmt() {
+  TSS(wait_stmt, "wait(1)");
+  TSS(wait_stmt, "wait(fileno)");
+  TSS(wait_stmt, "wait(fileno+1)");
+  TSS(wait_stmt, "wait(end=99, unit=fileno)");
+  TSS(wait_stmt, "wait(end=99, unit=fileno, iomsg=var, id=3+i*2)");
+  TSS(wait_stmt, "wait(end=99, 13, iomsg=var, id=3+i*2)");
+  return true;
+}
+
 bool where_construct_stmt() {
   TSS(where_construct_stmt, "where(.true.)");
   TSS(where_construct_stmt, "lbl: where(.true.)");
@@ -676,6 +686,7 @@ int main() {
   TEST(unlock_stmt);
   TEST(use_stmt);
   TEST(value_stmt);
+  TEST(wait_stmt);
   TEST(where_construct_stmt);
   TEST(where_stmt);
   TEST(write_stmt);
