@@ -30,7 +30,9 @@ the Fortran specification:
    to preprocess that source code with another tool before processing it
    with FLPR.
 2. The FLPR parser does not recognize any nondefault character set.
-
+3. FLPR does not enforce the constraints of the standard, and thus, is
+   *not* a standard-conforming processor.  See the `Potential
+   "gotchas"`_ section for an example.
 
 -------------------
 Retro-Extensions
@@ -103,8 +105,14 @@ Potential "gotchas"
   ``apps/module.cc`` for an example of how to traverse the concrete
   syntax tree.  Going forward, more abstract representations will be
   introduced. 
-- When looking for *action-stmt* in the input to transform, remember to
-  look "inside" *if-stmt*, which contain an *action-stmt*!
+- Note that FLPR enforces the **rules** of the standard, but not the
+  **constraints**.  This will allow FLPR to accept input that will be
+  rejected by a conforming compiler.  For example, rule R1164 defines
+  *sync-all-stmt* as "SYNC ALL [([ *sync-stat-list* ])]", and
+  constraint C1171 specifies that a specifier may not appear in the
+  *sync-stat-list* more than once.  FLPR does not enforce that constraint. 
+- When looking for an *action-stmt* in the input to transform,
+  remember to look "inside" *if-stmt*, which contain an *action-stmt*!
 
 
 

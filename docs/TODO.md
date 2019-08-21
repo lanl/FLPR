@@ -28,29 +28,10 @@ Items related CPP (C-Preprocessor) and raw line formatting
 ## Parsing
 
 Implement the missing parsers:
-* *asynchronous-stmt*
-* *bind-stmt*
 * *block-data*
 * *change-team-construct*
-* *codimension-stmt*
 * *critical-construct*
-* *event-post-stmt*
-* *event-wait-stmt*
-* *fail-image-stmt*
-* *form-team-stmt*
-* *generic-stmt*
-* *lock-stmt*
-* *pointer-stmt*
-* *protected-stmt*
 * *submodule*
-* *sync-all-stmt*
-* *sync-images-stmt*
-* *sync-memory-stmt*
-* *sync-team-stmt*
-* *unlock-stmt*
-* *value-stmt*
-* *wait-stmt*  
-
 
 ## Efficiency
 
@@ -65,8 +46,6 @@ Items related to performance and memory use.
 - Add in switch statements for things like action-stmt to jump to appropriate
   parsers, rather than sequentially moving through them.
 
-## Applications
-- Move module.cc to a module_base wrapper.
 
 ## Build System, Directory Structure, Testing 
 
