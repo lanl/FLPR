@@ -66,7 +66,9 @@ end { return Syntax_Tags::KW_END; }
 entry { return Syntax_Tags::KW_ENTRY; }
 enum { return Syntax_Tags::KW_ENUM; }
 enumerator { return Syntax_Tags::KW_ENUMERATOR; }
+eor { return Syntax_Tags::KW_EOR; }
 equivalence { return Syntax_Tags::KW_EQUIVALENCE; }
+err { return Syntax_Tags::KW_ERR; }
 errmsg { return Syntax_Tags::KW_ERRMSG; }
 error { return Syntax_Tags::KW_ERROR; }
 exit { return Syntax_Tags::KW_EXIT; }
@@ -83,6 +85,7 @@ formatted { return Syntax_Tags::KW_FORMATTED; }
 function { return Syntax_Tags::KW_FUNCTION; }
 generic { return Syntax_Tags::KW_GENERIC; }
 go  { return Syntax_Tags::KW_GO; }
+id { return Syntax_Tags::KW_ID; }
 if { return Syntax_Tags::KW_IF; }
 image { return Syntax_Tags::KW_IMAGE; }
 images { return Syntax_Tags::KW_IMAGES; }
@@ -97,6 +100,8 @@ integer { return Syntax_Tags::KW_INTEGER; }
 intent { return Syntax_Tags::KW_INTENT; }
 interface { return Syntax_Tags::KW_INTERFACE; }
 intrinsic { return Syntax_Tags::KW_INTRINSIC; }
+iomsg { return Syntax_Tags::KW_IOMSG; }
+iostat { return Syntax_Tags::KW_IOSTAT; }
 is { return Syntax_Tags::KW_IS; }
 kind { return Syntax_Tags::KW_KIND; }
 len { return Syntax_Tags::KW_LEN; }
@@ -157,10 +162,12 @@ then { return Syntax_Tags::KW_THEN; }
 to { return Syntax_Tags::KW_TO; }
 type { return Syntax_Tags::KW_TYPE; }
 unformatted { return Syntax_Tags::KW_UNFORMATTED; }
+unit { return Syntax_Tags::KW_UNIT; }
 unlock { return Syntax_Tags::KW_UNLOCK; }
 use { return Syntax_Tags::KW_USE; }
 value { return Syntax_Tags::KW_VALUE; }
 volatile { return Syntax_Tags::KW_VOLATILE; }
+wait { return Syntax_Tags::KW_WAIT; }
 where { return Syntax_Tags::KW_WHERE; }
 while { return Syntax_Tags::KW_WHILE; }
 write { return Syntax_Tags::KW_WRITE; }

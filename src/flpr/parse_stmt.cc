@@ -213,7 +213,7 @@ Stmt_Tree action_stmt(TT_Stream &ts) {
          rule(sync_memory_stmt),
          rule(sync_team_stmt),
          rule(unlock_stmt),
-         // FIX rule(wait_stmt),
+         rule(wait_stmt),
          rule(where_stmt),
          rule(write_stmt),
          rule(computed_goto_stmt),
@@ -3618,6 +3618,35 @@ Stmt_Tree volatile_stmt(TT_Stream &ts) {
 
 /* I:W */
 
+//! R1223: wait-spec (12.7.2)
+Stmt_Tree wait_spec(TT_Stream &ts) {
+  RULE(SG_WAIT_SPEC);
+  constexpr auto p =
+    alts(rule_tag,
+         h_seq(TOK(KW_UNIT), TOK(TK_EQUAL), rule(expr)),
+         h_seq(TOK(KW_END), TOK(TK_EQUAL), rule(label)),
+         h_seq(TOK(KW_EOR), TOK(TK_EQUAL), rule(label)),
+         h_seq(TOK(KW_ERR), TOK(TK_EQUAL), rule(label)),
+         h_seq(TOK(KW_ID), TOK(TK_EQUAL), rule(expr)),
+         h_seq(TOK(KW_IOMSG), TOK(TK_EQUAL), rule(variable)),
+         h_seq(TOK(KW_IOSTAT), TOK(TK_EQUAL), rule(variable)),
+         // do the least-specific entry last: the optional unit=expr
+         rule(expr));
+
+  EVAL(SG_WAIT_SPEC, p(ts));
+}
+
+//! R1222: wait-stmt (12.7.2)
+Stmt_Tree wait_stmt(TT_Stream &ts) {
+  RULE(SG_WAIT_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_WAIT),
+        h_parens(h_list(rule(wait_spec))),
+        eol());
+  EVAL(SG_WAIT_STMT, p(ts));
+}
+
 //! R1043: where-construct-stmt (10.2.3.1)
 Stmt_Tree where_construct_stmt(TT_Stream &ts) {
   RULE(SG_WHERE_CONSTRUCT_STMT);
@@ -4056,9 +4085,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return volatile_stmt(ts);
     break;
   case TAG(SG_WAIT_STMT):
-    std::cerr << "Error: no parser for SG_WAIT_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return wait_stmt(ts); */
+    return wait_stmt(ts); 
     break;
   case TAG(SG_WHERE_CONSTRUCT_STMT):
     return where_construct_stmt(ts);

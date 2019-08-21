@@ -1,3 +1,4 @@
+/* -*- mode: C++; eval: (font-lock-mode 0); -*- */ 
 /*
    Copyright (c) 2019, Triad National Security, LLC. All rights reserved.
 
@@ -95,7 +96,9 @@
   X(KW_ENTRY, "ENTRY", 4)                                               \
   X(KW_ENUM, "ENUM", 4)                                                 \
   X(KW_ENUMERATOR, "ENUMERATOR", 4)                                     \
+  X(KW_EOR, "EOR", 4)                                                   \
   X(KW_EQUIVALENCE, "EQUIVALENCE", 4)                                   \
+  X(KW_ERR, "ERR", 4)                                                   \
   X(KW_ERRMSG, "ERRMSG", 4)                                             \
   X(KW_ERROR, "ERROR", 4)                                               \
   X(KW_EXIT, "EXIT", 4)                                                 \
@@ -112,6 +115,7 @@
   X(KW_FUNCTION, "FUNCTION", 4)                                         \
   X(KW_GENERIC, "GENERIC", 4)                                           \
   X(KW_GO, "GO", 4)                                                     \
+  X(KW_ID, "ID", 4)                                                     \
   X(KW_IF, "IF", 4)                                                     \
   X(KW_IMAGE, "IMAGE", 4)                                               \
   X(KW_IMAGES, "IMAGES", 4)                                             \
@@ -126,6 +130,8 @@
   X(KW_INTENT, "INTENT", 4)                                             \
   X(KW_INTERFACE, "INTERFACE", 4)                                       \
   X(KW_INTRINSIC, "INTRINSIC", 4)                                       \
+  X(KW_IOMSG, "IOMSG", 4)                                               \
+  X(KW_IOSTAT, "IOSTAT", 4)                                             \
   X(KW_IS, "IS", 4)                                                     \
   X(KW_KIND, "KIND", 4)                                                 \
   X(KW_LEN, "LEN", 4)                                                   \
@@ -186,10 +192,12 @@
   X(KW_TO, "TO", 4)                                                     \
   X(KW_TYPE, "TYPE", 4)                                                 \
   X(KW_UNFORMATTED, "UNFORMATTED", 4)                                   \
+  X(KW_UNIT, "UNIT", 4)                                                 \
   X(KW_UNLOCK, "UNLOCK", 4)                                             \
   X(KW_USE, "USE", 4)                                                   \
   X(KW_VALUE, "VALUE", 4)                                               \
   X(KW_VOLATILE, "VOLATILE", 4)                                         \
+  X(KW_WAIT, "WAIT", 4)                                                 \
   X(KW_WHERE, "WHERE", 4)                                               \
   X(KW_WHILE, "WHILE", 4)                                               \
   X(KW_WRITE, "WRITE", 4)                                               \
@@ -592,6 +600,7 @@
   X(SG_VARIABLE_NAME, "variable-name", 1)                               \
   X(SG_VARIABLE_NAME_LIST, "variable-name-list", 1)                     \
   X(SG_VOLATILE_STMT, "volatile-stmt", 5)                               \
+  X(SG_WAIT_SPEC, "wait-spec", 1)                                       \
   X(SG_WAIT_STMT, "wait-stmt", 5)                                       \
   X(SG_WHERE_CONSTRUCT_STMT, "where-construct-stmt", 5)                 \
   X(SG_WHERE_STMT, "where-stmt", 5)                                     \
