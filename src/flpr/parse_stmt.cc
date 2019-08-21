@@ -190,8 +190,8 @@ Stmt_Tree action_stmt(TT_Stream &ts) {
          rule(deallocate_stmt),
          rule(endfile_stmt),
          rule(error_stop_stmt),
-         // FIX rule(event_post_stmt),
-         // FIX rule(event_wait_stmt),
+         rule(event_post_stmt),
+         rule(event_wait_stmt),
          rule(exit_stmt),
          rule(fail_image_stmt),
          rule(flush_stmt),
@@ -1649,6 +1649,37 @@ Stmt_Tree error_stop_stmt(TT_Stream &ts) {
                    rule(logical_expr))),
          eol());
   EVAL(SG_ERROR_STOP_STMT, p(ts));
+}
+
+//! R1170: event-post-stmt (11.6.7)
+Stmt_Tree event_post_stmt(TT_Stream &ts) {
+  RULE(SG_EVENT_POST_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_EVENT),
+        TOK(KW_POST),
+        h_parens(rule(variable), // event-variable
+                 opt(h_seq(TOK(TK_COMMA),
+                           h_list(rule(sync_stat))))),
+        eol());
+  EVAL(SG_EVENT_POST_STMT, p(ts));
+}
+
+//! R1172: event-wait-stmt (11.6.8)
+Stmt_Tree event_wait_stmt(TT_Stream &ts) {
+  RULE(SG_EVENT_WAIT_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_EVENT),
+        TOK(KW_WAIT),
+        h_parens(rule(variable), // event-variable
+                 opt(h_seq(TOK(TK_COMMA),
+                           h_list(h_alts(h_seq(TOK(KW_UNTIL_COUNT),
+                                               TOK(TK_EQUAL),
+                                               rule(expr)), 
+                                         rule(sync_stat)))))),
+        eol());
+  EVAL(SG_EVENT_WAIT_STMT, p(ts));
 }
 
 //! R811: explicit-coshape-spec (8.5.6.3)
@@ -3861,14 +3892,10 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return error_stop_stmt(ts);
     break;
   case TAG(SG_EVENT_POST_STMT):
-    std::cerr << "Error: no parser for SG_EVENT_POST_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return event_post_stmt(ts); */
+    return event_post_stmt(ts); 
     break;
   case TAG(SG_EVENT_WAIT_STMT):
-    std::cerr << "Error: no parser for SG_EVENT_WAIT_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return event_wait_stmt(ts); */
+    return event_wait_stmt(ts); 
     break;
   case TAG(SG_EXIT_STMT):
     return exit_stmt(ts);

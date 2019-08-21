@@ -101,6 +101,7 @@
   X(KW_ERR, "ERR", 4)                                                   \
   X(KW_ERRMSG, "ERRMSG", 4)                                             \
   X(KW_ERROR, "ERROR", 4)                                               \
+  X(KW_EVENT, "EVENT", 4)                                               \
   X(KW_EXIT, "EXIT", 4)                                                 \
   X(KW_EXTENDS, "EXTENDS", 4)                                           \
   X(KW_EXTERNAL, "EXTERNAL", 4)                                         \
@@ -159,6 +160,7 @@
   X(KW_PARAMETER, "PARAMETER", 4)                                       \
   X(KW_PASS, "PASS", 4)                                                 \
   X(KW_POINTER, "POINTER", 4)                                           \
+  X(KW_POST, "POST", 4)                                                 \
   X(KW_PRECISION, "PRECISION", 4)                                       \
   X(KW_PRINT, "PRINT", 4)                                               \
   X(KW_PRIVATE, "PRIVATE", 4)                                           \
@@ -194,6 +196,7 @@
   X(KW_UNFORMATTED, "UNFORMATTED", 4)                                   \
   X(KW_UNIT, "UNIT", 4)                                                 \
   X(KW_UNLOCK, "UNLOCK", 4)                                             \
+  X(KW_UNTIL_COUNT, "UNTIL_COUNT", 4)                                   \
   X(KW_USE, "USE", 4)                                                   \
   X(KW_VALUE, "VALUE", 4)                                               \
   X(KW_VOLATILE, "VOLATILE", 4)                                         \

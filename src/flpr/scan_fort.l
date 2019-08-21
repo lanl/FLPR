@@ -71,6 +71,7 @@ equivalence { return Syntax_Tags::KW_EQUIVALENCE; }
 err { return Syntax_Tags::KW_ERR; }
 errmsg { return Syntax_Tags::KW_ERRMSG; }
 error { return Syntax_Tags::KW_ERROR; }
+event { return Syntax_Tags::KW_EVENT; }
 exit { return Syntax_Tags::KW_EXIT; }
 extends { return Syntax_Tags::KW_EXTENDS; }
 external { return Syntax_Tags::KW_EXTERNAL; }
@@ -129,6 +130,7 @@ out { return Syntax_Tags::KW_OUT; }
 parameter { return Syntax_Tags::KW_PARAMETER; }
 pass { return Syntax_Tags::KW_PASS; }
 pointer { return Syntax_Tags::KW_POINTER; }
+post { return Syntax_Tags::KW_POST; }
 precision { return Syntax_Tags::KW_PRECISION; }
 print { return Syntax_Tags::KW_PRINT; }
 private { return Syntax_Tags::KW_PRIVATE; }
@@ -164,6 +166,7 @@ type { return Syntax_Tags::KW_TYPE; }
 unformatted { return Syntax_Tags::KW_UNFORMATTED; }
 unit { return Syntax_Tags::KW_UNIT; }
 unlock { return Syntax_Tags::KW_UNLOCK; }
+until_count { return Syntax_Tags::KW_UNTIL_COUNT; }
 use { return Syntax_Tags::KW_USE; }
 value { return Syntax_Tags::KW_VALUE; }
 volatile { return Syntax_Tags::KW_VOLATILE; }

@@ -275,6 +275,22 @@ bool entry_stmt() {
   return true;
 }
 
+bool event_post_stmt() {
+  TSS(event_post_stmt, "event post (evar)");
+  TSS(event_post_stmt, "event post (evar(i))");
+  TSS(event_post_stmt, "event post(evar(i), errmsg=errmsg(i), stat=stat(i))");
+  return true;
+}
+
+bool event_wait_stmt() {
+  TSS(event_wait_stmt, "event wait(evar)");
+  TSS(event_wait_stmt, "event wait(evar(i,j))");
+  TSS(event_wait_stmt, "event wait(evar(i,j), until_count=3*i+j)");
+  TSS(event_wait_stmt, "event wait(evar(i,j), errmsg=errmsg(i),"
+      " stat=stat(j), until_count=3*i+j)");
+  return true;
+}
+
 bool exit_stmt() {
   TSS(exit_stmt, "exit");
   TSS(exit_stmt, "exit construct_name");
@@ -648,6 +664,8 @@ int main() {
   TEST(end_subroutine_stmt);
   TEST(end_where_stmt);
   TEST(entry_stmt);
+  TEST(event_post_stmt);
+  TEST(event_wait_stmt);
   TEST(exit_stmt);
   TEST(external_stmt);
   TEST(fail_image_stmt);
