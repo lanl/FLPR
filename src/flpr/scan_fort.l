@@ -77,6 +77,7 @@ file { return Syntax_Tags::KW_FILE; }
 final { return Syntax_Tags::KW_FINAL; }
 flush { return Syntax_Tags::KW_FLUSH; }
 forall { return Syntax_Tags::KW_FORALL; }
+form { return Syntax_Tags::KW_FORM; }
 format { return Syntax_Tags::KW_FORMAT; }
 formatted { return Syntax_Tags::KW_FORMATTED; }
 function { return Syntax_Tags::KW_FUNCTION; }
@@ -108,6 +109,7 @@ module { return Syntax_Tags::KW_MODULE; }
 mold { return Syntax_Tags::KW_MOLD; }
 name { return Syntax_Tags::KW_NAME; }
 namelist { return Syntax_Tags::KW_NAMELIST; }
+new_index { return Syntax_Tags::KW_NEW_INDEX; }
 nopass { return Syntax_Tags::KW_NOPASS; }
 non_intrinsic { return Syntax_Tags::KW_NON_INTRINSIC; }
 non_overridable { return Syntax_Tags::KW_NON_OVERRIDABLE; }

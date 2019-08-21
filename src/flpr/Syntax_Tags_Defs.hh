@@ -106,6 +106,7 @@
   X(KW_FINAL, "FINAL", 4)                                               \
   X(KW_FLUSH, "FLUSH", 4)                                               \
   X(KW_FORALL, "FORALL", 4)                                             \
+  X(KW_FORM, "FORM", 4)                                                 \
   X(KW_FORMAT, "FORMAT", 4)                                             \
   X(KW_FORMATTED, "FORMATTED", 4)                                       \
   X(KW_FUNCTION, "FUNCTION", 4)                                         \
@@ -137,6 +138,7 @@
   X(KW_MOLD, "MOLD", 4)                                                 \
   X(KW_NAME, "NAME", 4)                                                 \
   X(KW_NAMELIST, "NAMELIST", 4)                                         \
+  X(KW_NEW_INDEX, "NEW_INDEX", 4)                                       \
   X(KW_NONE, "NONE", 4)                                                 \
   X(KW_NON_INTRINSIC, "NON_INTRINSIC", 4)                               \
   X(KW_NON_OVERRIDABLE, "NON_OVERRIDABLE", 4)                           \
