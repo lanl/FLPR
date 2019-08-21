@@ -300,6 +300,15 @@ bool forall_construct_stmt() {
   return true;
 }
 
+bool form_team_stmt() {
+  TSS(form_team_stmt, "form team(1, team_var)");
+  TSS(form_team_stmt, "form team(1+3*i, team_var(i))");
+  TSS(form_team_stmt, "form team(1+3*i, team_var(i), new_index=3*i)");
+  TSS(form_team_stmt, "form team((2**i)+1, team_var(i), errmsg=errm(i),"
+      " new_index=(3*i), stat=stat(i))");
+  return true;
+}
+
 bool format_stmt() {
   TSS(format_stmt, "100 format(boring)");
   TSS(format_stmt, "100 format(it-doesnt [] matter())");
@@ -633,6 +642,7 @@ int main() {
   TEST(external_stmt);
   TEST(fail_image_stmt);
   TEST(forall_construct_stmt);
+  TEST(form_team_stmt);
   TEST(format_stmt);
   TEST(function_stmt);
   TEST(generic_stmt);

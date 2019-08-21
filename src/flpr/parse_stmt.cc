@@ -195,7 +195,7 @@ Stmt_Tree action_stmt(TT_Stream &ts) {
          rule(exit_stmt),
          rule(fail_image_stmt),
          rule(flush_stmt),
-         // FIX rule(form_team_stmt),
+         rule(form_team_stmt),
          rule(goto_stmt),
          rule(if_stmt),
          rule(inquire_stmt),
@@ -1725,6 +1725,30 @@ Stmt_Tree fail_image_stmt(TT_Stream &ts) {
         eol());
   EVAL(SG_FAIL_IMAGE_STMT, p(ts));
 }
+
+//! R1175: form-team-stmt (11.6.9)
+Stmt_Tree form_team_stmt(TT_Stream &ts) {
+  RULE(SG_FORM_TEAM_STMT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(KW_FORM),
+        TOK(KW_TEAM),
+        h_parens(h_seq(rule(expr), TOK(TK_COMMA), rule(variable),
+                       opt(h_seq(TOK(TK_COMMA),
+                                 h_list(
+                                     h_alts(h_seq(TOK(KW_NEW_INDEX),
+                                                  TOK(TK_EQUAL),
+                                                  rule(expr)),
+                                            rule(sync_stat))
+                                        )
+                                 )
+                           )
+                       )
+                 ),
+        eol());
+  EVAL(SG_FORM_TEAM_STMT, p(ts));
+}
+
 
 //! R753: final-procedure-stmt (7.5.6.1)
 Stmt_Tree final_procedure_stmt(TT_Stream &ts) {
@@ -3839,9 +3863,7 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return forall_stmt(ts);
     break;
   case TAG(SG_FORM_TEAM_STMT):
-    std::cerr << "Error: no parser for SG_FORM_TEAM_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return form_team_stmt(ts); */
+    return form_team_stmt(ts); 
     break;
   case TAG(SG_FORMAT_STMT):
     return format_stmt(ts);
