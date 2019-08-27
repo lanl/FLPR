@@ -14,8 +14,8 @@
 find_package(FLEX 2.6)
 
 FLEX_TARGET(Fortran_Scanner scan_fort.l
-  ${CMAKE_CURRENT_BINARY_DIR}/scan_fort.cc
-  DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/scan_fort.hh)
+  ${FLPR_BINARY_DIR}/scan_fort.cc
+  DEFINES_FILE ${FLPR_BINARY_DIR}/scan_fort.hh)
 
 set(Libflpr_SRCS
   File_Info.cc
@@ -87,11 +87,11 @@ set_target_properties(flpr PROPERTIES CXX_EXTENSIONS OFF)
 # include a FLEX-generated header
 target_include_directories(flpr
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${FLPR_SOURCE_DIR}/src>
     $<INSTALL_INTERFACE:include>
   PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<BUILD_INTERFACE:${FLPR_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${FLPR_BINARY_DIR}>
   )
 
 # Installation Info
@@ -117,16 +117,16 @@ install(
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/FLPRConfigVersion.cmake
+  ${FLPR_BINARY_DIR}/FLPRConfigVersion.cmake
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY SameMajorVersion )
 
 export(EXPORT FLPRTargets
-  FILE ${CMAKE_CURRENT_BINARY_DIR}/FLPRTargets.cmake
+  FILE ${FLPR_BINARY_DIR}/FLPRTargets.cmake
   )
 
 configure_package_config_file(FLPRConfig.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/FLPRConfig.cmake
+  ${FLPR_BINARY_DIR}/FLPRConfig.cmake
   INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake
   PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR)
 
@@ -134,8 +134,8 @@ install(EXPORT FLPRTargets
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake
   )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/FLPRConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/FLPRConfigVersion.cmake
+install(FILES ${FLPR_BINARY_DIR}/FLPRConfig.cmake
+  ${FLPR_BINARY_DIR}/FLPRConfigVersion.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake )
 
 
