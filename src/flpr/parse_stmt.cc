@@ -4075,14 +4075,10 @@ Stmt_Tree parse_stmt_dispatch(int stmt_tag, TT_Stream &ts) {
     return sync_memory_stmt(ts); 
     break;
   case TAG(SG_SYNC_TEAM_STMT):
-    std::cerr << "Error: no parser for SG_SYNC_TEAM_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return sync_team_stmt(ts); */
+    return sync_team_stmt(ts);
     break;
   case TAG(SG_TARGET_STMT):
-    std::cerr << "Error: no parser for SG_TARGET_STMT" << std::endl;
-    return Stmt_Tree();
-    /* return target_stmt(ts); */
+    return target_stmt(ts); 
     break;
   case TAG(SG_TYPE_BOUND_GENERIC_STMT):
     return type_bound_generic_stmt(ts);
