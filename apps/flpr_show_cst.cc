@@ -86,7 +86,7 @@ int main() {
     for (int sg_id = FLPR::Syntax_Tags::SG_000_LB + 1;
          sg_id < FLPR::Syntax_Tags::SG_ZZZ_UB; ++sg_id) {
       /* ...looking for top-level stmt parsers... */
-      if (FLPR::Syntax_Tags::types[sg_id] == 5) {
+      if (FLPR::Syntax_Tags::type(sg_id) == 5) {
         FLPR::Stmt::Stmt_Tree st = FLPR::Stmt::parse_stmt_dispatch(sg_id, ts);
         /* ... that accept this input. */
         if (st) {
