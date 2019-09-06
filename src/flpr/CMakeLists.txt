@@ -29,6 +29,7 @@ set(Libflpr_SRCS
   Prgm_Tree.cc
   Stmt_Parser_Exts.cc
   Stmt_Tree.cc
+  Syntax_Tags.cc
   Token_Text.cc
   TT_Stream.cc
   parse_stmt.cc

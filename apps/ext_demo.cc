@@ -67,6 +67,15 @@ int main() {
      specially */
   exts.clear();
   exts.register_action_stmt(FLPR::Stmt::write_comma_stmt_mytag);
+
+  /* If you are printing out the syntax tree, as in this example, you can
+     register a label and a type (see Syntax_Tags_Defs.hh for a description of
+     types) that make the output prettier.  If you don't do this optional step,
+     your extension tag will come with a default label of
+     "<client-extension+N>", where N is an integer offset from the
+     Syntax_Tags::CLIENT_EXTENSION tag. Syntax tag extension registration looks
+     like: */
+  FLPR::Syntax_Tags::register_ext(MY_WRITE_STMT, "my-write-stmt", 5);
   std::cout << "Extended ";
   parse_executable_construct(lf_comma);
 

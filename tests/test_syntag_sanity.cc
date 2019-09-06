@@ -36,7 +36,7 @@ bool tag_bounds() {
 bool kw_type() {
   for (int i = FLPR::Syntax_Tags::KW_000_LB + 1;
        i < FLPR::Syntax_Tags::KW_ZZZ_UB; ++i) {
-    TEST_INT_LABEL(FLPR::Syntax_Tags::label(i), FLPR::Syntax_Tags::types[i], 4);
+    TEST_INT_LABEL(FLPR::Syntax_Tags::label(i), FLPR::Syntax_Tags::type(i), 4);
   }
   return true;
 }
@@ -48,9 +48,9 @@ bool sg_stmt_type() {
     auto pos = label.find_last_of('-');
     std::string last_term = label.substr(pos + 1);
     if (last_term == "stmt") {
-      TEST_INT_LABEL(label, FLPR::Syntax_Tags::types[i], 5);
+      TEST_INT_LABEL(label, FLPR::Syntax_Tags::type(i), 5);
     } else {
-      TEST_OR_INT_LABEL(label, FLPR::Syntax_Tags::types[i], 1, 2);
+      TEST_OR_INT_LABEL(label, FLPR::Syntax_Tags::type(i), 1, 2);
     }
   }
   return true;
@@ -59,8 +59,24 @@ bool sg_stmt_type() {
 bool tk_type() {
   for (int i = FLPR::Syntax_Tags::TK_000_LB + 1;
        i < FLPR::Syntax_Tags::TK_ZZZ_UB; ++i) {
-    TEST_INT_LABEL(FLPR::Syntax_Tags::label(i), FLPR::Syntax_Tags::types[i], 3);
+    TEST_INT_LABEL(FLPR::Syntax_Tags::label(i), FLPR::Syntax_Tags::type(i), 3);
   }
+  return true;
+}
+
+bool ext_test() {
+  const int ext_tag1 = FLPR::Syntax_Tags::CLIENT_EXTENSION;
+  const int ext_tag2 = ext_tag1 + 1;
+  const int ext_tag3 = ext_tag1 + 2;
+  // the registration order shouldn't matter
+  FLPR::Syntax_Tags::register_ext(ext_tag3, "mytag3", 5);
+  FLPR::Syntax_Tags::register_ext(ext_tag1, "mytag1", 1);
+  TEST_INT(FLPR::Syntax_Tags::type(ext_tag1), 1);
+  TEST_INT(FLPR::Syntax_Tags::type(ext_tag2), 4); // default for unassigned
+  TEST_INT(FLPR::Syntax_Tags::type(ext_tag3), 5);
+  TEST_STR("mytag1", FLPR::Syntax_Tags::label(ext_tag1));
+  TEST_STR("<client-extension+1>", FLPR::Syntax_Tags::label(ext_tag2));
+  TEST_STR("mytag3", FLPR::Syntax_Tags::label(ext_tag3));
   return true;
 }
 
@@ -68,5 +84,8 @@ int main() {
   TEST_MAIN_DECL;
   TEST(tag_bounds);
   TEST(sg_stmt_type);
+  TEST(kw_type);
+  TEST(tk_type);
+  TEST(ext_test);
   TEST_MAIN_REPORT;
 }

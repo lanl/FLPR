@@ -19,47 +19,56 @@
 
 #include "flpr/Syntax_Tags_Defs.hh"
 #include <ostream>
+#include <string>
+#include <vector>
 
 namespace FLPR {
 
-//! Define a class to hold the enums
+//! Define a class to hold the enums representing the syntax tags
 /*! We aren't using an enum class here because we want to store the tags in the
   tree as an integer, so that the client can extend the tag values. */
 struct Syntax_Tags {
   enum Tags { MAP(LISTIZE) };
-  static constexpr char const *const strings[] = {MAP(STRINGIZE)};
-  static constexpr int types[] = {MAP(TYPIZE)};
-  static constexpr char const *label(int const tag) { return strings[tag]; }
+
+public:
+  static std::string label(int const syntag);
   static constexpr int pg_begin_tag() { return PG_000_LB + 1; }
   static constexpr int pg_end_tag() { return PG_ZZZ_UB; }
   static constexpr bool is_name(int const tag) {
-    return tag == TK_NAME || types[tag] == 4;
+    return tag == TK_NAME || types_[tag] == 4;
   }
-  static std::ostream &print(std::ostream &os, int syntag) {
-    if (syntag >= CLIENT_EXTENSION) {
-      os << "<client-extension+" << syntag - CLIENT_EXTENSION << '>';
-    } else {
-      os << strings[syntag];
-    }
-    return os;
-  }
-  static constexpr bool is_keyword(int const syntag) {
-    return (syntag < CLIENT_EXTENSION) ? (types[syntag] == 4) : true;
-  }
-  /* could add std::vectors for representing strings and types for extension
-     classes: client could register TAG, STR, TYPE (for TAG >=
-     CLIENT_EXTENSION), then the lookup routines could index as
+  static int type(int const syntag);
 
-     if(tag >= CLIENT_EXTENSION) return ext_strings[tag-CLIENT_EXTENSION];
-  */
+  static std::ostream &print(std::ostream &os, int const syntag) {
+    return os << label(syntag);
+  }
+  static bool is_keyword(int const syntag) { return type(syntag) == 4; }
+  static bool register_ext(int const tag_idx, char const *const label,
+                           int const type);
+
+public:
+  struct Ext_Record {
+    std::string label;
+    int type{-1};
+    constexpr bool empty() const { return type == -1; }
+  };
+
+private:
+  static constexpr char const *const strings_[] = {MAP(STRINGIZE)};
+  static constexpr int types_[] = {MAP(TYPIZE)};
+  static std::vector<Ext_Record> extensions_;
+  static int get_ext_idx_(int const syntag) {
+    if (syntag < CLIENT_EXTENSION)
+      return -2;
+    const int ext_idx = syntag - CLIENT_EXTENSION;
+    if (ext_idx >= static_cast<int>(extensions_.size()) ||
+        extensions_[ext_idx].empty())
+      return -1;
+    return ext_idx;
+  }
 };
 
 } // namespace FLPR
-
-//! Print the name of the tag using syntag_str_
-inline std::ostream &operator<<(std::ostream &os, FLPR::Syntax_Tags::Tags tag) {
-  return os << FLPR::Syntax_Tags::label(tag);
-}
 
 #undef MAP
 #undef LISTIZE
