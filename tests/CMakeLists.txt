@@ -52,4 +52,10 @@ foreach(e IN LISTS TEST_EXE)
 endforeach(e)
 
 # Add in a new test target called "check" that rebuilds test files first
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${TEST_EXE})
+# You can extend this command to cover tests in a parent package by using
+# "add_dependencies(check ${list_of_test_names})"
+add_custom_target(check
+  COMMAND ${CMAKE_CTEST_COMMAND}
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  DEPENDS ${TEST_EXE}
+  )
