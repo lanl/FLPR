@@ -607,7 +607,7 @@ public:
     assert(tree_initialized());
     return const_iterator(root_node().self_itr_);
   }
-  constexpr const_iterator croot() noexcept {
+  constexpr const_iterator croot() const noexcept {
     assert(tree_initialized());
     return const_iterator(root_node().self_itr_);
   }
