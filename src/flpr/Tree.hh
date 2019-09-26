@@ -302,6 +302,11 @@ public:
     assert(assoc_);
     return iter_->is_fork();
   }
+  //! Return the number of descendent branches
+  constexpr size_t num_branches() const noexcept {
+    assert(assoc_);
+    return iter_->num_branches();
+  }
   //! Return true if this node has no descendent branches
   constexpr bool is_leaf() const noexcept {
     assert(assoc_);
@@ -439,6 +444,11 @@ public:
   constexpr bool is_fork() const noexcept {
     assert(assoc_);
     return iter_->is_fork();
+  }
+  //! Return the number of descendent branches
+  constexpr size_t num_branches() const noexcept {
+    assert(assoc_);
+    return iter_->num_branches();
   }
   //! Return true if this node has no descendent branches
   constexpr bool is_leaf() const noexcept {
