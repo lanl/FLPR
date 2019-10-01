@@ -141,6 +141,96 @@ bool graft_back() {
   return true;
 }
 
+
+bool cursor() {
+  Tree<int> t{0};
+  t.graft_back(Tree<int>{1});
+  t.graft_back(Tree<int>{2});
+  TEST_INT(t.size(), 3);
+  TEST_INT(t->num_branches(), 2);
+  auto c = t.cursor();
+  TEST_INT(*c, 0);
+  TEST_TRUE(c.is_root());
+  TEST_FALSE(c.is_leaf());
+  TEST_TRUE(c.is_fork());
+  TEST_INT(c.num_branches(), 2);
+  TEST_FALSE(c.has_up());
+  TEST_TRUE(c.has_down());
+  TEST_FALSE(c.has_next());
+  TEST_FALSE(c.has_prev());
+  TEST_FALSE(c.try_next());
+
+
+  TEST_TRUE(c.try_down());
+  TEST_INT(*c, 1);
+  TEST_TRUE(c.has_up());
+  TEST_FALSE(c.has_prev());
+  TEST_TRUE(c.has_next());
+  TEST_FALSE(c.has_down());
+  TEST_TRUE(c.is_leaf());
+  TEST_FALSE(c.is_root());
+  
+  TEST_TRUE(c.try_next());
+  TEST_INT(*c, 2);
+  TEST_TRUE(c.has_up());
+  TEST_TRUE(c.has_prev());
+  TEST_FALSE(c.has_next());
+  TEST_FALSE(c.has_down());
+  TEST_TRUE(c.is_leaf());
+  TEST_FALSE(c.is_root());
+
+  TEST_FALSE(c.try_next());
+  c.up();
+  TEST_INT(*c, 0);
+  
+  return true;
+}
+
+bool const_cursor() {
+  Tree<int> t{0};
+  t.graft_back(Tree<int>{1});
+  t.graft_back(Tree<int>{2});
+  TEST_INT(t.size(), 3);
+  TEST_INT(t->num_branches(), 2);
+  auto c = t.ccursor();
+  TEST_INT(*c, 0);
+  TEST_TRUE(c.is_root());
+  TEST_FALSE(c.is_leaf());
+  TEST_TRUE(c.is_fork());
+  TEST_INT(c.num_branches(), 2);
+  TEST_FALSE(c.has_up());
+  TEST_TRUE(c.has_down());
+  TEST_FALSE(c.has_next());
+  TEST_FALSE(c.has_prev());
+  TEST_FALSE(c.try_next());
+
+
+  TEST_TRUE(c.try_down());
+  TEST_INT(*c, 1);
+  TEST_TRUE(c.has_up());
+  TEST_FALSE(c.has_prev());
+  TEST_TRUE(c.has_next());
+  TEST_FALSE(c.has_down());
+  TEST_TRUE(c.is_leaf());
+  TEST_FALSE(c.is_root());
+  
+  TEST_TRUE(c.try_next());
+  TEST_INT(*c, 2);
+  TEST_TRUE(c.has_up());
+  TEST_TRUE(c.has_prev());
+  TEST_FALSE(c.has_next());
+  TEST_FALSE(c.has_down());
+  TEST_TRUE(c.is_leaf());
+  TEST_FALSE(c.is_root());
+
+  TEST_FALSE(c.try_next());
+  c.up();
+  TEST_INT(*c, 0);
+  
+  return true;
+}
+
+
 bool graft_front() {
   auto p1 = std::make_shared<int>(1);
   TEST_INT(p1.use_count(), 1);
@@ -155,7 +245,9 @@ bool graft_front() {
   TEST_TRUE(t->is_root());
   TEST_TRUE(t->is_fork());
   TEST_FALSE(t->is_leaf());
-  TEST_INT(t->branches().size(), 1);
+  TEST_INT(t->num_branches(), 1);
+  TEST_INT(t.size(), 2);
+
   auto root_iter = t.root();
   auto child_iter = t->branches().begin();
   TEST_TRUE(root_iter == child_iter->trunk());
@@ -195,6 +287,8 @@ int main() {
   TEST(clear_one_node);
   TEST(graft_back);
   TEST(graft_front);
-
+  TEST(cursor);
+  TEST(const_cursor);
+  
   TEST_MAIN_REPORT;
 }

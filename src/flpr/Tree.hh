@@ -302,6 +302,11 @@ public:
     assert(assoc_);
     return iter_->is_fork();
   }
+  //! Return the number of descendent branches
+  constexpr size_t num_branches() const noexcept {
+    assert(assoc_);
+    return iter_->num_branches();
+  }
   //! Return true if this node has no descendent branches
   constexpr bool is_leaf() const noexcept {
     assert(assoc_);
@@ -440,6 +445,11 @@ public:
     assert(assoc_);
     return iter_->is_fork();
   }
+  //! Return the number of descendent branches
+  constexpr size_t num_branches() const noexcept {
+    assert(assoc_);
+    return iter_->num_branches();
+  }
   //! Return true if this node has no descendent branches
   constexpr bool is_leaf() const noexcept {
     assert(assoc_);
@@ -520,16 +530,16 @@ public:
     return i == count;
   }
   //! Return a reference to the Tree_Node that the cursor is currently on
-  [[nodiscard]] constexpr typename iterator::reference node() noexcept {
+  [[nodiscard]] constexpr typename iterator::reference node() const noexcept {
     assert(assoc_);
     return *iter_;
   }
   //! Return a reference to the current Tree_Node DATA
-  [[nodiscard]] constexpr reference operator*() noexcept { return *node(); }
+  [[nodiscard]] constexpr reference operator*() const noexcept { return *node(); }
   //! Return a pointer to the current Tree_Node DATA
-  [[nodiscard]] constexpr pointer operator->() noexcept { return &(*node()); }
+  [[nodiscard]] constexpr pointer operator->() const noexcept { return &(*node()); }
   //! Return the current Tree_Node::node_list::iterator
-  [[nodiscard]] constexpr iterator self() noexcept {
+  [[nodiscard]] constexpr iterator self() const noexcept {
     assert(assoc_);
     return iter_;
   }
@@ -607,7 +617,7 @@ public:
     assert(tree_initialized());
     return const_iterator(root_node().self_itr_);
   }
-  constexpr const_iterator croot() noexcept {
+  constexpr const_iterator croot() const noexcept {
     assert(tree_initialized());
     return const_iterator(root_node().self_itr_);
   }
