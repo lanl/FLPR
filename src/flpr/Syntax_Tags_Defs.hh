@@ -89,6 +89,7 @@
   X(KW_DIMENSION, "DIMENSION", 4)                                       \
   X(KW_DO, "DO", 4)                                                     \
   X(KW_DOUBLE, "DOUBLE", 4)                                             \
+  X(KW_DOUBLEPRECISION, "DOUBLEPRECISION", 4)                           \
   X(KW_DOWHILE, "DOWHILE", 4)                                           \
   X(KW_ELEMENTAL, "ELEMENTAL", 4)                                       \
   X(KW_ELSE, "ELSE", 4)                                                 \

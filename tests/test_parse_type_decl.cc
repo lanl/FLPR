@@ -26,6 +26,31 @@ bool test_simple() {
   TDTEST("complex a,b");
   TDTEST("double precision a,b");
   TDTEST("doubleprecision a,b");
+
+  {
+    LL_Helper l({"double precision::a"});
+    TT_Stream ts = l.stream1();
+    Stmt_Tree st = FLPR::Stmt::type_declaration_stmt(ts);
+    TEST_TREE(st, type_declaration_stmt, l);
+    auto c = st.ccursor();
+    c.down(3);
+    TEST_TAG(c->syntag, KW_DOUBLEPRECISION);
+    TEST_INT(c.num_branches(), 2);
+    TEST_TOK_EQ(Syntax_Tags::BAD, ts.peek(), l);
+  }
+
+  {
+    LL_Helper l({"doubleprecision::a"});
+    TT_Stream ts = l.stream1();
+    Stmt_Tree st = FLPR::Stmt::type_declaration_stmt(ts);
+    TEST_TREE(st, type_declaration_stmt, l);
+    auto c = st.ccursor();
+    c.down(3);
+    TEST_TAG(c->syntag, KW_DOUBLEPRECISION);
+    TEST_INT(c.num_branches(), 0);
+    TEST_TOK_EQ(Syntax_Tags::BAD, ts.peek(), l);
+  }
+
   return true;
 }
 

@@ -60,6 +60,7 @@ dimension { return Syntax_Tags::KW_DIMENSION; }
 do { return Syntax_Tags::KW_DO; }
 dowhile { return Syntax_Tags::KW_DOWHILE; }
 double { return Syntax_Tags::KW_DOUBLE; }
+doubleprecision { return Syntax_Tags::KW_DOUBLEPRECISION; }
 elemental { return Syntax_Tags::KW_ELEMENTAL; }
 else { return Syntax_Tags::KW_ELSE; }
 end { return Syntax_Tags::KW_END; }
