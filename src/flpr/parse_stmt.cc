@@ -2194,7 +2194,8 @@ Stmt_Tree intrinsic_type_spec(TT_Stream &ts) {
          h_seq(TOK(KW_REAL), opt(rule(kind_selector))),
          h_seq(TOK(KW_COMPLEX), opt(rule(kind_selector))),
          h_seq(TOK(KW_LOGICAL), opt(rule(kind_selector))),
-         h_seq(TOK(KW_DOUBLE), TOK(KW_PRECISION)),
+         seq(TAG(KW_DOUBLEPRECISION), TOK(KW_DOUBLE), TOK(KW_PRECISION)),
+         TOK(KW_DOUBLEPRECISION),
          h_seq(TOK(KW_CHARACTER), opt(rule(char_selector)))
          );
   EVAL(SG_INTRINSIC_TYPE_SPEC, p(ts));
@@ -2209,7 +2210,8 @@ Stmt_Tree intrinsic_type_spec_no_kind(TT_Stream &ts) {
          TOK(KW_REAL),
          TOK(KW_COMPLEX),
          TOK(KW_LOGICAL),
-         h_seq(TOK(KW_DOUBLE), TOK(KW_PRECISION)),
+         seq(TAG(KW_DOUBLEPRECISION), TOK(KW_DOUBLE), TOK(KW_PRECISION)),
+         TOK(KW_DOUBLEPRECISION),
          TOK(KW_CHARACTER)
          );
   EVAL(SG_INTRINSIC_TYPE_SPEC, p(ts));
