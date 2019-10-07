@@ -30,14 +30,11 @@ using Parse_Tree = typename File::Parse_Tree;
 bool elaborate_end_stmts(File &f);
 bool remove_empty_stmts(typename FLPR::LL_SEQ &ll_seq);
 bool split_compound_stmts(typename FLPR::LL_SEQ &ll_seq);
-bool indent(File &f, Indent_Table const &idents);
-bool indent_recurse(Parse_Tree::node &n, Indent_Table const &indents,
-                    int curr_spaces);
 
 /* -------------------------------------------------------------------------- */
 
 int flpr_format_file(File &file, Options const &options,
-                     Indent_Table const &indents) {
+                     FLPR::Indent_Table const &indents) {
   if (file) {
     bool do_write = false;
 
@@ -104,7 +101,7 @@ int flpr_format_file(File &file, Options const &options,
        position? */
     if (options[OPT(REINDENT)]) {
       VERBOSE_BEGIN("indent");
-      do_write |= indent(file, indents);
+      do_write |= file.indent(indents);
       VERBOSE_END;
     }
 
@@ -186,61 +183,6 @@ bool split_compound_stmts(typename FLPR::LL_SEQ &ll_seq) {
 
       ll_it = new_ll_it; // revisit the source line
       changed = true;
-    }
-  }
-  return changed;
-}
-
-bool indent(File &f, Indent_Table const &indents) {
-  if (f.parse_tree().empty())
-    return false;
-  return indent_recurse(*(f.parse_tree()), indents, 0);
-}
-
-bool indent_recurse(Parse_Tree::node &n, Indent_Table const &indents,
-                    int curr_spaces) {
-  bool changed = false;
-  /* Assign the current indent level to our extended node data.  This is useful
-     for re-indenting a subtree, as we've memoized the indent level. */
-  n->spaces = curr_spaces;
-  if (n.is_leaf()) {
-    if (n->is_stmt()) {
-      /* Do the actual indent only if you're the first or only statement on a
-         line.  Note that the other statements on a compound line have their
-         'spaces' member set correctly, so you can uncompound them easily. */
-      if (n->ll_stmt().is_compound() < 2) {
-        changed = n->ll_stmt().set_leading_spaces(curr_spaces,
-                                                  indents.continued_offset());
-      }
-    }
-  } else {
-    if (Indent_Table::begin_end_construct(n->syntag())) {
-      /* This handles a construct where there is a "begin" statement
-         (e.g. select-case-stmt) and and "end" statement (e.g. end-select-stmt)
-         that are not indented, and some arbitrarily complex set of statements
-         between them that are indented */
-      assert(n.branches().size() >= 2);
-      size_t const middle_branches = n.branches().size() - 2;
-
-      // Indent the begin stmt/first branch
-      auto b_it = n.branches().begin();
-      changed |= indent_recurse(*b_it++, indents, curr_spaces);
-      // Increase the indent
-      curr_spaces += indents[n->syntag()];
-      // Indent the middle statements
-      for (size_t i = 0; i < middle_branches; ++i)
-        changed |= indent_recurse(*b_it++, indents, curr_spaces);
-      // Decrease the indent
-      curr_spaces -= indents[n->syntag()];
-      // Indent the end stmt/last branch
-      changed |= indent_recurse(*b_it++, indents, curr_spaces);
-      assert(b_it == n.branches().end());
-    } else {
-      // Simple case: indent all branches the same
-      curr_spaces += indents[n->syntag()];
-      for (auto &b : n.branches()) {
-        changed |= indent_recurse(b, indents, curr_spaces);
-      }
     }
   }
   return changed;

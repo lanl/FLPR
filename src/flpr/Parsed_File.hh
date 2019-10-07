@@ -15,6 +15,7 @@
 #ifndef FLPR_PARSED_FILE_HH
 #define FLPR_PARSED_FILE_HH 1
 
+#include "flpr/Indent_Table.hh"
 #include "flpr/LL_Stmt_Src.hh"
 #include "flpr/Logical_File.hh"
 #include "flpr/Prgm_Parsers.hh"
@@ -72,25 +73,40 @@ public:
     return logical_file_.lines;
   }
 
+  //! Build the LL_Stmts (Logical Line Statements) sequence, if needed.
   bool prefetch_statements() {
     if (!stmts_ok_)
       build_stmts_();
     return stmts_ok_;
   }
+
+  //! Build/return the LL_Stmts (Logical Line Statements) sequence
+  LL_STMT_SEQ &statements() {
+    prefetch_statements();
+    return logical_file_.ll_stmts;
+  }
+
+  //! Build the parse tree, if needed.
   bool prefetch_parse_tree() {
     if (!tree_ok_)
       build_tree_();
     return tree_ok_;
   }
 
-  LL_STMT_SEQ &statements() {
-    prefetch_statements();
-    return logical_file_.ll_stmts;
-  }
+  //! Build/return the parse tree
   Parse_Tree &parse_tree() {
     prefetch_parse_tree();
     return parse_tree_;
   }
+
+  //! Indent the statements according to the provided Indent_Table.
+  bool indent(Indent_Table const &indents) {
+    if (parse_tree().empty())
+      return false;
+    return indent_recurse_(*(parse_tree()), indents, 0);
+  }
+
+  //! Return a Prgm_Tree cursor for a given LL_Stmt
   Prgm_Cursor stmt_to_node_cursor(LL_STMT_SEQ::iterator stmt_it) noexcept {
     if (stmt_it->has_hook()) {
       return Prgm_Cursor(
@@ -115,6 +131,8 @@ private:
     }
   }
   void build_tree_();
+  bool indent_recurse_(typename Parse_Tree::node &n,
+                       Indent_Table const &indents, int curr_spaces);
 };
 
 template <typename PG_NODE_DATA>
@@ -177,6 +195,55 @@ void Parsed_File<PG_NODE_DATA>::link_stmts_recurse_(
       link_stmts_recurse_(b);
     }
   }
+}
+
+template <typename PG_NODE_DATA>
+bool Parsed_File<PG_NODE_DATA>::indent_recurse_(typename Parse_Tree::node &n,
+                                                Indent_Table const &indents,
+                                                int curr_spaces) {
+  bool changed = false;
+
+  if (n.is_leaf()) {
+    if (n->is_stmt()) {
+      /* Do the actual indent only if you're the first or only statement on a
+         line.  Note that the other statements on a compound line have their
+         'spaces' member set correctly, so you can uncompound them easily. */
+      if (n->ll_stmt().is_compound() < 2) {
+        changed = n->ll_stmt().set_leading_spaces(curr_spaces,
+                                                  indents.continued_offset());
+      }
+    }
+  } else {
+    if (Indent_Table::begin_end_construct(n->syntag())) {
+      /* This handles a construct where there is a "begin" statement
+         (e.g. select-case-stmt) and and "end" statement (e.g. end-select-stmt)
+         that are not indented, and some arbitrarily complex set of statements
+         between them that are indented */
+      assert(n.branches().size() >= 2);
+      size_t const middle_branches = n.branches().size() - 2;
+
+      // Indent the begin stmt/first branch
+      auto b_it = n.branches().begin();
+      changed |= indent_recurse_(*b_it++, indents, curr_spaces);
+      // Increase the indent
+      curr_spaces += indents[n->syntag()];
+      // Indent the middle statements
+      for (size_t i = 0; i < middle_branches; ++i)
+        changed |= indent_recurse_(*b_it++, indents, curr_spaces);
+      // Decrease the indent
+      curr_spaces -= indents[n->syntag()];
+      // Indent the end stmt/last branch
+      changed |= indent_recurse_(*b_it++, indents, curr_spaces);
+      assert(b_it == n.branches().end());
+    } else {
+      // Simple case: indent all branches the same
+      curr_spaces += indents[n->syntag()];
+      for (auto &b : n.branches()) {
+        changed |= indent_recurse_(b, indents, curr_spaces);
+      }
+    }
+  }
+  return changed;
 }
 
 } // namespace FLPR
