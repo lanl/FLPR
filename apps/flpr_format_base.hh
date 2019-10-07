@@ -63,19 +63,9 @@ private:
   std::array<bool, NUM_FILTERS> filters_;
 };
 
-/* Augment the Prgm_Node_Data class to store some application-specific data,
-   namely the number of indentation spaces */
-struct Indent_Prgm_Node_Data : public FLPR::Prgm::Prgm_Node_Data {
-  using Base = FLPR::Prgm::Prgm_Node_Data;
-  using Base::Base;
-
-  /* Track the number of indentation spaces for a node */
-  int spaces{-1};
-};
-
 /* This class contains and manages the Logical_Lines, LL_Stmts, Parse_Tree
-   related to one input file, using our locally defined Prgm_Node_Data type. */
-using File = FLPR::Parsed_File<Indent_Prgm_Node_Data>;
+   related to one input file */
+using File = FLPR::Parsed_File<>;
 
 bool parse_cmd_line(std::vector<std::string> &filenames, Options &options,
                     int argc, char *const argv[]);

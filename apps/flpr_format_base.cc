@@ -200,9 +200,7 @@ bool indent(File &f, FLPR::Indent_Table const &indents) {
 bool indent_recurse(Parse_Tree::node &n, FLPR::Indent_Table const &indents,
                     int curr_spaces) {
   bool changed = false;
-  /* Assign the current indent level to our extended node data.  This is useful
-     for re-indenting a subtree, as we've memoized the indent level. */
-  n->spaces = curr_spaces;
+
   if (n.is_leaf()) {
     if (n->is_stmt()) {
       /* Do the actual indent only if you're the first or only statement on a
