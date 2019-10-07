@@ -29,7 +29,6 @@ target_include_directories(flprapp
 set(APP_HEADERS
   "flpr_format_base.hh"
   "module_base.hh"
-  "Indent_Table.hh"
   "Timer.hh"
   )
 

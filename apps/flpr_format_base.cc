@@ -30,14 +30,14 @@ using Parse_Tree = typename File::Parse_Tree;
 bool elaborate_end_stmts(File &f);
 bool remove_empty_stmts(typename FLPR::LL_SEQ &ll_seq);
 bool split_compound_stmts(typename FLPR::LL_SEQ &ll_seq);
-bool indent(File &f, Indent_Table const &idents);
-bool indent_recurse(Parse_Tree::node &n, Indent_Table const &indents,
+bool indent(File &f, FLPR::Indent_Table const &idents);
+bool indent_recurse(Parse_Tree::node &n, FLPR::Indent_Table const &indents,
                     int curr_spaces);
 
 /* -------------------------------------------------------------------------- */
 
 int flpr_format_file(File &file, Options const &options,
-                     Indent_Table const &indents) {
+                     FLPR::Indent_Table const &indents) {
   if (file) {
     bool do_write = false;
 
@@ -191,13 +191,13 @@ bool split_compound_stmts(typename FLPR::LL_SEQ &ll_seq) {
   return changed;
 }
 
-bool indent(File &f, Indent_Table const &indents) {
+bool indent(File &f, FLPR::Indent_Table const &indents) {
   if (f.parse_tree().empty())
     return false;
   return indent_recurse(*(f.parse_tree()), indents, 0);
 }
 
-bool indent_recurse(Parse_Tree::node &n, Indent_Table const &indents,
+bool indent_recurse(Parse_Tree::node &n, FLPR::Indent_Table const &indents,
                     int curr_spaces) {
   bool changed = false;
   /* Assign the current indent level to our extended node data.  This is useful
@@ -214,7 +214,7 @@ bool indent_recurse(Parse_Tree::node &n, Indent_Table const &indents,
       }
     }
   } else {
-    if (Indent_Table::begin_end_construct(n->syntag())) {
+    if (FLPR::Indent_Table::begin_end_construct(n->syntag())) {
       /* This handles a construct where there is a "begin" statement
          (e.g. select-case-stmt) and and "end" statement (e.g. end-select-stmt)
          that are not indented, and some arbitrarily complex set of statements

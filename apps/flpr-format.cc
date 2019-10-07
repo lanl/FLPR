@@ -42,7 +42,7 @@ int main(int argc, char *const argv[]) {
 
   /* The actual indentation pattern is selected on a file-by-file basis
      below. */
-  Indent_Table indents;   
+  FLPR::Indent_Table indents;
 
   /* Process each input file */
   for (auto const &fname : filenames) {

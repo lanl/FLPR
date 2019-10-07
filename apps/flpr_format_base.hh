@@ -11,9 +11,9 @@
 #ifndef FLPR_FORMAT_BASE_HH
 #define FLPR_FORMAT_BASE_HH 1
 
-#include "Indent_Table.hh"
 #include "Timer.hh"
 #include <array>
+#include <flpr/Indent_Table.hh>
 #include <flpr/flpr.hh>
 #include <ostream>
 
@@ -80,7 +80,7 @@ using File = FLPR::Parsed_File<Indent_Prgm_Node_Data>;
 bool parse_cmd_line(std::vector<std::string> &filenames, Options &options,
                     int argc, char *const argv[]);
 int flpr_format_file(File &file, Options const &options,
-                     Indent_Table const &indents);
+                     FLPR::Indent_Table const &indents);
 void write_file(std::ostream &os, File const &file);
 
 #define OPT(T) Options::T

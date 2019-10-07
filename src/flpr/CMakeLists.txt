@@ -20,6 +20,7 @@ FLEX_TARGET(Fortran_Scanner scan_fort.l
 set(Libflpr_SRCS
   File_Info.cc
   File_Line.cc
+  Indent_Table.cc
   LL_Stmt.cc
   LL_Stmt_Src.cc
   LL_TT_Range.cc
@@ -40,6 +41,7 @@ set(Libflpr_SRCS
 set(flpr_headers
   File_Info.hh
   File_Line.hh
+  Indent_Table.hh
   LL_Stmt.hh
   LL_Stmt_Src.hh
   LL_TT_Range.hh
