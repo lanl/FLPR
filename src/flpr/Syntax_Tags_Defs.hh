@@ -584,6 +584,7 @@
   X(SG_TYPE_BOUND_PROC_BINDING, "type-bound-proc-binding", 1)           \
   X(SG_TYPE_BOUND_PROC_DECL, "type-bound-proc-decl", 1)                 \
   X(SG_TYPE_BOUND_PROC_DECL_LIST, "type-bound-proc-decl-list", 1)       \
+  X(SG_TYPE_DECL_ATTR_SEQ, "type-decl-attr-seq", 1)                     \
   X(SG_TYPE_DECLARATION_STMT, "type-declaration-stmt", 5)               \
   X(SG_TYPE_GUARD_STMT, "type-guard-stmt", 5)                           \
   X(SG_TYPE_PARAM_ATTR_SPEC, "type-param-attr-spec", 1)                 \
