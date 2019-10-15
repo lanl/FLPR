@@ -3499,10 +3499,11 @@ Stmt_Tree type_decl_attr_seq2(TT_Stream &ts) {
     seq(rule_tag,
         /* handle R722 + C725 and C726 */
         seq(TAG(SG_DECLARATION_TYPE_SPEC),
-            TOK(KW_CHARACTER),
-            seq(TAG(SG_CHAR_SELECTOR),
-                seq(TAG(SG_LENGTH_SELECTOR),
-                    TOK(TK_ASTERISK), rule(char_length), TOK(TK_COMMA))))
+            seq(TAG(SG_INTRINSIC_TYPE_SPEC),
+                TOK(KW_CHARACTER),
+                seq(TAG(SG_CHAR_SELECTOR),
+                    seq(TAG(SG_LENGTH_SELECTOR),
+                        TOK(TK_ASTERISK), rule(char_length), TOK(TK_COMMA)))))
         );
   EVAL(SG_TYPE_DECL_ATTR_SEQ, p(ts));
 }
