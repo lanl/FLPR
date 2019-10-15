@@ -33,7 +33,7 @@ bool test_simple() {
     Stmt_Tree st = FLPR::Stmt::type_declaration_stmt(ts);
     TEST_TREE(st, type_declaration_stmt, l);
     auto c = st.ccursor();
-    c.down(3);
+    c.down(4);
     TEST_TAG(c->syntag, KW_DOUBLEPRECISION);
     TEST_INT(c.num_branches(), 2);
     TEST_TOK_EQ(Syntax_Tags::BAD, ts.peek(), l);
@@ -45,7 +45,7 @@ bool test_simple() {
     Stmt_Tree st = FLPR::Stmt::type_declaration_stmt(ts);
     TEST_TREE(st, type_declaration_stmt, l);
     auto c = st.ccursor();
-    c.down(3);
+    c.down(4);
     TEST_TAG(c->syntag, KW_DOUBLEPRECISION);
     TEST_INT(c.num_branches(), 0);
     TEST_TOK_EQ(Syntax_Tags::BAD, ts.peek(), l);

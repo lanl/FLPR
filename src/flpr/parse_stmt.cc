@@ -3461,21 +3461,66 @@ Stmt_Tree type_bound_procedure_stmt(TT_Stream &ts) {
   EVAL(SG_TYPE_BOUND_PROCEDURE_STMT, p(ts));
 }
 
+//! R801 (local mod 1): type-decl-attr-seq
+/*! This is a rule that that generates a non-standard SG_TYPE_DECL_ATTR_SEQ node
+    that covers the entire token sequence matching the sequence:
+
+       declaration-type-spec [ [ , attr-spec ] ... :: ]
+
+    Also see type_decl_attr_seq2.
+ */
+Stmt_Tree type_decl_attr_seq1(TT_Stream &ts) {
+  RULE(SG_TYPE_DECL_ATTR_SEQ);
+  constexpr auto p =
+    /* Regular old R801 */
+    seq(rule_tag,
+        rule(declaration_type_spec),
+        opt(h_seq(star(h_seq(TOK(TK_COMMA), rule(attr_spec))),
+                  TOK(TK_DBL_COLON))));
+  EVAL(SG_TYPE_DECL_ATTR_SEQ, p(ts));
+}
+
+//! R801 (local mod 2): type-decl-attr-seq
+/*! This is a rule that that generates a non-standard SG_TYPE_DECL_ATTR_SEQ node
+    that covers the entire token sequence matching the rule sequence:
+
+       _intrinsic-type-spec_ **is** CHARACTER _char-selector_
+             _char-selector_ **is** _length-selector_
+           _length-selector_ **is** * _char-length_ ,
+
+    To satisfy R722 with constraints C725 and C726.  This isn't included in
+    type_decl_attr_seq1, because type-declaration-stmt needs to completely
+    satisfy "type_decl_attr_seq1 entity-decl-list" OR "type_decl_attr_seq2
+    entity-decl-list".
+ */
+Stmt_Tree type_decl_attr_seq2(TT_Stream &ts) {
+  RULE(SG_TYPE_DECL_ATTR_SEQ);
+  constexpr auto p =
+    seq(rule_tag,
+        /* handle R722 + C725 and C726 */
+        seq(TAG(SG_DECLARATION_TYPE_SPEC),
+            TOK(KW_CHARACTER),
+            seq(TAG(SG_CHAR_SELECTOR),
+                seq(TAG(SG_LENGTH_SELECTOR),
+                    TOK(TK_ASTERISK), rule(char_length), TOK(TK_COMMA))))
+        );
+  EVAL(SG_TYPE_DECL_ATTR_SEQ, p(ts));
+}
+
 //! R801: type-declaration-stmt (8.2)
+/*! This is a modification of R801, in that it introduces the intermediate
+    type-decl-attr-seq, which is used to delimit the declaration-type-spec and
+    all trailing attr-specs. */
 Stmt_Tree type_declaration_stmt(TT_Stream &ts) {
   RULE(SG_TYPE_DECLARATION_STMT);
   constexpr auto p =
     alts(rule_tag,
-         /* handle R722 + C725 and C726 */
-         h_seq(TOK(KW_CHARACTER), TOK(TK_ASTERISK),
-               rule(char_length), opt(TOK(TK_COMMA)),
+         /* R801 */
+         h_seq(rule(type_decl_attr_seq1),
                list(TAG(SG_ENTITY_DECL_LIST), rule(entity_decl)), eol()),
-         /* normal R801 */
-         h_seq(rule(declaration_type_spec),
-               opt(h_seq(star(h_seq(TOK(TK_COMMA), rule(attr_spec))),
-                         TOK(TK_DBL_COLON))),
-               list(TAG(SG_ENTITY_DECL_LIST), rule(entity_decl)), eol())
-         );
+         /* R722 + C725 and C726 */
+         h_seq(rule(type_decl_attr_seq2),
+               list(TAG(SG_ENTITY_DECL_LIST), rule(entity_decl)), eol()));
   EVAL(SG_TYPE_DECLARATION_STMT, p(ts));
 }
 

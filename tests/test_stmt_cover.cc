@@ -364,9 +364,13 @@ bool type_declaration_stmt() {
   PARSE(type_declaration_stmt, "integer::f,a");
   auto c{st.cursor()};
   TEST_TAG(c->syntag, SG_TYPE_DECLARATION_STMT);
-  TEST_INT(c.node().num_branches(), 3);
-  // INTEGER
+  TEST_INT(c.node().num_branches(), 2); // type-decl-attr-seq entity-decl-list
   c.down();
+  TEST_TAG(c->syntag, SG_TYPE_DECL_ATTR_SEQ);
+  TEST_INT(c.node().num_branches(), 2);  // "INTEGER" "::"
+  
+  c.down();
+  // INTEGER
   TEST_TAG(c->syntag, SG_DECLARATION_TYPE_SPEC);
   TEST_TRUE(c.has_next());
   TEST_INT(c.node().num_branches(), 1);
@@ -385,6 +389,9 @@ bool type_declaration_stmt() {
   c.next();
   TEST_TAG(c->syntag, TK_DBL_COLON);
   TEST_TRUE(c.is_leaf());
+  TEST_FALSE(c.has_next());
+
+  c.up();
   TEST_TRUE(c.has_next());
   c.next();
 

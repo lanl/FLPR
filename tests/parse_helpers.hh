@@ -26,8 +26,8 @@ inline bool expect_tag(Syntax_Tags::Tags const expected_val, int const test_val,
                        int const linenum) {
   if (test_val != expected_val) {
     std::cerr << filename << ':' << linenum << " Expecting " << entity_name
-              << " == \"" << expected_val << "\", but got \"";
-    Syntax_Tags::print(std::cerr, test_val) << "\"\n";
+              << " == \"" << Syntax_Tags::label(expected_val)
+              << "\", but got \"" << Syntax_Tags::label(test_val) << "\"\n";
     return false;
   }
   return true;
