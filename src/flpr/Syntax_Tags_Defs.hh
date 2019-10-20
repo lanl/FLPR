@@ -1,4 +1,4 @@
-/* -*- mode: C++; eval: (font-lock-mode 0); -*- */ 
+/* -*- mode: C++; eval: (font-lock-mode 0); -*- */
 /*
    Copyright (c) 2019, Triad National Security, LLC. All rights reserved.
 
@@ -277,7 +277,6 @@
   X(SG_ARITHMETIC_IF_STMT, "arithmetic-if-stmt", 5)                     \
   X(SG_ARRAY_ELEMENT, "array-element", 1)                               \
   X(SG_ARRAY_SPEC, "array-spec", 1)                                     \
-  X(SG_ARRAY_SPEC_LIST, "array-spec-list", 2)                           \
   X(SG_ASSIGNMENT_STMT, "assignment-stmt", 5)                           \
   X(SG_ASSOCIATE_STMT, "associate-stmt", 5)                             \
   X(SG_ASSOCIATION, "association", 1)                                   \
@@ -364,6 +363,7 @@
   X(SG_DEFAULT_CHAR_EXPR, "default-char-expr", 2)                       \
   X(SG_DEFERRED_COSHAPE_SPEC, "deferred-coshape-spec", 1)               \
   X(SG_DEFERRED_COSHAPE_SPEC_LIST, "deferred-coshape-spec-list", 1)     \
+  X(SG_DEFERRED_SHAPE_SPEC, "deferred-shape-spec", 1)                   \
   X(SG_DEFERRED_SHAPE_SPEC_LIST, "deferred-shape-spec-list", 1)         \
   X(SG_DEFINED_IO_GENERIC_SPEC, "defined-io-generic-spec", 1)           \
   X(SG_DEFINED_OPERATOR, "defined-operator", 1)                         \
