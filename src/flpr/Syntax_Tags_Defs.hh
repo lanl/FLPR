@@ -318,8 +318,7 @@
   X(SG_COMMON_BLOCK_OBJECT, "common-block-object", 1)                   \
   X(SG_COMMON_BLOCK_OBJECT_LIST, "common-block-object-list", 1)         \
   X(SG_COMMON_STMT, "common-stmt", 5)                                   \
-  X(SG_COMPONENT_ARRAY_SPEC, "component-array-spec", 2)                 \
-  X(SG_COMPONENT_ARRAY_SPEC_LIST, "component-array-spec-list", 1)       \
+  X(SG_COMPONENT_ARRAY_SPEC, "component-array-spec", 1)                 \
   X(SG_COMPONENT_ATTR_SPEC, "component-attr-spec", 1)                   \
   X(SG_COMPONENT_ATTR_SPEC_LIST, "component-attr-spec-list", 1)         \
   X(SG_COMPONENT_DATA_SOURCE, "component-data-source", 1)               \
@@ -457,7 +456,7 @@
   X(SG_INPUT_ITEM, "input-item", 1)                                     \
   X(SG_INPUT_ITEM_LIST, "input-item-list", 1)                           \
   X(SG_INQUIRE_STMT, "inquire-stmt", 5)                                 \
-  X(SG_INTEGER_TYPE_SPEC, "integer-type-spec", 2)                       \
+  X(SG_INTEGER_TYPE_SPEC, "integer-type-spec", 1)                       \
   X(SG_INTENT_SPEC, "intent-spec", 1)                                   \
   X(SG_INTENT_STMT, "intent-stmt", 5)                                   \
   X(SG_INTERFACE_STMT, "interface-stmt", 5)                             \
@@ -593,7 +592,7 @@
   X(SG_TYPE_PARAM_NAME, "type-param-name", 1)                           \
   X(SG_TYPE_PARAM_NAME_LIST, "type-param-name-list", 1)                 \
   X(SG_TYPE_PARAM_SPEC, "type-param-spec", 1)                           \
-  X(SG_TYPE_PARAM_SPEC_LIST, "type-param-spec-list", 2)                 \
+  X(SG_TYPE_PARAM_SPEC_LIST, "type-param-spec-list", 1)                 \
   X(SG_TYPE_PARAM_VALUE, "type-param-value", 1)                         \
   X(SG_TYPE_SPEC, "type-spec", 1)                                       \
   X(SG_UNLOCK_STMT, "unlock-stmt", 5)                                   \
