@@ -163,10 +163,34 @@ bool test_mixed_attr() {
 }
 
 bool test_array_spec() {
-  // assume-implied-spec
-  TDTEST("integer foo(*)");
-  TDTEST("integer foo(5:*)");
+  // explicit-shape-spec
+  TDTEST("integer foo(a+b, 2:4)");
+  TDTEST("integer foo(2,2)");
+  TDTEST("integer foo(0:2,0:2)");
+
+  // assumed-shape-spec
+  TDTEST("integer foo(5:,:,6:)");
+
+  /* either assumed-shape or deferred-shape (need other type info to
+     differentiate) */
+  TDTEST("integer foo(:)");
+  TDTEST("integer foo(:,:,:,:,:)");
+
+  // assumed-size
   TDTEST("integer foo(dim1,*)");
+  TDTEST("integer foo(dim1,2:3,*)");
+
+  // implied-shape-or-assumed-size
+  TDTEST("integer foo(*)");
+  TDTEST("integer foo(0:*)");
+
+  // implied-shape
+  TDTEST("integer foo(*,*)");
+  TDTEST("integer foo(*,3:*)");
+  TDTEST("integer foo(4:*,3:*)");
+
+  // assumed-rank
+  TDTEST("integer foo(..)");
   return true;
 }
 
