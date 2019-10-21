@@ -1,4 +1,4 @@
-/* -*- mode: C++; eval: (font-lock-mode 0); -*- */ 
+/* -*- mode: C++; eval: (font-lock-mode 0); -*- */
 /*
    Copyright (c) 2019, Triad National Security, LLC. All rights reserved.
 
@@ -277,7 +277,6 @@
   X(SG_ARITHMETIC_IF_STMT, "arithmetic-if-stmt", 5)                     \
   X(SG_ARRAY_ELEMENT, "array-element", 1)                               \
   X(SG_ARRAY_SPEC, "array-spec", 1)                                     \
-  X(SG_ARRAY_SPEC_LIST, "array-spec-list", 2)                           \
   X(SG_ASSIGNMENT_STMT, "assignment-stmt", 5)                           \
   X(SG_ASSOCIATE_STMT, "associate-stmt", 5)                             \
   X(SG_ASSOCIATION, "association", 1)                                   \
@@ -319,8 +318,7 @@
   X(SG_COMMON_BLOCK_OBJECT, "common-block-object", 1)                   \
   X(SG_COMMON_BLOCK_OBJECT_LIST, "common-block-object-list", 1)         \
   X(SG_COMMON_STMT, "common-stmt", 5)                                   \
-  X(SG_COMPONENT_ARRAY_SPEC, "component-array-spec", 2)                 \
-  X(SG_COMPONENT_ARRAY_SPEC_LIST, "component-array-spec-list", 1)       \
+  X(SG_COMPONENT_ARRAY_SPEC, "component-array-spec", 1)                 \
   X(SG_COMPONENT_ATTR_SPEC, "component-attr-spec", 1)                   \
   X(SG_COMPONENT_ATTR_SPEC_LIST, "component-attr-spec-list", 1)         \
   X(SG_COMPONENT_DATA_SOURCE, "component-data-source", 1)               \
@@ -364,6 +362,7 @@
   X(SG_DEFAULT_CHAR_EXPR, "default-char-expr", 2)                       \
   X(SG_DEFERRED_COSHAPE_SPEC, "deferred-coshape-spec", 1)               \
   X(SG_DEFERRED_COSHAPE_SPEC_LIST, "deferred-coshape-spec-list", 1)     \
+  X(SG_DEFERRED_SHAPE_SPEC, "deferred-shape-spec", 1)                   \
   X(SG_DEFERRED_SHAPE_SPEC_LIST, "deferred-shape-spec-list", 1)         \
   X(SG_DEFINED_IO_GENERIC_SPEC, "defined-io-generic-spec", 1)           \
   X(SG_DEFINED_OPERATOR, "defined-operator", 1)                         \
@@ -457,7 +456,7 @@
   X(SG_INPUT_ITEM, "input-item", 1)                                     \
   X(SG_INPUT_ITEM_LIST, "input-item-list", 1)                           \
   X(SG_INQUIRE_STMT, "inquire-stmt", 5)                                 \
-  X(SG_INTEGER_TYPE_SPEC, "integer-type-spec", 2)                       \
+  X(SG_INTEGER_TYPE_SPEC, "integer-type-spec", 1)                       \
   X(SG_INTENT_SPEC, "intent-spec", 1)                                   \
   X(SG_INTENT_STMT, "intent-stmt", 5)                                   \
   X(SG_INTERFACE_STMT, "interface-stmt", 5)                             \
@@ -594,7 +593,7 @@
   X(SG_TYPE_PARAM_NAME, "type-param-name", 1)                           \
   X(SG_TYPE_PARAM_NAME_LIST, "type-param-name-list", 1)                 \
   X(SG_TYPE_PARAM_SPEC, "type-param-spec", 1)                           \
-  X(SG_TYPE_PARAM_SPEC_LIST, "type-param-spec-list", 2)                 \
+  X(SG_TYPE_PARAM_SPEC_LIST, "type-param-spec-list", 1)                 \
   X(SG_TYPE_PARAM_VALUE, "type-param-value", 1)                         \
   X(SG_TYPE_SPEC, "type-spec", 1)                                       \
   X(SG_UNLOCK_STMT, "unlock-stmt", 5)                                   \
