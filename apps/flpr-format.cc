@@ -60,8 +60,6 @@ int main(int argc, char *const argv[]) {
     }
     if (flpr_format_file(file, options, indents)) {
       std::cerr << "Error formating file \"" << fname << "\"" << std::endl;
-    } else {
-      write_file(std::cout, file);
     }
   }
 }
