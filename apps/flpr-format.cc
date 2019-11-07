@@ -52,7 +52,7 @@ int main(int argc, char *const argv[]) {
     VERBOSE_END;
     /* Define the indentation pattern based on the input format. It would be
        nice if this was setup from an external configuration file */
-    if (file.logical_file().is_fixed_format()) {
+    if (file.logical_file().is_fixed_format() && !options[OPT(FIXED_TO_FREE)]) {
       indents.apply_constant_fixed_indent(4);
       indents.set_continued_offset(5);
     } else {
