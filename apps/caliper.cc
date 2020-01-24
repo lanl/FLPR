@@ -8,7 +8,12 @@
    BSD-3 License can be found in the LICENSE file of the repository.
 */
 
-/*
+/**
+  /file caliper.cc
+
+  /brief Add fictitious function calls at entry and exit point of each external
+  and module subprogram in a file.
+
   Demonstration program to insert fictitious performance caliper calls in each
   external subprogram and module subprogram (not internal subprograms).  The
   caliper calls include the subprogram name as an actual parameter, and mark the
@@ -44,18 +49,33 @@ void write_file(std::ostream &os, File const &f);
 
 /*--------------------------------------------------------------------------*/
 
-int main(int argc, char const *argv[]) {
+/**
+ *  \brief Main caliper code driver
+ *  \param[in] argc Argument count
+ *  \param[in] argv List of argument values
+ *  \returns  Status code
+ */
+int main(int argc,
+         char const *argv[]) {
+  int err {0};
   if (argc != 2) {
     std::cerr << "Usage: caliper <filename>" << std::endl;
-    return 1;
+    err = 1;
+  } else {
+    if (!caliper_file(std::string{argv[1]})) {
+      err = 2;
+    }
   }
-  if (!caliper_file(std::string{argv[1]}))
-    return 2;
-  return 0;
+  return err;
 }
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ *  \brief Apply caliper transform to source file
+ *  \param[in] filename Name of target file
+ *  \returns Changed status; true if target file has been changed
+ */
 bool caliper_file(std::string const &filename) {
   File file(filename);
   if (!file)
@@ -71,15 +91,35 @@ bool caliper_file(std::string const &filename) {
 
 /*--------------------------------------------------------------------------*/
 
-bool caliper_procedure(File &file, Cursor c, bool internal_procedure,
+/**
+ *  \brief Apply caliper transform to a given procedure.
+ *
+ *  Caliper transform will be applied to module or standalone procedures which
+ *  can be `ingest()`ed and are not internal procedures, have no executable
+ *  body, or are otherwise explicitly excluded from processing.
+ *
+ *  \param[inout] file Target source file object
+ *  \param[in] c Cursor pointing to current procedure within `file`
+ *  \param[in] internal_procedure Flag indicating the current procedure is an
+ *             internal procedure, `contain`ed within another function or
+ *             subroutine
+ *  \param[in] module_procedure Flag indicating the current procedure is a
+ *             module procedure, `contain`ed within a module
+ *  \returns Changed status; true if target file has been changed
+ */
+bool caliper_procedure(File &file,
+                       Cursor c,
+                       bool internal_procedure,
                        bool module_procedure) {
-  if (internal_procedure) {
-    return false;
-  }
-
   Procedure proc(file);
   if (!proc.ingest(c)) {
     std::cerr << "\n******** Unable to ingest procedure *******\n" << std::endl;
+    return false;
+  }
+
+  if (internal_procedure) {
+    std::cerr << "skipping " << proc.name() << ": internal procedure"
+              << std::endl;
     return false;
   }
 
@@ -94,14 +134,19 @@ bool caliper_procedure(File &file, Cursor c, bool internal_procedure,
     return false;
   }
 
-  int num_if_stmt_returns, num_internal_returns, num_final_returns;
+  std::cerr << "adjusting " << proc.name() << std::endl;
+
+  int num_if_stmt_returns  {0};
+  int num_internal_returns {0};
+  int num_final_returns    {0};
   count_return_stmts(proc, num_if_stmt_returns, num_internal_returns,
                      num_final_returns);
 
-  std::string const beg_stmt =
-      std::string{"call caliper_begin('"} + proc.name() + "')";
-  std::string const end_stmt =
-      std::string{"call caliper_end('"} + proc.name() + "')";
+//  std::string const continue_stmt = std::string{"continue"};
+  std::string const beg_stmt = std::string{"call caliper_begin('"}
+                               + proc.name() + "')";
+  std::string const end_stmt = std::string{"call caliper_end('"}
+                               + proc.name() + "')";
 
   /* insert the caliper_begin statement at the begining of the execution-part */
   FLPR::LL_STMT_SEQ::iterator beg_it;
@@ -156,6 +201,11 @@ bool caliper_procedure(File &file, Cursor c, bool internal_procedure,
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ *  \brief Test if a given procedure is excluded from processing
+ *  \param[in] proc Procedure to check
+ *  \returns Exclusion status; true if procedure is excluded from processing
+ */
 bool exclude_procedure(Procedure const &proc) {
   if (proc.headless_main_program()) {
     return false;
@@ -180,8 +230,20 @@ bool exclude_procedure(Procedure const &proc) {
 
 /*--------------------------------------------------------------------------*/
 
-void count_return_stmts(Procedure const &proc, int &num_if_stmt_returns,
-                        int &num_internal_returns, int &num_final_returns) {
+/**
+ *  \brief Count number of return statements in a procedure
+ *  \param[in] proc Procedure to check
+ *  \param[out] num_if_stmt_returns Number of return statements found within
+ *  `if` conditonals
+ *  \param[out] num_internal_stmt_returns Number of return statements within
+ *  the body of a procedure
+ *  \param[out] num_final_stmt_returns Number of return statements found
+ *  at end of procedures
+ */
+void count_return_stmts(Procedure const &proc,
+                        int &num_if_stmt_returns,
+                        int &num_internal_returns,
+                        int &num_final_returns) {
   num_if_stmt_returns = 0;
   num_internal_returns = 0;
   num_final_returns = 0;
@@ -210,7 +272,13 @@ void count_return_stmts(Procedure const &proc, int &num_if_stmt_returns,
 
 /*--------------------------------------------------------------------------*/
 
-void convert_return_stmts(Procedure &proc, int label) {
+/**
+ *  \brief Convert return statements in a procedure to `go to`
+ *  \param[inout] proc Procedure to modify
+ *  \param[in] label Integer line label of procedure exit point
+ */
+void convert_return_stmts(Procedure &proc,
+                          int label) {
   /* for each return-stmt that we want to replace, we need the LL_Stmt iterator
      that holds it, and the LL_TT_Range of the return_stmt. */
 
@@ -243,7 +311,13 @@ void convert_return_stmts(Procedure &proc, int label) {
 
 /*--------------------------------------------------------------------------*/
 
-void write_file(std::ostream &os, File const &f) {
+/**
+ *  \brief Write modified file contents (logical lines)
+ *  \param[inout] os Output stream
+ *  \param[in] f Source file object
+ */
+void write_file(std::ostream &os,
+                File const &f) {
   for (auto const &ll : f.logical_lines()) {
     os << ll;
   }
