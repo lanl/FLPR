@@ -47,7 +47,9 @@ efforts:
 - *arithmetic-if-stmt*
 - *forall-stmt*
 - *label-do-stmt*
-- *non-block-do*
+- Limited support for *nonblock-do-construct*: FLPR will recognize a labeled
+  ``CONTINUE`` as a *do-term-shared-stmt*, but FLPR does not recognize
+  the general *nonblock-do-construct*.
 
 Note that Hollerith constants are *not* implemented. 
 
