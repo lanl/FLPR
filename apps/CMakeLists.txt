@@ -35,6 +35,7 @@ set(APP_HEADERS
 # Add any demo applications to this list
 set(APPS_EXE
   "caliper"
+  "mark_executable"
   "flpr-format"
   "parse_files"
   "module"
