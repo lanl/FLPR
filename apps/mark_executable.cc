@@ -19,26 +19,17 @@
   between declaration and executable portions of a routine.
 */
 
+#include "mark_executable.hh"
 #include "flpr/flpr.hh"
 #include <cassert>
 #include <iostream>
-// #include <set>
 
 /*--------------------------------------------------------------------------*/
 
 using File = FLPR::Parsed_File<>;
 #define TAG(T) FLPR::Syntax_Tags::T
 using Cursor = typename File::Parse_Tree::cursor_t;
-using Stmt_Range = typename File::Parse_Tree::value::Stmt_Range;
-using Stmt_Iter = typename Stmt_Range::iterator;
-using Stmt_Const_Iter = typename Stmt_Range::const_iterator;
 using Procedure = FLPR::Procedure<File>;
-
-bool markexe_procedure(File &file, Cursor c, bool internal_procedure,
-                       bool module_procedure);
-bool exclude_procedure(Procedure const &subp);
-bool markexe_file(std::string const &filename);
-void write_file(std::ostream &os, File const &f);
 
 /*--------------------------------------------------------------------------*/
 
@@ -87,9 +78,9 @@ bool markexe_file(std::string const &filename) {
 /**
  *  \brief Apply markexe transform to a given procedure.
  *
- *  Mark_Executable transform will be applied to module or standalone procedures which
- *  can be `ingest()`ed and are not internal procedures, have no executable
- *  body, or are otherwise explicitly excluded from processing.
+ *  Mark_Executable transform will be applied to procedures which
+ *  can be `ingest()`ed and have an executable body and are not otherwise
+ *  explicitly excluded from processing.
  *
  *  \param[inout] file Target source file object
  *  \param[in] c Cursor pointing to current procedure within `file`
@@ -133,10 +124,6 @@ bool markexe_procedure(File &file,
   std::cerr << "adjusting " << proc.name() << std::endl;
 
   std::string const continue_stmt = std::string{"continue"};
-//   std::string const beg_stmt = std::string{"call markexe_begin('"}
-//                                + proc.name() + "')";
-//   std::string const end_stmt = std::string{"call markexe_end('"}
-//                                + proc.name() + "')";
 
   /* Insert a continue statement at the begining of the execution-part
    * if one doesn't already exist */
@@ -145,22 +132,20 @@ bool markexe_procedure(File &file,
   // Q: What kind of iterator? Logical-line?
   // A: Define range instead - see below
   // A2: No, I actually want an iterator so I can just check the first executable statement of proc
+  // A3: On second thought, I don't want an iterator, I really just want the first statement
 
   // Set range of proc corresponding to Procedure::EXECUTION_PART
   auto execution_part{proc.crange(Procedure::EXECUTION_PART)};
   
   // Check if first statement is a `continue`
-  // TODO: Remove loop; only need to check if first statement is `continue`
+  // Set to true to replace loop with a direct check
   bool found_continue {false};
   if (false) {
     for (auto const &stmt : execution_part) {
       int const stmt_tag = stmt.syntax_tag();
       found_continue = (   TAG(SG_CONTINUE_STMT) == stmt_tag
                         || TAG(KW_CONTINUE) == stmt_tag);
-//     if (   TAG(SG_CONTINUE_STMT) == stmt_tag
-//         || TAG(KW_CONTINUE) == stmt_tag) {
-//       found_continue = true;
-//     }
+      // Unconditional break because we only want the first statement
       break;
     }
   } else {
@@ -169,6 +154,7 @@ bool markexe_procedure(File &file,
     // Q: How do I get a stmt from proc_it?
 //    auto stmt_2 = *proc_it; //?
 //    int const stmt_tag_2 = stmt_2.syntax_tag();
+    // A: Really, I only want the syntax_tag() of the first statement
     int const stmt_tag_2 = proc_it->syntax_tag();
     found_continue = (   TAG(SG_CONTINUE_STMT) == stmt_tag_2
                       || TAG(KW_CONTINUE) == stmt_tag_2);
