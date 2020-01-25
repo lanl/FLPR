@@ -9,9 +9,9 @@
 */
 
 /**
-  /file mark_executable.cc
+  \file mark_executable.cc
 
-  /brief Add `continue` statements between the declaration and executable
+  \brief Add `continue` statements between the declaration and executable
   section of each each external and module subprogram in a file.
 
   Demonstration program to insert a `continue` line at the beginning of the

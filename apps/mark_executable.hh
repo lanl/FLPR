@@ -9,9 +9,9 @@
 */
 
 /**
-  /file mark_executable.hh
+  \file mark_executable.hh
 
-  /brief Declaration of function interfaces exposed by mark_executable.cc
+  \brief Declaration of function interfaces exposed by mark_executable.cc
 
   Demonstration program to insert a `continue` line at the beginning of the
   executable section of each subprogram as an aid to visualizing the boundary

@@ -9,9 +9,9 @@
 */
 
 /**
-  /file caliper.cc
+  \file caliper.cc
 
-  /brief Add fictitious function calls at entry and exit point of each external
+  \brief Add fictitious function calls at entry and exit point of each external
   and module subprogram in a file.
 
   Demonstration program to insert fictitious performance caliper calls in each
