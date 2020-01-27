@@ -17,7 +17,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'FLPR'
-copyright = '2019, Triad National Security, LLC'
+copyright = '2019-2020, Triad National Security, LLC'
 author = u'Paul Henning'
 
 # The full version, including alpha/beta/rc tags

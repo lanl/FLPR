@@ -1,6 +1,6 @@
 /* -*- mode: C++; eval: (font-lock-mode 0); -*- */
 /*
-   Copyright (c) 2019, Triad National Security, LLC. All rights reserved.
+   Copyright (c) 2019-2020, Triad National Security, LLC. All rights reserved.
 
    This is open source software; you can redistribute it and/or modify it
    under the terms of the BSD-3 License. If software is modified to produce
