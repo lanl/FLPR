@@ -464,14 +464,14 @@ bool File_Line::set_leading_spaces(int const spaces) {
 
       /* If the comment began in the first column, it could have been from
          fixed-format.  Remove any empty control columns. */
-      if(pos == 0) {
+      if (pos == 0) {
         std::string::size_type tpos = left_txt.find_first_not_of(" \t", 1);
-        if(tpos != std::string::npos) {
-          if(static_cast<int>(tpos) > 5) {
-            if(static_cast<int>(tpos) >= spaces + 5)  {
-              left_txt.erase(1,spaces + 4);
+        if (tpos != std::string::npos) {
+          if (static_cast<int>(tpos) > 5) {
+            if (static_cast<int>(tpos) >= spaces + 5) {
+              left_txt.erase(1, spaces + 4);
             } else {
-              left_txt.erase(1,4);
+              left_txt.erase(1, 4);
             }
           }
         }

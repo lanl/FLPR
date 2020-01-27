@@ -49,7 +49,7 @@ flpr-dev@lanl.gov
    :caption: Basics 
 
    getting_started
-   
+   coding_practices
 
 .. toctree::
    :maxdepth: 2
