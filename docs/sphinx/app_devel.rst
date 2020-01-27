@@ -26,34 +26,5 @@ directives.  FLPR is intended to make writing one-shot utilities
 quick and easy, while giving you the power to build production-level
 tools to include in your system.
 
---------------------------------
-Fundamental FLPR Data Structures
---------------------------------
 
-``File_Line``
-  This subdivides a line of program text into fields and
-  provides a categorization for it.  Examples of fields include ``left_txt``
-  (control columns for fixed form), ``left_space`` (whitespace between
-  ``left_txt`` and ``main_txt``) and ``main_txt`` (the body of the
-  Fortran line).  Categorization flags include ``comment``, ``blank``,
-  ``label``, etc.
-
-``Logical_Line``
-  This structure combines one or more (continued) ``File_Line`` into a
-  a sequence of one or more (compound) Fortran statements.
-
-``LL_Stmts``
-  This provides a sequential list of statements found throughout a
-  list of ``Logical_Line``.
-
-``Stmt_Tree``
-  A concrete syntax tree (CST) that organizes the tokens in one
-  ``LL_Stmt``.
-
-``Prgm_Tree``
-  A CST organizing sequences of ``Stmt_Tree`` into program structures.
-
-``Procedure``
-  A high-level view of a subtree of ``Prgm_Tree`` representing a
-  procedure block.
   

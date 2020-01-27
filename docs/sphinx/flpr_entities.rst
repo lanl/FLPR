@@ -36,11 +36,18 @@ statements compounded together on a line.
     A representation of the textual layout of a single raw source
     line.  This separates the line into "fields", which describe parts
     of the line that Fortran treats specially (e.g. labels,
-    continuations, trailing comments, etc).  ``Line_Buf`` entries are
-    converted to ``File_Line`` by ``File_Line::analyze_fixed`` or
+    continuations, trailing comments, etc).  Line_Buf entries are
+    converted to File_Line by ``File_Line::analyze_fixed`` or
     ``File_Line::analyze_free``, depending on the input style.  The
-    File_Line is also used as a template for reformatting source lines.
+    File_Line is also used as a template for reformatting source
+    lines.
 
+    Examples of fields in File_Line include ``left_txt`` (control
+    columns for fixed form), ``left_space`` (whitespace between
+    ``left_txt`` and ``main_txt``) and ``main_txt`` (the body of the
+    Fortran line).  File_Line also provides line-level categorization
+    flags, including ``comment``, ``blank``, ``label``, etc.
+    
   Token_Text
     The representation of a single "atom" of input.  Token_Text includes
     the lexeme (the actual text), its token value as determined by the
