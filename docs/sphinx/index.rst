@@ -56,8 +56,9 @@ flpr-dev@lanl.gov
    :caption: Using FLPR
 
    app_devel
+   flpr_entities
    flpr_devel
-   
+	     
 .. toctree::
    :maxdepth: 2
    :caption: FAQs
