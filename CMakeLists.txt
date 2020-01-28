@@ -13,7 +13,7 @@ cmake_minimum_required (VERSION 3.12)
 project (FLPR VERSION 0.1.0 LANGUAGES CXX)
 
 # Allow CMake to find some project include files
-list (INSERT CMAKE_MODULE_PATH 0 "${CMAKE_SOURCE_DIR}/cmake")
+list (INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(BuildType)
 include(CompilerFlags)
