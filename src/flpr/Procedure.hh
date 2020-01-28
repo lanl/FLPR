@@ -36,17 +36,18 @@ template <typename PFile_T> class Procedure {
 public:
   using Parse = typename PFile_T::Parse;
   using Prgm_Tree = typename PFile_T::Parse_Tree;
-  using Prgm_Node = typename Prgm_Tree::node;
-  using Prgm_Node_Iter = typename Prgm_Tree::iterator;
   using Prgm_Cursor = typename Prgm_Tree::cursor_t;
   using Prgm_Const_Cursor = typename Prgm_Tree::const_cursor_t;
   using Stmt_Tree = typename Prgm_Tree::value::Stmt_Tree;
   using Stmt_Cursor = typename Stmt_Tree::cursor_t;
   using Stmt_Const_Cursor = typename Stmt_Tree::const_cursor_t;
+  /* Encapsulates a begin/end sequence of LL_Stmt iterators */
   using Stmt_Range = typename Prgm_Tree::value::Stmt_Range;
   using Stmt_Const_Range = SL_Const_Range<LL_Stmt>;
+  /* Dereferencing a Stmt_Iterator yields an LL_Stmt */
   using Stmt_Iterator = typename Stmt_Range::iterator;
   using Stmt_Const_Iterator = typename Stmt_Range::const_iterator;
+  /* A Region_Iterator is a Stmt_Iterator extended with a Region_Tag */
   class Region_Iterator;
   class Region_Const_Iterator;
 
@@ -70,7 +71,7 @@ public:
   Procedure &operator=(Procedure const &) = delete;
   Procedure &operator=(Procedure &&) = default;
 
-  //! True after a successful ingest.
+  //! Status of the class: true after a successful ingest.
   constexpr bool procedure_initialized() const noexcept {
     return !ranges_.empty(PROC_END);
   }
@@ -84,48 +85,54 @@ public:
 
   /* -------------------------- Range Functions -------------------------- */
 
-  constexpr bool has_region(Region_Tag idx) const noexcept {
+  //! Return true if the specified region is not empty
+  constexpr bool has_region(Region_Tag const idx) const noexcept {
     return !ranges_.empty(idx);
   }
-  Region_Iterator begin(Region_Tag idx) noexcept {
+
+  //! Return the full range of LL_Stmt iterators for a region
+  Stmt_Range range(Region_Tag const idx) {
+    return Stmt_Range(ranges_.begin(idx), ranges_.end(idx));
+  }
+  Stmt_Const_Range crange(Region_Tag const idx) const {
+    return Stmt_Const_Range(ranges_.cbegin(idx), ranges_.cend(idx));
+  }
+
+  //! Return the begin() LL_Stmt iterator for a region
+  Region_Iterator begin(Region_Tag const idx) noexcept {
     return Region_Iterator(idx, ranges_.begin(idx));
   }
-  Region_Const_Iterator begin(Region_Tag idx) const noexcept {
+  Region_Const_Iterator begin(Region_Tag const idx) const noexcept {
     return Region_Const_Iterator(idx, ranges_.cbegin(idx));
   }
-  Region_Const_Iterator cbegin(Region_Tag idx) const noexcept {
+  Region_Const_Iterator cbegin(Region_Tag const idx) const noexcept {
     return Region_Const_Iterator(idx, ranges_.cbegin(idx));
   }
-  //! Return the iterator to the last statement in the range
-  Region_Iterator last(Region_Tag idx) noexcept {
+
+  //! Return the LL_Stmt iterator for the last statement in a a region
+  Region_Iterator last(Region_Tag const idx) noexcept {
     assert(!ranges_.empty(idx));
     return Region_Iterator(idx, std::prev(ranges_.end(idx)));
   }
-  Region_Const_Iterator clast(Region_Tag idx) const noexcept {
+  Region_Const_Iterator clast(Region_Tag const idx) const noexcept {
     assert(!ranges_.empty(idx));
     return Region_Const_Iterator(idx, std::prev(ranges_.cend(idx)));
   }
-  Region_Iterator end(Region_Tag idx) noexcept {
+
+  //! Return the end() LL_Stmt iterator for a region
+  Region_Iterator end(Region_Tag const idx) noexcept {
     return Region_Iterator(idx, ranges_.end(idx));
   }
-  Region_Const_Iterator end(Region_Tag idx) const noexcept {
+  Region_Const_Iterator end(Region_Tag const idx) const noexcept {
     return Region_Const_Iterator(idx, ranges_.cend(idx));
   }
-  Region_Const_Iterator cend(Region_Tag idx) const noexcept {
+  Region_Const_Iterator cend(Region_Tag const idx) const noexcept {
     return Region_Const_Iterator(idx, ranges_.cend(idx));
   }
 
-  //! Return the cursor for the node that "covers" the range
-  constexpr Prgm_Const_Cursor range_cursor(size_t idx) const {
+  //! Return the Prgm_Tree cursor for the node that "covers" the range
+  constexpr Prgm_Const_Cursor range_cursor(Region_Tag const idx) const {
     return *(ranges_.get_tracker(idx));
-  }
-
-  Stmt_Range range(size_t idx) {
-    return Stmt_Range(ranges_.begin(idx), ranges_.end(idx));
-  }
-
-  Stmt_Const_Range crange(size_t idx) const {
-    return Stmt_Const_Range(ranges_.cbegin(idx), ranges_.cend(idx));
   }
 
   /* -------------------- Procedure Inquiries ------------------------ */
@@ -190,6 +197,7 @@ public:
   }
 
 public:
+  //! An LL_Stmt iterator augmented with a Region_Tag
   class Region_Iterator : public Stmt_Iterator {
   public:
     Region_Iterator(Region_Tag region, Stmt_Iterator it)
@@ -200,6 +208,7 @@ public:
     Region_Tag region_;
   };
 
+  //! An LL_Stmt const iterator augmented with a Region_Tag
   class Region_Const_Iterator : public Stmt_Const_Iterator {
   public:
     Region_Const_Iterator(Region_Tag region, Stmt_Const_Iterator it)

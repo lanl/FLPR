@@ -106,12 +106,21 @@ to the user data stored at the current node.
   Stmt::Stmt_Tree
     A Concrete Syntax Tree (CST) representing the structure of one
     complete Fortran statement.  These encode the productions of the
-    statement grammar, and are produced by the rules in ``parse_stmt.cc``.
+    statement grammar, and are produced by the rules in
+    ``parse_stmt.cc``.  Dereferencing a Stmt_Tree cursor returns an
+    ST_Node_Data struct (defined in ``Stmt_Tree.hh``), which
+    contains the root syntax tag for the statement, and the
+    LL_TT_Range that covers the statement.
 
   Prgm::Prgm_Tree
     A tree of Stmt_Trees, organizing Fortran statements into larger
-    constructs, parts, and procedures.  These are produced by rules
-    in ``Prgm_Parsers_impl.hh``,
+    constructs, parts, and procedures.  These are produced by rules in
+    ``Prgm_Parsers_impl.hh``. Dereferencing a Prgm_Tree cursor returns
+    a Prgm_Node_Data struct (defined in ``Prgm_Tree.hh``).  If the
+    cursor is an interior node of the tree (``!is_stmt()``), the
+    Prgm_Node_Data can be used to obtain the range of LL_Stmts covered
+    by this node.  Otherwise, either the ``ll_stmt()`` or the
+    ``stmt_tree()`` can be accessed direcly from the Prgm_Node_Data.
 
   Procedure
     This adapter class takes a Prgm_Tree cursor to a procedure
