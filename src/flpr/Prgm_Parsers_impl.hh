@@ -153,9 +153,10 @@ PPARSER(do_construct) {
   RULE(PG_DO_CONSTRUCT);
   constexpr auto p =
     seq_if(rule_tag,
-           do_stmt(),
+           do_stmt(),   // this is a special parser in Prgm_Parsers_utils.hh
            block,
-           end_do());
+           end_do()     // this is a special parser in Prgm_Parsers_utils.hh
+           );   
   EVAL(PG_DO_CONSTRUCT, p(state));
 }
 
