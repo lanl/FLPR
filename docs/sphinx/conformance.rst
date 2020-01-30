@@ -1,3 +1,4 @@
+
 .. _conformance:
 
 =====================
@@ -50,7 +51,10 @@ efforts:
 - Limited support for *nonblock-do-construct*: FLPR will recognize a labeled
   ``CONTINUE`` as a *do-term-shared-stmt*, but FLPR does not recognize
   the general *nonblock-do-construct*.
-
+- The *concurrent-locality* rule for the CONCURRENT clause of *loop-control*
+  has been made optional to allow *loop-control* to match F2008 *forall-header*
+  CONCURRENT clauses.
+  
 Note that Hollerith constants are *not* implemented. 
 
    
