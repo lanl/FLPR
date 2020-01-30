@@ -2406,9 +2406,11 @@ Stmt_Tree loop_control(TT_Stream &ts) {
                      opt(h_seq(TOK(TK_COMMA), rule(int_expr)))
                      ),
                h_seq(TOK(KW_WHILE), h_parens(rule(logical_expr))),
+               /* the opt on concurrent-localilty is to allow loop-control
+                  to match F2008-style forall-header declarations */
                h_seq(TOK(KW_CONCURRENT),
                      rule(concurrent_header),
-                     rule(concurrent_locality))
+                     opt(rule(concurrent_locality)))
                )
         );
   EVAL(SG_LOOP_CONTROL, p(ts));
