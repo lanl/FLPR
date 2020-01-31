@@ -195,7 +195,7 @@ PPARSER(executable_construct) {
      that we are looking for, we force a non-match so that the end-do-stmt rule
      can look at it */
   if(!state.do_label_stack.empty() && state.ss->has_label()) {
-    if(state.ss->label() == state.do_label_stack.top()) {
+    if(state.ss->label() == state.do_label_stack.back()) {
       return PP_Result{};
     }
   }

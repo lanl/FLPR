@@ -20,7 +20,7 @@
 #include "flpr/Tree.hh"
 #include "flpr/parse_stmt.hh"
 #include <iostream>
-#include <stack>
+#include <vector>
 
 #define FLPR_TRACE_PG 0
 
@@ -49,7 +49,7 @@ template <typename Node_Data = Prgm_Node_Data> struct Parsers {
     explicit State(SL_Range<LL_Stmt> const &ll_stmt_range)
         : stmt_range_(ll_stmt_range), ss{stmt_range_} {}
     SL_Range_Iterator<LL_Stmt> ss;
-    std::stack<int> do_label_stack;
+    std::vector<int> do_label_stack;
   };
 
 #include "Prgm_Parsers_utils.hh"

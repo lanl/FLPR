@@ -104,7 +104,7 @@ public:
     state.ss.advance();
     const int l = FLPR::Stmt::get_label_do_label(st);
     if (l > 0)
-      state.do_label_stack.push(l);
+      state.do_label_stack.push_back(l);
     ll_stmt_it->set_stmt_tree(std::move(st));
     return PP_Result{Prgm_Tree{tag, ll_stmt_it}, true};
   }
@@ -118,30 +118,68 @@ class End_Do_Parser {
 public:
   constexpr End_Do_Parser() = default;
   PP_Result operator()(State &state) const noexcept {
+
     FLPR::TT_Stream tts(*(state.ss));
+    
+    /* Without a label, the only end-do this can be is a end-do-statment */
+    if(!state.ss->has_label()) {
+      FLPR::Stmt::Stmt_Tree st = FLPR::Stmt::end_do_stmt(tts);
+      if (!st)
+        return PP_Result{};  // wasn't end-do-stmt, so match fails
+      int const tag = (*st)->syntag;
+      FLPR::LL_STMT_SEQ::iterator ll_stmt_it{state.ss};
+      state.ss.advance();
+      ll_stmt_it->set_stmt_tree(std::move(st));
+      return PP_Result{Prgm_Tree{tag, ll_stmt_it}, true};  // matched end-do
+    }
+
+    /* So, we've got a label. Let N be the number of instances of this
+       label on the stack. This means, evaluated in order:
+       if N > 1 && and is action statement  => outer-shared-do-construct
+       N == 1 && end-do => block-do-construct
+       N == 1 && action-stmt => action-term-do-construct
+    */
+
+    int const label {state.ss->label()};
+    int const NL = std::count(state.do_label_stack.begin(),
+                              state.do_label_stack.end(),
+                              label);
+    if (NL == 0)
+      return PP_Result{};
+
+    
+    if (NL > 1) {
+      /* this is a do-term-shared-stmt, and the first N-1 label-do-stmts that we
+         are closing off are inner-shared-do-constructs and the last one is an
+         outer-shared-do-construct form of a nonblock-do-construct. */
+      
+    } 
+    /* we're left with this being either a label-do-stmt form of
+       block-do-construct, or an action-term-do-construct form of a
+       nonblock-do-construct. */
+      
     FLPR::Stmt::Stmt_Tree st = FLPR::Stmt::end_do(tts);
+    if(!st) {
+      /* It isn't end-do-stmt or continue-stmt, so this should be an
+         do-term-action-stmt, which closes an action-term-do-construct */
+      st = FLPR::Stmt::action_stmt(tts);
+      
+    } else {
+      /* end-do => block-do-construct */
+      
+    }
+    
     if (!st)
       return PP_Result{};
     int const tag = (*st)->syntag;
     FLPR::LL_STMT_SEQ::iterator ll_stmt_it{state.ss};
-    if (!state.do_label_stack.empty() && (state.ss)->has_label()) {
-      int const stmt_label = state.ss->label();
-      // Consider the top label to be matched.
-      if (stmt_label == state.do_label_stack.top()) {
-        state.do_label_stack.pop();
-      }
-      /* We don't advance the stream if the next do label that we are looking
-         for matches the label of the current statement.  This allows multiple
-         label-do-stmt to terminate on the same label, as this statement will
-         still be in the stream for the next do-construct termination.  */
-      if (state.do_label_stack.empty() ||
-          stmt_label != state.do_label_stack.top()) {
-        state.ss.advance();
-      }
-    } else {
-      state.ss.advance();
-    }
+    state.ss.advance();
+    
+    assert(state.do_label_stack.back() == label);
+    state.do_label_stack.pop_back();
+    
     ll_stmt_it->set_stmt_tree(std::move(st));
+    
     return PP_Result{Prgm_Tree{tag, ll_stmt_it}, true};
   }
 };
