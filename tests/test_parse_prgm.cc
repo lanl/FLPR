@@ -125,6 +125,42 @@ bool action_term_do_construct() {
   return res.match;
 }
 
+bool action_term_do_construct_unshared_nested() {
+  LL_Helper ls({"function foo",
+                "integer i,j", 
+                "do 500 i=1,5",
+                "  do 600 j=1,5",
+                "  600 print *, j",
+                "500 print *,i",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
+bool outer_shared_do_construct_action() {
+  LL_Helper ls({"function foo",
+                "do 500 i=1,5",
+                "  do 500 j=1,5",
+                "500 print *,i,j",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
+bool outer_shared_do_construct_continue() {
+  LL_Helper ls({"function foo",
+                "do 500 i=1,5",
+                "  do 500 j=1,5",
+                "    print *,i,j",
+                "500 continue"
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
 
 bool derived_type_def() {
   LL_Helper ls({"type t1",
@@ -188,6 +224,9 @@ int main() {
   TEST(label_do_end_do);
   TEST(label_do_end_do_name);
   TEST(action_term_do_construct);
+  TEST(action_term_do_construct_unshared_nested);
+  TEST(outer_shared_do_construct_action);
+  TEST(outer_shared_do_construct_continue);
   TEST(derived_type_def);
   TEST(do_select_construct);
   TEST(module_program);
