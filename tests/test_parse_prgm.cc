@@ -52,41 +52,74 @@ bool test_instantiate() {
   return res.match;
 }
 
-bool labeled_do() {
+
+bool nonlabel_do() {
   LL_Helper ls({"function foo",
                 "integer i", 
-                "do 500 i=1,5",
-                "500 continue",
+                "do i=1,5",
+                "end do",
                 "end function"});
   PS::State state(ls.ll_stmts());
+
+  std::cout << "nonlabel_do" << std::endl;
   auto res = PS::program(state);
   return res.match;
 }
 
-// Multiple labeled-do's using the same exit point
-bool labeled_do2() {
+bool nonlabel_do_name() {
   LL_Helper ls({"function foo",
-                "integer i,j", 
-                "do 500 i=1,5",
-                "do 500 j=1,5",
-                "500 continue",
+                "integer i", 
+                "somename: do i=1,5",
+                "  print *, i",
+                "end do somename",
                 "end function"});
   PS::State state(ls.ll_stmts());
+  std::cout << "nonlabel_do_name" << std::endl;
   auto res = PS::program(state);
   return res.match;
 }
 
-// Single labeled do with labeled end-do-stmt
-bool labeled_do3() {
+  
+bool label_do_continue() {
+  LL_Helper ls({"function foo",
+                "    integer i", 
+                "    do 500 i=1,5",
+                "500 continue",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  std::cout << "label_do_continue" << std::endl;
+  auto res = PS::program(state);
+  return res.match;
+}
+
+
+bool label_do_end_do() {
   LL_Helper ls({"function foo",
                 "integer i", 
                 "do 500 i=1,5",
                 "500 enddo",
                 "end function"});
   PS::State state(ls.ll_stmts());
+  std::cout << "label_do_end_do" << std::endl;
   auto res = PS::program(state);
   return res.match;
 }
+
+
+bool label_do_end_do_name() {
+  LL_Helper ls({"function foo",
+                "integer i", 
+                "somename: do 500 i=1,5",
+                "print *, foo",
+                "500 end do somename",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  std::cout << "label_do_end_do_name" << std::endl;
+  auto res = PS::program(state);
+  return res.match;
+}
+
+
 
 bool derived_type_def() {
   LL_Helper ls({"type t1",
@@ -144,9 +177,11 @@ int main() {
   TEST_MAIN_DECL;
   TEST(test_instantiate);
   TEST(block_construct);
-  TEST(labeled_do);
-  TEST(labeled_do2);
-  TEST(labeled_do3);
+  TEST(nonlabel_do);
+  TEST(nonlabel_do_name);
+  TEST(label_do_continue);
+  TEST(label_do_end_do);
+  TEST(label_do_end_do_name);
   TEST(derived_type_def);
   TEST(do_select_construct);
   TEST(module_program);
