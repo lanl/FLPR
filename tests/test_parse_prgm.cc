@@ -60,8 +60,6 @@ bool nonlabel_do() {
                 "end do",
                 "end function"});
   PS::State state(ls.ll_stmts());
-
-  std::cout << "nonlabel_do" << std::endl;
   auto res = PS::program(state);
   return res.match;
 }
@@ -74,7 +72,6 @@ bool nonlabel_do_name() {
                 "end do somename",
                 "end function"});
   PS::State state(ls.ll_stmts());
-  std::cout << "nonlabel_do_name" << std::endl;
   auto res = PS::program(state);
   return res.match;
 }
@@ -87,7 +84,6 @@ bool label_do_continue() {
                 "500 continue",
                 "end function"});
   PS::State state(ls.ll_stmts());
-  std::cout << "label_do_continue" << std::endl;
   auto res = PS::program(state);
   return res.match;
 }
@@ -100,7 +96,6 @@ bool label_do_end_do() {
                 "500 enddo",
                 "end function"});
   PS::State state(ls.ll_stmts());
-  std::cout << "label_do_end_do" << std::endl;
   auto res = PS::program(state);
   return res.match;
 }
@@ -114,11 +109,21 @@ bool label_do_end_do_name() {
                 "500 end do somename",
                 "end function"});
   PS::State state(ls.ll_stmts());
-  std::cout << "label_do_end_do_name" << std::endl;
   auto res = PS::program(state);
   return res.match;
 }
 
+
+bool action_term_do_construct() {
+  LL_Helper ls({"function foo",
+                "integer i", 
+                "do 500 i=1,5",
+                "500 print *,i",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
 
 
 bool derived_type_def() {
@@ -182,6 +187,7 @@ int main() {
   TEST(label_do_continue);
   TEST(label_do_end_do);
   TEST(label_do_end_do_name);
+  TEST(action_term_do_construct);
   TEST(derived_type_def);
   TEST(do_select_construct);
   TEST(module_program);
