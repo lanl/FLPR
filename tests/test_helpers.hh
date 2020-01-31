@@ -121,10 +121,13 @@ inline bool expect_token(int const expected_val, int const test_val,
 
 // Run each test with this macro
 #define TEST(A)                                                                \
+  std::cerr << #A << ": ";                                                     \
+  std::cerr.flush();                                                           \
   if (!A()) {                                                                  \
-    std::cerr << #A " failed" << std::endl;                                    \
+    std::cerr << " FAIL" << std::endl;                                         \
     res = false;                                                               \
   } else {                                                                     \
+    std::cerr << " pass" << std::endl;                                         \
     success += 1;                                                              \
   }                                                                            \
   ++count
