@@ -154,7 +154,7 @@ bool outer_shared_do_construct_continue() {
                 "do 500 i=1,5",
                 "  do 500 j=1,5",
                 "    print *,i,j",
-                "500 continue"
+                "500 continue",
                 "end function"});
   PS::State state(ls.ll_stmts());
   auto res = PS::program(state);
