@@ -152,6 +152,27 @@ public:
       /* this is a do-term-shared-stmt, and the first N-1 label-do-stmts that we
          are closing off are inner-shared-do-constructs and the last one is an
          outer-shared-do-construct form of a nonblock-do-construct. */
+      FLPR::Stmt::Stmt_Tree st = FLPR::Stmt::action_stmt(tts);
+      if (!st)
+        return PP_Result{};
+      int const tag = (*st)->syntag;
+      FLPR::LL_STMT_SEQ::iterator ll_stmt_it{state.ss};
+
+      /* Mark the top label as matched */
+      if (label == state.do_label_stack.back()) {
+        state.do_label_stack.pop_back();
+      }
+      
+      /* We don't advance the stream if the next do label that we are looking
+         for matches the label of the current statement.  This allows multiple
+         label-do-stmt to terminate on the same label, as this statement will
+         still be in the stream for the next do-construct termination.  */
+      if (state.do_label_stack.empty() ||
+          label != state.do_label_stack.back()) {
+        state.ss.advance();
+      }
+      ll_stmt_it->set_stmt_tree(std::move(st));
+      return PP_Result{Prgm_Tree{tag, ll_stmt_it}, true};
       
     } 
     /* we're left with this being either a label-do-stmt form of
@@ -164,10 +185,7 @@ public:
          do-term-action-stmt, which closes an action-term-do-construct */
       st = FLPR::Stmt::action_stmt(tts);
       
-    } else {
-      /* end-do => block-do-construct */
-      
-    }
+    } /* else: end-do => block-do-construct */
     
     if (!st)
       return PP_Result{};
