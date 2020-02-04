@@ -19,7 +19,6 @@
   statments into program blocks.
 */
 
-
 // clang-format off
 
 /* I:A */
