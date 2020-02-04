@@ -19,34 +19,6 @@
   statments into program blocks.
 */
 
-//! Shorthand for defining a Parser rule
-#define PPARSER(P)                                                             \
-  template <typename Node_Data>                                                \
-  auto Parsers<Node_Data>::P(State &state)->PP_Result
-
-//! Shorthand for accessing a Syntax_Tag
-#define TAG(X) Syntax_Tags::X
-
-//! Shorthand for accessing a Stmt
-#define STMT(X) stmt(FLPR::Stmt::X)
-
-#if FLPR_TRACE_PG
-#define RULE(T)                                                                \
-  constexpr auto rule_tag{Syntax_Tags::T};                                     \
-  Syntax_Tags::print(std::cerr << "PGTRACE >  ", Syntax_Tags::T) << '\n'
-
-#define EVAL(T, E)                                                             \
-  PP_Result res_ = E;                                                          \
-  if (!res_.match)                                                             \
-    Syntax_Tags::print(std::cerr << "PGTRACE <! ", Syntax_Tags::T) << '\n';    \
-  else                                                                         \
-    std::cerr << "PGTRACE <= " << res_.parse_tree << '\n';                     \
-  return res_;
-#else
-#define RULE(T)                                                                \
-  constexpr auto rule_tag { Syntax_Tags::T }
-#define EVAL(T, E) return E
-#endif
 
 // clang-format off
 
