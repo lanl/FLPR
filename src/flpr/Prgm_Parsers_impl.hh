@@ -120,14 +120,14 @@ PPARSER(derived_type_def) {
 }
 
 //! R1119: do-construct (11.1.7.2)
+/*! The do-construct parser actually implements the R813 parser of the
+    Fortran 2008 standard, which supports block-do-construct and 
+    nonblock-do-construct.  Due to its complexity, the implementation of
+    this parser can be found in Prgm_Parsers_utils.hh */
+
 PPARSER(do_construct) {
-  RULE(PG_DO_CONSTRUCT);
-  constexpr auto p =
-    seq_if(rule_tag,
-           do_stmt(),   // this is a special parser in Prgm_Parsers_utils.hh
-           block,
-           end_do()     // this is a special parser in Prgm_Parsers_utils.hh
-           );   
+  RULE_NODECL(PG_DO_CONSTRUCT);
+  constexpr auto p = legacy_do_construct();
   EVAL(PG_DO_CONSTRUCT, p(state));
 }
 

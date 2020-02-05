@@ -34,6 +34,9 @@
   constexpr auto rule_tag{Syntax_Tags::T};                                     \
   Syntax_Tags::print(std::cerr << "PGTRACE >  ", Syntax_Tags::T) << '\n'
 
+#define RULE_NODECL(T)                                                         \
+  Syntax_Tags::print(std::cerr << "PGTRACE >  ", Syntax_Tags::T) << '\n'
+  
 #define EVAL(T, E)                                                             \
   PP_Result res_ = E;                                                          \
   if (!res_.match)                                                             \
@@ -44,6 +47,7 @@
 #else
 #define RULE(T)                                                                \
   constexpr auto rule_tag { Syntax_Tags::T }
+#define RULE_NODECL(T)
 #define EVAL(T, E) return E
 #endif
 
@@ -595,5 +599,26 @@ public:
 
 //! Generate a End_Do_Parser
 static constexpr auto end_do() { return End_Do_Parser{}; }
+
+//! Match a Fortran 2008 do-construct 
+class Legacy_Do_Construct_Parser {
+public:
+  constexpr Legacy_Do_Construct_Parser() = default;
+  PP_Result operator()(State &state) const noexcept {
+    constexpr auto p =
+      seq_if(TAG(PG_DO_CONSTRUCT),
+             do_stmt(),   // this is a special parser in Prgm_Parsers_utils.hh
+             block,
+             end_do()     // this is a special parser in Prgm_Parsers_utils.hh
+             );   
+    return p(state);
+  }
+};
+
+//! Generate a Legacy_Do_Construct_Parser
+static constexpr auto legacy_do_construct() {
+  return Legacy_Do_Construct_Parser{};
+}
+
 
 #endif
