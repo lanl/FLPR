@@ -52,11 +52,15 @@ std::ostream &operator<<(std::ostream &os, Parser_Result<TT> const &r) {
   return os;
 }
 
+//! Returns true if f(a) is true for all a \in args.
+/*! Reduces/folds the application of f to each of args w.r.t. logical AND */
 template <typename F, typename... Args>
 constexpr bool and_fold(F f, Args... args) noexcept {
   return (... && f(args));
 }
 
+//! Returns true if f(a) is true for some a \in args.
+/*! Reduces/folds the application of f to each of args w.r.t. logical OR */
 template <typename F, typename... Args>
 constexpr bool or_fold(F f, Args... args) noexcept {
   return (... || f(args));
