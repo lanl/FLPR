@@ -45,6 +45,7 @@ public:
         stmt_data_(std::in_place, ll_stmt_it) {}
 
   constexpr int syntag() const { return syntag_; }
+  constexpr void syntag(int const newval) { syntag_ = newval; }
   Stmt_Range &stmt_range() noexcept { return stmt_range_; }
 
   constexpr bool is_stmt() const noexcept { return stmt_data_.has_value(); }

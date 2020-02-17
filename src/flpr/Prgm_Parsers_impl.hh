@@ -19,35 +19,6 @@
   statments into program blocks.
 */
 
-//! Shorthand for defining a Parser rule
-#define PPARSER(P)                                                             \
-  template <typename Node_Data>                                                \
-  auto Parsers<Node_Data>::P(State &state)->PP_Result
-
-//! Shorthand for accessing a Syntax_Tag
-#define TAG(X) Syntax_Tags::X
-
-//! Shorthand for accessing a Stmt
-#define STMT(X) stmt(FLPR::Stmt::X)
-
-#if FLPR_TRACE_PG
-#define RULE(T)                                                                \
-  constexpr auto rule_tag{Syntax_Tags::T};                                     \
-  Syntax_Tags::print(std::cerr << "PGTRACE >  ", Syntax_Tags::T) << '\n'
-
-#define EVAL(T, E)                                                             \
-  PP_Result res_ = E;                                                          \
-  if (!res_.match)                                                             \
-    Syntax_Tags::print(std::cerr << "PGTRACE <! ", Syntax_Tags::T) << '\n';    \
-  else                                                                         \
-    std::cerr << "PGTRACE <= " << res_.parse_tree << '\n';                     \
-  return res_;
-#else
-#define RULE(T)                                                                \
-  constexpr auto rule_tag { Syntax_Tags::T }
-#define EVAL(T, E) return E
-#endif
-
 // clang-format off
 
 /* I:A */
@@ -149,13 +120,14 @@ PPARSER(derived_type_def) {
 }
 
 //! R1119: do-construct (11.1.7.2)
+/*! The do-construct parser actually implements the R813 parser of the
+    Fortran 2008 standard, which supports block-do-construct and 
+    nonblock-do-construct.  Due to its complexity, the implementation of
+    this parser can be found in Prgm_Parsers_utils.hh */
+
 PPARSER(do_construct) {
-  RULE(PG_DO_CONSTRUCT);
-  constexpr auto p =
-    seq_if(rule_tag,
-           do_stmt(),
-           block,
-           end_do());
+  RULE_NODECL(PG_DO_CONSTRUCT);
+  constexpr auto p = legacy_do_construct();
   EVAL(PG_DO_CONSTRUCT, p(state));
 }
 
@@ -193,11 +165,7 @@ PPARSER(executable_construct) {
   /* If the current statement has a label that matches a label-do-stmt label
      that we are looking for, we force a non-match so that the end-do-stmt rule
      can look at it */
-  if(!state.do_label_stack.empty() && state.ss->has_label()) {
-    if(state.ss->label() == state.do_label_stack.top()) {
-      return PP_Result{};
-    }
-  }
+  if(state.do_label_stack.is_top(state.ss->label())) return PP_Result{};
   EVAL(PG_EXECUTABLE_CONSTRUCT, p(state));
 }
 

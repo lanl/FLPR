@@ -88,6 +88,17 @@ bool generic_spec() {
   return true;
 }
 
+bool loop_control() {
+  TSS(loop_control, "CONCURRENT (i=a:b) DEFAULT(NONE)");
+  TSS(loop_control, "CONCURRENT (i=a:b:s) LOCAL(x,y,z)");
+  TSS(loop_control, "CONCURRENT (i=a:b, temp>100) LOCAL_INIT(x)");
+  TSS(loop_control, "CONCURRENT (i=a:b) SHARED(x,y,z)");
+  /* This is a modification to support F2008 forall-header with 
+     concurrent-header by dropping the requirement for concurrent-locality */
+  TSS(loop_control, "CONCURRENT (i=a:b)");
+  return true;
+}
+
 bool image_selector() {
   TPS(image_selector, "[1]", BAD);
   TPS(image_selector, "[a+1]", BAD);
@@ -154,6 +165,7 @@ int main() {
   TEST(coarray_spec);
   TEST(expr);
   TEST(image_selector);
+  TEST(loop_control);
   TEST(proc_component_ref);
   TEST(procedure_designator);
   TEST(generic_spec);

@@ -57,7 +57,12 @@ int get_label_do_label(Stmt_Tree const &t) {
   if (FLPR::Syntax_Tags::SG_LABEL_DO_STMT != c->syntag) {
     return 0;
   }
-  c.down().next().down();
+  c.down();
+  if (FLPR::Syntax_Tags::TK_NAME == c->syntag) {
+    // skip the <name>: prefix
+    c.next().next();
+  }
+  c.next().down();
   assert(FLPR::Syntax_Tags::SG_INT_LITERAL_CONSTANT == c->syntag);
   assert(c->token_range.size() == 1);
   return std::stoi(c->token_range.front().text());

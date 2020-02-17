@@ -52,23 +52,35 @@ bool test_instantiate() {
   return res.match;
 }
 
-bool labeled_do() {
+
+bool nonlabel_do() {
   LL_Helper ls({"function foo",
                 "integer i", 
-                "do 500 i=1,5",
-                "500 continue",
+                "do i=1,5",
+                "end do",
                 "end function"});
   PS::State state(ls.ll_stmts());
   auto res = PS::program(state);
   return res.match;
 }
 
-// Multiple labeled-do's using the same exit point
-bool labeled_do2() {
+bool nonlabel_do_name() {
   LL_Helper ls({"function foo",
-                "integer i,j", 
-                "do 500 i=1,5",
-                "do 500 j=1,5",
+                "integer i", 
+                "somename: do i=1,5",
+                "  print *, i",
+                "end do somename",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
+  
+bool label_do_continue() {
+  LL_Helper ls({"function foo",
+                "    integer i", 
+                "    do 500 i=1,5",
                 "500 continue",
                 "end function"});
   PS::State state(ls.ll_stmts());
@@ -76,8 +88,8 @@ bool labeled_do2() {
   return res.match;
 }
 
-// Single labeled do with labeled end-do-stmt
-bool labeled_do3() {
+
+bool label_do_end_do() {
   LL_Helper ls({"function foo",
                 "integer i", 
                 "do 500 i=1,5",
@@ -87,6 +99,68 @@ bool labeled_do3() {
   auto res = PS::program(state);
   return res.match;
 }
+
+
+bool label_do_end_do_name() {
+  LL_Helper ls({"function foo",
+                "integer i", 
+                "somename: do 500 i=1,5",
+                "print *, foo",
+                "500 end do somename",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
+
+bool action_term_do_construct() {
+  LL_Helper ls({"function foo",
+                "integer i", 
+                "do 500 i=1,5",
+                "500 print *,i",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
+bool action_term_do_construct_unshared_nested() {
+  LL_Helper ls({"function foo",
+                "integer i,j", 
+                "do 500 i=1,5",
+                "  do 600 j=1,5",
+                "  600 print *, j",
+                "500 print *,i",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
+bool outer_shared_do_construct_action() {
+  LL_Helper ls({"function foo",
+                "do 500 i=1,5",
+                "  do 500 j=1,5",
+                "500 print *,i,j",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
+bool outer_shared_do_construct_continue() {
+  LL_Helper ls({"function foo",
+                "do 500 i=1,5",
+                "  do 500 j=1,5",
+                "    print *,i,j",
+                "500 continue",
+                "end function"});
+  PS::State state(ls.ll_stmts());
+  auto res = PS::program(state);
+  return res.match;
+}
+
 
 bool derived_type_def() {
   LL_Helper ls({"type t1",
@@ -144,9 +218,15 @@ int main() {
   TEST_MAIN_DECL;
   TEST(test_instantiate);
   TEST(block_construct);
-  TEST(labeled_do);
-  TEST(labeled_do2);
-  TEST(labeled_do3);
+  TEST(nonlabel_do);
+  TEST(nonlabel_do_name);
+  TEST(label_do_continue);
+  TEST(label_do_end_do);
+  TEST(label_do_end_do_name);
+  TEST(action_term_do_construct);
+  TEST(action_term_do_construct_unshared_nested);
+  TEST(outer_shared_do_construct_action);
+  TEST(outer_shared_do_construct_continue);
   TEST(derived_type_def);
   TEST(do_select_construct);
   TEST(module_program);

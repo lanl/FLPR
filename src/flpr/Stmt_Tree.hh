@@ -53,6 +53,7 @@ void cover_branches(Stmt_Tree::reference st);
 void hoist_back(Stmt_Tree &t, Stmt_Tree &&donor);
 
 //! Return the label from a label-do-stmt
+/*! If t is not a do-stmt->label-do-stmt or label-do-stmt, returns 0 */
 int get_label_do_label(Stmt_Tree const &t);
 
 } // namespace Stmt
