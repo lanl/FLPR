@@ -14,6 +14,7 @@
 #ifndef FLPR_LABEL_STACK_HH
 #define FLPR_LABEL_STACK_HH 1
 
+#include <cassert>
 #include <vector>
 
 namespace FLPR {
@@ -35,10 +36,10 @@ public:
   inline int level(int const label);
 
   //! return true if empty
-  constexpr bool empty() const { return label_stack_.empty(); }
+  bool empty() const { return label_stack_.empty(); }
 
   //! return the number of elements in the stack
-  constexpr size_t size() const { return label_stack_.size(); }
+  size_t size() const { return label_stack_.size(); }
 
 private:
   /* The meaning of the "level" field
