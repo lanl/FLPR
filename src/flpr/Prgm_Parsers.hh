@@ -14,13 +14,13 @@
 #ifndef FLPR_PRGM_PARSERS_HH
 #define FLPR_PRGM_PARSERS_HH 1
 
+#include "flpr/Label_Stack.hh"
 #include "flpr/LL_Stmt.hh"
 #include "flpr/Parser_Result.hh"
 #include "flpr/Prgm_Tree.hh"
 #include "flpr/Tree.hh"
 #include "flpr/parse_stmt.hh"
 #include <iostream>
-#include <vector>
 
 #define FLPR_TRACE_PG 0
 
@@ -49,10 +49,8 @@ template <typename Node_Data = Prgm_Node_Data> struct Parsers {
     explicit State(SL_Range<LL_Stmt> const &ll_stmt_range)
         : stmt_range_(ll_stmt_range), ss{stmt_range_} {}
     SL_Range_Iterator<LL_Stmt> ss;
-    std::vector<int> do_label_stack;
+    Label_Stack do_label_stack;
   };
-
-#include "Prgm_Parsers_utils.hh"
 
   static PP_Result associate_construct(State &state);
   static PP_Result block(State &state);
@@ -95,6 +93,9 @@ template <typename Node_Data = Prgm_Node_Data> struct Parsers {
   static PP_Result type_bound_procedure_part(State &state);
   static PP_Result where_body_construct(State &state);
   static PP_Result where_construct(State &state);
+
+#include "Prgm_Parsers_utils.hh"
+
 };
 
 #include "Prgm_Parsers_impl.hh"

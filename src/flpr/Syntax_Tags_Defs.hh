@@ -207,6 +207,7 @@
   X(KW_WRITE, "WRITE", 4)                                               \
   X(KW_ZZZ_UB, "<keyword grammar enum upper bound>", 0)                 \
   X(PG_000_LB, "<prgm grammar enum lower bound>", 0)                    \
+  X(PG_ACTION_TERM_DO_CONSTRUCT, "action-term-do-construct", 1)         \
   X(PG_ASSOCIATE_CONSTRUCT, "associate-construct", 1)                   \
   X(PG_BLOCK, "block", 1)                                               \
   X(PG_BLOCK_CONSTRUCT, "block-construct", 1)                           \
@@ -215,7 +216,11 @@
   X(PG_COMPONENT_PART, "component-part", 1)                             \
   X(PG_DECLARATION_CONSTRUCT, "declaration-construct", 1)               \
   X(PG_DERIVED_TYPE_DEF, "derived-type-def", 1)                         \
+  X(PG_DO_BLOCK, "do-block", 1)                                         \
+  X(PG_DO_BODY, "do-body", 1)                                           \
   X(PG_DO_CONSTRUCT, "do-construct", 1)                                 \
+  X(PG_DO_TERM_ACTION_STMT, "do-term-action-stmt", 1)                   \
+  X(PG_DO_TERM_SHARED_STMT, "do-term-shared-stmt", 1)                   \
   X(PG_ENUM_DEF, "enum-def", 1)                                         \
   X(PG_EXECUTABLE_CONSTRUCT, "executable-construct", 1)                 \
   X(PG_EXECUTION_PART, "execution-part", 1)                             \
@@ -227,6 +232,7 @@
   X(PG_IF_CONSTRUCT, "if-construct", 1)                                 \
   X(PG_IMPLICIT_PART, "implicit-part", 1)                               \
   X(PG_IMPLICIT_PART_STMT, "implicit-part-stmt", 1)                     \
+  X(PG_INNER_SHARED_DO_CONSTRUCT, "inner-shared-do-construct", 1)       \
   X(PG_INTERFACE_BLOCK, "interface-block", 1)                           \
   X(PG_INTERFACE_BODY, "interface-body", 1)                             \
   X(PG_INTERFACE_SPECIFICATION, "interface-specification", 1)           \
@@ -236,6 +242,8 @@
   X(PG_MODULE, "module", 1)                                             \
   X(PG_MODULE_SUBPROGRAM, "module-subprogram", 1)                       \
   X(PG_MODULE_SUBPROGRAM_PART, "module-subprogram-part", 1)             \
+  X(PG_NONBLOCK_DO_CONSTRUCT, "nonblock-do-construct", 1)               \
+  X(PG_OUTER_SHARED_DO_CONSTRUCT, "outer-shared-do-construct", 1)       \
   X(PG_PROGRAM, "program", 1)                                           \
   X(PG_PROGRAM_UNIT, "program-unit", 1)                                 \
   X(PG_SELECT_RANK_CONSTRUCT, "select-rank-construct", 1)               \

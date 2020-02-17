@@ -165,11 +165,7 @@ PPARSER(executable_construct) {
   /* If the current statement has a label that matches a label-do-stmt label
      that we are looking for, we force a non-match so that the end-do-stmt rule
      can look at it */
-  if(!state.do_label_stack.empty() && state.ss->has_label()) {
-    if(state.ss->label() == state.do_label_stack.back()) {
-      return PP_Result{};
-    }
-  }
+  if(state.do_label_stack.is_top(state.ss->label())) return PP_Result{};
   EVAL(PG_EXECUTABLE_CONSTRUCT, p(state));
 }
 
