@@ -15,11 +15,17 @@
 #ifndef FLPR_SAFE_LIST_HH
 #define FLPR_SAFE_LIST_HH
 
+#define DEBUG_SL_RANGE 0
+
 #include <cassert>
 #include <initializer_list>
 #include <iterator>
 #include <list>
 #include <utility>
+
+#if DEBUG_SL_RANGE
+#include <iostream>
+#endif
 
 namespace FLPR {
 //! Define a list container with a concrete end() element
@@ -238,16 +244,32 @@ public:
       }
     }
   }
+
+#if DEBUG_SL_RANGE
+  void push_back(SL_Range const &adj) {
+#else
   constexpr void push_back(SL_Range const &adj) {
+#endif
     if (adj.empty())
       return;
     if (empty()) {
       *this = adj;
     } else {
       if (adj.end() != end()) {
+#if DEBUG_SL_RANGE
+        if (end() != adj.begin_) {
+          std::cerr << "Trying to extend " << back() << " with non-adjacent "
+                    << adj.front() << '\n';
+          assert(0);
+        } else {
+          end_ = adj.end_;
+          size_ += adj.size();
+        }
+#else
         assert(end() == adj.begin_);
         end_ = adj.end_;
         size_ += adj.size();
+#endif
       }
     }
   }
