@@ -26,6 +26,7 @@ target_include_directories(flpr_test
 set(TEST_EXE
   "test_safe_list"
   "test_tree"
+  "test_label_stack"
   "test_file_line"
   "test_line_accum"
   "test_syntag_sanity"

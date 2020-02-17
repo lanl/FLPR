@@ -42,6 +42,7 @@ set(flpr_headers
   File_Info.hh
   File_Line.hh
   Indent_Table.hh
+  Label_Stack.hh
   LL_Stmt.hh
   LL_Stmt_Src.hh
   LL_TT_Range.hh
