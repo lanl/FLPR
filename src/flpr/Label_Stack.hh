@@ -22,8 +22,15 @@ class Label_Stack {
 public:
   //! add a new label to the top of the stack
   void push(int const label) { label_stack_.emplace_back(Label_Rec_(label)); }
+
   //! remove the entry at the top of the stack
   void pop() { label_stack_.pop_back(); }
+
+  //! Return true if label matches the top stack entry
+  bool is_top(int const label) const {
+    return (!label_stack_.empty() && label_stack_.back().label == label);
+  }
+
   //! if label matches the top stack entry, return the level, else -1
   inline int level(int const label);
 

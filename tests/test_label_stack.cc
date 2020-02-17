@@ -21,6 +21,7 @@ bool empty_stack() {
   TEST_TRUE(ls.empty());
   TEST_INT(ls.size(), 0);
   TEST_INT(ls.level(999), -1);
+  TEST_FALSE(ls.is_top(999));
   return true;
 }
 
@@ -31,10 +32,12 @@ bool one_entry() {
   TEST_INT(ls.size(), 1);
   TEST_INT(ls.level(555), -1);
   TEST_INT(ls.level(999), 0);
+  TEST_TRUE(ls.is_top(999));
   ls.pop();
   TEST_TRUE(ls.empty());
   TEST_INT(ls.size(), 0);
   TEST_INT(ls.level(999), -1);
+  TEST_FALSE(ls.is_top(999));
   return true;
 }
 
