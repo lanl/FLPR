@@ -48,9 +48,9 @@ efforts:
 - *arithmetic-if-stmt*
 - *forall-stmt*
 - *label-do-stmt*
-- Limited support for *nonblock-do-construct*: FLPR will recognize a labeled
-  ``CONTINUE`` as a *do-term-shared-stmt*, but FLPR does not recognize
-  the general *nonblock-do-construct*.
+- *nonblock-do-construct*: FLPR introduces a non-standard
+  *executable-construct*, called *nonblock-do-construct*, to handle parsing
+  of F2008 *action-term-do-construct* and *outer-shared-do-construct*.
 - The *concurrent-locality* rule for the CONCURRENT clause of *loop-control*
   has been made optional to allow *loop-control* to match F2008 *forall-header*
   CONCURRENT clauses.
