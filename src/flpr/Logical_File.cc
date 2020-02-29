@@ -91,9 +91,8 @@ bool Logical_File::scan_fixed(Line_Buf const &raw_lines, int const last_col) {
   char prev_open_delim = '\0';
   for (size_t i = 0; i < N; ++i) {
     try {
-      fl[i] =
-        File_Line::analyze_fixed((int)i + 1, raw_lines[i], prev_open_delim,
-                                 last_col);
+      fl[i] = File_Line::analyze_fixed((int)i + 1, raw_lines[i],
+                                       prev_open_delim, last_col);
     } catch (std::exception &e) {
       std::cerr << "At line " << i + 1 << " of \"" << file_info->filename
                 << "\":\n"

@@ -60,8 +60,7 @@ private:
 };
 
 bool do_file(std::string const &filename, int const last_fixed_col,
-             FLPR::File_Type file_type,
-             Module_Action const &action);
+             FLPR::File_Type file_type, Module_Action const &action);
 void write_file(std::ostream &os, File const &f);
 bool has_call_named(FLPR::LL_Stmt const &stmt,
                     std::unordered_set<std::string> const &lowercase_names);

@@ -43,8 +43,7 @@ public:
   ~Logical_File() = default;
 
   //! Read in the contents of the named file and scan
-  bool read_and_scan(std::string const &filename,
-                     int const last_fixed_col,
+  bool read_and_scan(std::string const &filename, int const last_fixed_col,
                      File_Type file_type = File_Type::UNKNOWN);
 
   //! Read in the contents of a stream and scan

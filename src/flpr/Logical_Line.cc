@@ -73,15 +73,14 @@ Logical_Line::Logical_Line(std::string const &raw_text) {
 /* ------------------------------------------------------------------------ */
 Logical_Line::Logical_Line(std::vector<std::string> const &raw_text) {
   clear();
-  
+
   char prev_open_delim = '\0';
   bool prev_line_cont = false;
   int line_no = 1;
   bool in_literal_block{false};
   for (auto const &l : raw_text) {
-    layout_.emplace_back(File_Line::analyze_free(line_no++, l, prev_open_delim,
-                                                 prev_line_cont,
-                                                 in_literal_block));
+    layout_.emplace_back(File_Line::analyze_free(
+        line_no++, l, prev_open_delim, prev_line_cont, in_literal_block));
     prev_open_delim = layout_.back().open_delim;
     prev_line_cont = layout_.back().is_continued();
   }

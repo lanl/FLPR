@@ -27,8 +27,7 @@ namespace FLPR_Module {
 /*--------------------------------------------------------------------------*/
 
 bool do_file(std::string const &filename, int const last_fixed_col,
-             FLPR::File_Type file_type,
-             Module_Action const &visit_action) {
+             FLPR::File_Type file_type, Module_Action const &visit_action) {
 
   File file(filename, last_fixed_col, file_type);
   if (!file)

@@ -41,8 +41,7 @@ public:
       Logical_Lines, accessable as `logical_lines()`.  No other structures are
       created.  The file is consumed by the time this call returns. The filename
       will be parsed for File_Type extensions IF file_type is not specified. */
-  Parsed_File(std::string const &filename,
-              int const last_fixed_col,
+  Parsed_File(std::string const &filename, int const last_fixed_col,
               File_Type file_type = File_Type::UNKNOWN);
 
   //! Read and scan an std::istream
@@ -61,8 +60,7 @@ public:
   Parsed_File &operator=(Parsed_File &&) = default;
   Parsed_File &operator=(Parsed_File const &) = delete;
 
-  bool read_file(std::string const &filename,
-                 int const last_fixed_col,
+  bool read_file(std::string const &filename, int const last_fixed_col,
                  File_Type file_type = File_Type::UNKNOWN);
 
   constexpr operator bool() const noexcept { return !bad_state_; }
@@ -153,7 +151,8 @@ Parsed_File<PG_NODE_DATA>::Parsed_File(std::istream &is,
                                        int const last_fixed_col,
                                        File_Type stream_type)
     : from_stream_{true} {
-  if (logical_file_.read_and_scan(is, stream_name, last_fixed_col, stream_type)) {
+  if (logical_file_.read_and_scan(is, stream_name, last_fixed_col,
+                                  stream_type)) {
     bad_state_ = false;
   }
 }

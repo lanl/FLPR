@@ -715,12 +715,13 @@ std::string::size_type find_trailing_fixed(
          previous_open_delim == '\'');
 
   const ST N = txt.size();
-  
+
   char char_context = previous_open_delim;
   open_delim = '\0';
 
   /* Truncate lines at the last column, if active */
-  ST const lc = (last_column>0)?std::min(static_cast<ST>(last_column), N):N;
+  ST const lc =
+      (last_column > 0) ? std::min(static_cast<ST>(last_column), N) : N;
   for (ST i = start_idx; i < lc; ++i) {
     const char c = txt[i];
     if (!char_context) {
@@ -738,7 +739,7 @@ std::string::size_type find_trailing_fixed(
     }
   }
   open_delim = char_context;
-  return (lc < N) ? lc+1 : std::string::npos;
+  return (lc < N) ? lc + 1 : std::string::npos;
 }
 
 /* Find trailing continuation and/or comments.  Note that start_idx needs to be

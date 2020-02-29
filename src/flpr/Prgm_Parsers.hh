@@ -14,8 +14,8 @@
 #ifndef FLPR_PRGM_PARSERS_HH
 #define FLPR_PRGM_PARSERS_HH 1
 
-#include "flpr/Label_Stack.hh"
 #include "flpr/LL_Stmt.hh"
+#include "flpr/Label_Stack.hh"
 #include "flpr/Parser_Result.hh"
 #include "flpr/Prgm_Tree.hh"
 #include "flpr/Tree.hh"
@@ -95,7 +95,6 @@ template <typename Node_Data = Prgm_Node_Data> struct Parsers {
   static PP_Result where_construct(State &state);
 
 #include "Prgm_Parsers_utils.hh"
-
 };
 
 #include "Prgm_Parsers_impl.hh"
