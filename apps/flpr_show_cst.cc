@@ -56,7 +56,7 @@ int main() {
 
   switch (file_type) {
   case FLPR::File_Type::FIXEDFMT:
-    scan_okay = logical_file.scan_fixed(raw_lines);
+    scan_okay = logical_file.scan_fixed(raw_lines, 72);
     break;
   case FLPR::File_Type::FREEFMT:
     scan_okay = logical_file.scan_free(raw_lines);

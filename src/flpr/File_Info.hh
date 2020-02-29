@@ -37,6 +37,8 @@ struct File_Info {
   std::string filename;
   //! The language level in this file.
   File_Type file_type;
+  //! If fixed-format, the last column
+  int last_fixed_column = 0;
 };
 
 //! Guess the type of a file from its extension

@@ -42,6 +42,7 @@ public:
       created.  The file is consumed by the time this call returns. The filename
       will be parsed for File_Type extensions IF file_type is not specified. */
   Parsed_File(std::string const &filename,
+              int const last_fixed_col,
               File_Type file_type = File_Type::UNKNOWN);
 
   //! Read and scan an std::istream
@@ -51,6 +52,7 @@ public:
       stream_name will be parsed for File_Type extensions IF stream_type is not
       specified.*/
   explicit Parsed_File(std::istream &is, std::string const &stream_name,
+                       int const last_fixed_col,
                        File_Type stream_type = File_Type::UNKNOWN);
 
   Parsed_File() = default;
@@ -60,6 +62,7 @@ public:
   Parsed_File &operator=(Parsed_File const &) = delete;
 
   bool read_file(std::string const &filename,
+                 int const last_fixed_col,
                  File_Type file_type = File_Type::UNKNOWN);
 
   constexpr operator bool() const noexcept { return !bad_state_; }
@@ -137,8 +140,9 @@ private:
 
 template <typename PG_NODE_DATA>
 Parsed_File<PG_NODE_DATA>::Parsed_File(std::string const &filename,
+                                       int const last_fixed_col,
                                        File_Type file_type) {
-  if (logical_file_.read_and_scan(filename, file_type)) {
+  if (logical_file_.read_and_scan(filename, last_fixed_col, file_type)) {
     bad_state_ = false;
   }
 }
@@ -146,18 +150,20 @@ Parsed_File<PG_NODE_DATA>::Parsed_File(std::string const &filename,
 template <typename PG_NODE_DATA>
 Parsed_File<PG_NODE_DATA>::Parsed_File(std::istream &is,
                                        std::string const &stream_name,
+                                       int const last_fixed_col,
                                        File_Type stream_type)
     : from_stream_{true} {
-  if (logical_file_.read_and_scan(is, stream_name, stream_type)) {
+  if (logical_file_.read_and_scan(is, stream_name, last_fixed_col, stream_type)) {
     bad_state_ = false;
   }
 }
 
 template <typename PG_NODE_DATA>
 bool Parsed_File<PG_NODE_DATA>::read_file(std::string const &filename,
+                                          int const last_fixed_col,
                                           File_Type file_type) {
   assert(bad_state_);
-  if (logical_file_.read_and_scan(filename, file_type)) {
+  if (logical_file_.read_and_scan(filename, last_fixed_col, file_type)) {
     bad_state_ = false;
   }
   return bad_state_;

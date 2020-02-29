@@ -50,7 +50,7 @@ bool test_simple_1() {
 }
 
 bool offsets_1() {
-  Logical_Line ll("call bar()", true);
+  Logical_Line ll("call bar()");
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   TEST_INT(curr->main_txt_line(), 0);
   TEST_INT(curr->main_txt_col(), 0);
@@ -71,7 +71,7 @@ bool offsets_1() {
 }
 
 bool offsets_2() {
-  Logical_Line ll("      call bar()", true);
+  Logical_Line ll("      call bar()");
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   TEST_INT(curr->main_txt_col(), 0);
   TEST_INT(curr->start_pos, 7);
@@ -88,7 +88,7 @@ bool offsets_2() {
 }
 
 bool offsets_3() {
-  Logical_Line ll("10    call bar()", true);
+  Logical_Line ll("10    call bar()");
   TEST_INT(ll.label, 10);
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   TEST_INT(curr->start_pos, 7);
@@ -102,7 +102,7 @@ bool offsets_3() {
 }
 
 bool offsets_4() {
-  Logical_Line ll("   10 call bar()", true);
+  Logical_Line ll("   10 call bar()");
   TEST_INT(ll.label, 10);
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   TEST_INT(curr->start_pos, 7);
@@ -116,7 +116,7 @@ bool offsets_4() {
 }
 
 bool offsets_5() {
-  Logical_Line ll("       10 call bar()", true);
+  Logical_Line ll("       10 call bar()");
   TEST_INT(ll.label, 10);
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   TEST_INT(curr->start_pos, 11);
@@ -130,7 +130,7 @@ bool offsets_5() {
 }
 
 bool offsets_6() {
-  Logical_Line ll("      call bar()", false);
+  Logical_Line ll("      call bar()", 0);
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   TEST_INT(curr->start_pos, 7);
   std::advance(curr, 1);
@@ -143,7 +143,7 @@ bool offsets_6() {
 }
 
 bool offsets_7() {
-  Logical_Line ll("10    call bar()", false);
+  Logical_Line ll("10    call bar()", 0);
   TEST_INT(ll.label, 10);
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   TEST_INT(curr->start_pos, 7);
@@ -157,7 +157,7 @@ bool offsets_7() {
 }
 
 bool offsets_8() {
-  Logical_Line ll("   10 call bar()", false);
+  Logical_Line ll("   10 call bar()", 0);
   TEST_INT(ll.label, 10);
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   TEST_INT(curr->start_pos, 7);
@@ -171,7 +171,7 @@ bool offsets_8() {
 }
 
 bool replace_fragment_1() {
-  Logical_Line ll("   call bar()", true);
+  Logical_Line ll("   call bar()");
   FLPR::TT_SEQ::iterator name = std::next(ll.fragments().begin());
   TEST_STR("bar", name->text());
   ll.replace_fragment(name, FLPR::Syntax_Tags::TK_NAME,
@@ -197,7 +197,7 @@ bool replace_fragment_1() {
 }
 
 bool replace_fragment_2() {
-  Logical_Line ll("   call bar()", true);
+  Logical_Line ll("   call bar()");
   FLPR::TT_SEQ::iterator name = std::next(ll.fragments().begin());
   TEST_STR("bar", name->text());
   ll.replace_fragment(name, FLPR::Syntax_Tags::TK_NAME, std::string{"b"});
@@ -222,7 +222,7 @@ bool replace_fragment_2() {
 }
 
 bool split_after_0() {
-  Logical_Line ll("   call bar  ! comment", true);
+  Logical_Line ll("   call bar  ! comment");
   Logical_Line remain;
 
   FLPR::TT_SEQ::iterator tt = std::next(ll.fragments().begin());
@@ -244,7 +244,7 @@ bool split_after_0() {
 }
 
 bool split_after_1() {
-  Logical_Line ll("call bar", true);
+  Logical_Line ll("call bar");
   Logical_Line remain;
 
   FLPR::TT_SEQ::iterator tt = ll.fragments().begin();
@@ -279,7 +279,7 @@ bool split_after_1() {
 }
 
 bool split_after_2() {
-  Logical_Line ll("call  bar    ! foo", true);
+  Logical_Line ll("call  bar    ! foo");
   Logical_Line remain;
 
   FLPR::TT_SEQ::iterator tt = ll.fragments().begin();
@@ -314,7 +314,7 @@ bool split_after_2() {
 }
 
 bool split_after_3() {
-  Logical_Line ll("   call  bar    ! foo", true);
+  Logical_Line ll("   call  bar    ! foo");
   Logical_Line remain;
 
   FLPR::TT_SEQ::iterator tt = ll.fragments().begin();
@@ -348,7 +348,7 @@ bool split_after_3() {
 }
 
 bool split_after_4() {
-  Logical_Line ll(" 2 call  bar    ! foo", true);
+  Logical_Line ll(" 2 call  bar    ! foo");
   Logical_Line remain;
 
   FLPR::TT_SEQ::iterator tt = ll.fragments().begin();
@@ -383,7 +383,7 @@ bool split_after_4() {
 }
 
 bool split_after_5() {
-  Logical_Line ll("   call bar;a=a+1!hey", true);
+  Logical_Line ll("   call bar;a=a+1!hey");
   Logical_Line remain;
 
   FLPR::TT_SEQ::iterator tt = std::next(ll.fragments().begin());
@@ -571,7 +571,7 @@ bool continued_if() {
   Logical_Line ll(
       std::vector<std::string>{"                if ( a(b)%c(d) < e ) exit",
                                "     &            f"},
-      false);
+      0);
 
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
   std::advance(curr, 14);
@@ -585,10 +585,12 @@ bool continued_if() {
 
 bool continued_if_fixed_string() {
   Logical_Line ll(
+      /* Note that this is a vector of two strings, the first being split
+         across two lines of input */
       std::vector<std::string>{"      print *,                                 "
                                "                     'abcXXX",
                                "     1def'"},
-      false);
+      0);
   /* Note that we accept text beyond column 72 */
   TEST_INT(ll.fragments().size(), 4);
   FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();

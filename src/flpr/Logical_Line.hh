@@ -82,15 +82,19 @@ public:
     init_from_layout();
   }
 
-  //! Make a trivial Logical_Line from a raw string
-  explicit Logical_Line(std::string const &raw_text,
-                        bool const free_format = true);
+  //! Make a trivial Logical_Line from a free-format raw string
+  explicit Logical_Line(std::string const &raw_text);
 
-  //! Make a complicated Logical_Line from a vector of strings
+  //! Make a complicated Logical_Line from a vector of free-format strings
   /*! You can use the std::vector initializer_list constructor to easily use
     this constructor. */
-  explicit Logical_Line(std::vector<std::string> const &raw_text,
-                        bool const free_format = true);
+  explicit Logical_Line(std::vector<std::string> const &raw_text);
+
+  //! Make a trivial Logical_Line from a fixed-format raw string
+  Logical_Line(std::string const &raw_text, int const last_col);
+
+  //! Make a complicated Logical_Line from a vector of fixed-format strings
+  Logical_Line(std::vector<std::string> const &raw_text, int const last_col);
 
   //! Resets the contents
   void clear() noexcept;

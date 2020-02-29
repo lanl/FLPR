@@ -11,12 +11,14 @@
 #include "LL_Helper.hh"
 #include "parse_helpers.hh"
 
-LL_Helper::LL_Helper(Raw_Lines &&buf, const bool is_free_format) noexcept {
-  if (is_free_format) {
-    text_.scan_free(buf);
-  } else {
-    text_.scan_fixed(buf);
-  }
+LL_Helper::LL_Helper(Raw_Lines &&buf) noexcept {
+  text_.scan_free(buf);
+  assert(!text_.lines.empty());
+  text_.make_stmts();
+}
+
+LL_Helper::LL_Helper(Raw_Lines &&buf, int const last_col) noexcept {
+  text_.scan_fixed(buf, last_col);
   assert(!text_.lines.empty());
   text_.make_stmts();
 }

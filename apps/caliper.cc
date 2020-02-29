@@ -57,7 +57,7 @@ int main(int argc, char const *argv[]) {
 /*--------------------------------------------------------------------------*/
 
 bool caliper_file(std::string const &filename) {
-  File file(filename);
+  File file(filename, 0);
   if (!file)
     return false;
 

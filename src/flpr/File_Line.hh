@@ -101,17 +101,22 @@ public:
 
   /*!
     \brief Apportion the text to the different fields assuming fixed-format
-           input.
+           input, ignoring (treat as comment) characters past last_column.
 
     \param[in] linenum         The (index origin = 1) line number in the file
-    \param[in,out] raw_txt     The character data for one file line
+    \param[in] raw_txt         The character data for one file line
     \param[in] prev_open_delim The `open_delim` from the previous File_Line
+    \param[in] last_column     Anything past this column is ignored (0=disable)
   */
-  static File_Line analyze_fixed(const int linenum, std::string const &raw_txt,
-                                 const char prev_open_delim);
+  static File_Line analyze_fixed(int const linenum, std::string const &raw_txt,
+                                 char const prev_open_delim,
+                                 int const last_column);
+
+  //! Simple wrapper for analyze_fixed
   static File_Line analyze_fixed(std::string const &raw_txt,
+                                 int const last_column,
                                  int const linenum = -1) {
-    return analyze_fixed(linenum, raw_txt, '\0');
+    return analyze_fixed(linenum, raw_txt, '\0', last_column);
   }
 
   /*!

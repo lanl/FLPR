@@ -48,7 +48,7 @@ int main(int argc, char *const argv[]) {
   for (auto const &fname : filenames) {
     File file;
     VERBOSE_BEGIN("read_file");
-    file.read_file(fname);
+    file.read_file(fname, 0);
     VERBOSE_END;
     /* Define the indentation pattern based on the input format. It would be
        nice if this was setup from an external configuration file */

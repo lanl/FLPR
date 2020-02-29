@@ -52,7 +52,7 @@ bool read_file(std::string const &filename, std::vector<File> &files) {
   File f;
   std::cout << "Processing: '" << filename << "'"
             << "\n\tscanning..." << std::endl;
-  if (!f.logical_file.read_and_scan(filename)) {
+  if (!f.logical_file.read_and_scan(filename,0)) {
     std::cout << "\tread/scan FAILED" << std::endl;
     return false;
   }

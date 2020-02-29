@@ -64,40 +64,47 @@ Logical_Line &Logical_Line::operator=(Logical_Line const &src) noexcept {
 }
 
 /* ------------------------------------------------------------------------ */
-Logical_Line::Logical_Line(std::string const &raw_text,
-                           bool const free_format) {
+Logical_Line::Logical_Line(std::string const &raw_text) {
   clear();
-  if (free_format) {
-    layout_.emplace_back(File_Line::analyze_free(raw_text));
-  } else {
-    layout_.emplace_back(File_Line::analyze_fixed(raw_text));
+  layout_.emplace_back(File_Line::analyze_free(raw_text));
+  init_from_layout();
+}
+
+/* ------------------------------------------------------------------------ */
+Logical_Line::Logical_Line(std::vector<std::string> const &raw_text) {
+  clear();
+  
+  char prev_open_delim = '\0';
+  bool prev_line_cont = false;
+  int line_no = 1;
+  bool in_literal_block{false};
+  for (auto const &l : raw_text) {
+    layout_.emplace_back(File_Line::analyze_free(line_no++, l, prev_open_delim,
+                                                 prev_line_cont,
+                                                 in_literal_block));
+    prev_open_delim = layout_.back().open_delim;
+    prev_line_cont = layout_.back().is_continued();
   }
   init_from_layout();
 }
 
 /* ------------------------------------------------------------------------ */
-Logical_Line::Logical_Line(std::vector<std::string> const &raw_text,
-                           bool const free_format) {
+Logical_Line::Logical_Line(std::string const &raw_text, int const last_col) {
   clear();
-  if (free_format) {
-    char prev_open_delim = '\0';
-    bool prev_line_cont = false;
-    int line_no = 1;
-    bool in_literal_block{false};
-    for (auto const &l : raw_text) {
-      layout_.emplace_back(File_Line::analyze_free(
-          line_no++, l, prev_open_delim, prev_line_cont, in_literal_block));
-      prev_open_delim = layout_.back().open_delim;
-      prev_line_cont = layout_.back().is_continued();
-    }
-  } else {
-    char prev_open_delim = '\0';
-    int line_no = 1;
-    for (auto const &l : raw_text) {
-      layout_.emplace_back(
-          File_Line::analyze_fixed(line_no++, l, prev_open_delim));
-      prev_open_delim = layout_.back().open_delim;
-    }
+  layout_.emplace_back(File_Line::analyze_fixed(raw_text, last_col));
+  init_from_layout();
+}
+
+/* ------------------------------------------------------------------------ */
+Logical_Line::Logical_Line(std::vector<std::string> const &raw_text,
+                           int const last_col) {
+  clear();
+  char prev_open_delim = '\0';
+  int line_no = 1;
+  for (auto const &l : raw_text) {
+    layout_.emplace_back(
+        File_Line::analyze_fixed(line_no++, l, prev_open_delim, last_col));
+    prev_open_delim = layout_.back().open_delim;
   }
   init_from_layout();
 }
