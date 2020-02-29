@@ -177,6 +177,17 @@ File_Line File_Line::analyze_fixed(int const linenum,
   } else {
     main_text = raw_txt.substr(ri, trailing_begin - ri);
     right_text = raw_txt.substr(trailing_begin);
+    if (last_column > 0 && trailing_begin == static_cast<ST>(last_column)) {
+      /* add a comment character if this is some col>72 implicit comment */
+      ST ri = right_text.find_first_not_of(" \t\r");
+      if (ri == std::string::npos) {
+        right_text.clear();
+      } else {
+        if (right_text[ri] != '&' && right_text[ri] != '!') {
+          right_text.insert(0, "! ");
+        }
+      }
+    }
   }
 
   if (main_text.empty()) {
