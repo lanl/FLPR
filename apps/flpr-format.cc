@@ -31,6 +31,7 @@ int main(int argc, char *const argv[]) {
   std::vector<std::string> filenames;
   Options options;
   options.enable_all_filters();
+  options[OPT(COL72)] = false;
   options[OPT(FIXED_TO_FREE)] = false;
   options[OPT(REINDENT)] = false;
   if (!parse_cmd_line(filenames, options, argc, argv)) {
@@ -48,7 +49,7 @@ int main(int argc, char *const argv[]) {
   for (auto const &fname : filenames) {
     File file;
     VERBOSE_BEGIN("read_file");
-    file.read_file(fname, 0);
+    file.read_file(fname, options[OPT(COL72)]?72:0);
     VERBOSE_END;
     /* Define the indentation pattern based on the input format. It would be
        nice if this was setup from an external configuration file */

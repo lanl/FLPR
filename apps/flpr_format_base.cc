@@ -203,6 +203,7 @@ void write_file(std::ostream &os, File const &f) {
 
 void print_usage(std::ostream &os) {
   os << "usage: flpr-format [-foqtv] file ...\n";
+  os << "\t-c\ttreat fixed-format input past col 72 as comments\n";
   os << "\t-e\telaborate procedure END statements\n";
   os << "\t-f\tdo fixed-format to free-format conversion\n";
   os << "\t-i\treindent\n";
@@ -215,8 +216,11 @@ void print_usage(std::ostream &os) {
 bool parse_cmd_line(std::vector<std::string> &filenames, Options &options,
                     int argc, char *const argv[]) {
   int ch;
-  while ((ch = getopt(argc, argv, "efioqtv")) != -1) {
+  while ((ch = getopt(argc, argv, "cefioqtv")) != -1) {
     switch (ch) {
+    case 'c':
+      options[Options::COL72] = true;
+      break;
     case 'e':
       options[Options::ELABORATE_END_STMTS] = true;
       break;
