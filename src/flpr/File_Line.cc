@@ -739,7 +739,7 @@ std::string::size_type find_trailing_fixed(
     }
   }
   open_delim = char_context;
-  return (lc < N) ? lc + 1 : std::string::npos;
+  return (lc < N) ? lc : std::string::npos;
 }
 
 /* Find trailing continuation and/or comments.  Note that start_idx needs to be

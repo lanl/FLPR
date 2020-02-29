@@ -599,6 +599,22 @@ bool continued_if_fixed_string() {
   return true;
 }
 
+bool continued_if_fixed_trunc_string() {
+  Logical_Line ll(
+      /* Note that this is a vector of two strings, the first being split
+         across two lines of input */
+      std::vector<std::string>{"      print *,                          "
+                                 "                            'abcXXX",
+                               "     1def'"},
+      72);
+  /* Note that we do NOT accept text beyond column 72 in this example */
+  TEST_INT(ll.fragments().size(), 4);
+  FLPR::TT_SEQ::const_iterator curr = ll.cfragments().begin();
+  std::advance(curr, 3);
+  TEST_STR("'abcdef'", curr->text());
+  return true;
+}
+
 int main() {
   TEST_MAIN_DECL;
   TEST(test_default_ctor);
@@ -625,5 +641,6 @@ int main() {
   TEST(replace_main_2);
   TEST(continued_if);
   TEST(continued_if_fixed_string);
+  TEST(continued_if_fixed_trunc_string);
   TEST_MAIN_REPORT;
 }
