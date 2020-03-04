@@ -24,7 +24,8 @@ FLPR::TT_Stream for the first statement. */
 class LL_Helper {
 public:
   using Raw_Lines = FLPR::Logical_File::Line_Buf;
-  LL_Helper(Raw_Lines &&buf, const bool is_free_format = true) noexcept;
+  explicit LL_Helper(Raw_Lines &&buf) noexcept;
+  LL_Helper(Raw_Lines &&buf, int const last_col) noexcept;
   //! Return a TT_Stream for the first statement
   FLPR::TT_Stream stream1() noexcept {
     return FLPR::TT_Stream{text_.ll_stmts.front()};

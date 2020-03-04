@@ -35,6 +35,7 @@ void Logical_File::clear() {
 }
 
 bool Logical_File::read_and_scan(std::string const &filename,
+                                 int const last_fixed_col,
                                  File_Type file_type) {
   std::ifstream is(filename.c_str());
   if (!is) {
@@ -43,7 +44,7 @@ bool Logical_File::read_and_scan(std::string const &filename,
     return false;
   }
 
-  bool res = read_and_scan(is, filename, file_type);
+  bool res = read_and_scan(is, filename, last_fixed_col, file_type);
 
   is.close();
   return res;
@@ -51,23 +52,25 @@ bool Logical_File::read_and_scan(std::string const &filename,
 
 bool Logical_File::read_and_scan(std::istream &is,
                                  std::string const &stream_name,
+                                 int const last_fixed_col,
                                  File_Type stream_type) {
   Line_Buf buf;
   buf.reserve(1024);
   for (std::string line; std::getline(is, line);) {
     buf.push_back(line);
   }
-  return scan(buf, stream_name, stream_type);
+  return scan(buf, stream_name, last_fixed_col, stream_type);
 }
 
 bool Logical_File::scan(Line_Buf const &buf, std::string const &buffer_name,
-                        File_Type buffer_type) {
+                        int const last_fixed_col, File_Type buffer_type) {
   file_info = std::make_shared<File_Info>(buffer_name, buffer_type);
 
   bool res = false;
   switch (file_type()) {
   case File_Type::FIXEDFMT:
-    res = scan_fixed(buf);
+    file_info->last_fixed_column = last_fixed_col;
+    res = scan_fixed(buf, last_fixed_col);
     break;
   case File_Type::FREEFMT:
     res = scan_free(buf);
@@ -80,7 +83,7 @@ bool Logical_File::scan(Line_Buf const &buf, std::string const &buffer_name,
   return res;
 }
 
-bool Logical_File::scan_fixed(Line_Buf const &raw_lines) {
+bool Logical_File::scan_fixed(Line_Buf const &raw_lines, int const last_col) {
   const size_t N = raw_lines.size();
   num_input_lines = N;
   // Convert the raw text input into File_Lines
@@ -88,8 +91,8 @@ bool Logical_File::scan_fixed(Line_Buf const &raw_lines) {
   char prev_open_delim = '\0';
   for (size_t i = 0; i < N; ++i) {
     try {
-      fl[i] =
-          File_Line::analyze_fixed((int)i + 1, raw_lines[i], prev_open_delim);
+      fl[i] = File_Line::analyze_fixed((int)i + 1, raw_lines[i],
+                                       prev_open_delim, last_col);
     } catch (std::exception &e) {
       std::cerr << "At line " << i + 1 << " of \"" << file_info->filename
                 << "\":\n"

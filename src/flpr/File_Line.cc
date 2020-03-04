@@ -34,21 +34,17 @@ bool is_flpr_literal(std::string const &txt,
 
 bool is_flpr_directive(std::string const &txt,
                        std::string::size_type comment_pos);
-std::string::size_type
-find_trailing_fixed(std::string const &txt,
-                    std::string::size_type const start_idx,
-                    char const previous_open_delim, char &open_delim);
+
+std::string::size_type find_trailing_fixed(
+    std::string const &txt, std::string::size_type const start_idx,
+    int const last_column, char const previous_open_delim, char &open_delim);
 
 std::string::size_type
 find_trailing_free(std::string const &txt,
                    std::string::size_type const start_idx,
                    char const previous_open_delim, char &open_delim);
 
-constexpr char filler(bool b, char c) {
-  if (b)
-    return c;
-  return '_';
-}
+constexpr char filler(bool const cond, char const c) { return cond ? c : '_'; }
 
 } // namespace
 
@@ -65,8 +61,10 @@ File_Line::File_Line(const int ln, BITS const &c, std::string const &lt,
 File_Line::File_Line(int ln, BITS const &c, std::string const &lt)
     : linenum(ln), left_txt(lt), open_delim('\0'), classification_(c) {}
 
-File_Line File_Line::analyze_fixed(const int ln, std::string const &raw_txt_in,
-                                   const char prev_open_delim) {
+File_Line File_Line::analyze_fixed(int const linenum,
+                                   std::string const &raw_txt_in,
+                                   char const prev_open_delim,
+                                   int const last_column) {
   using ST = std::string::size_type;
   BITS bits;
   std::string left_text, left_sp, main_text, right_sp, right_text;
@@ -74,7 +72,7 @@ File_Line File_Line::analyze_fixed(const int ln, std::string const &raw_txt_in,
   SET_CLASS(fixed_format);
   if (raw_txt_in.empty()) {
     SET_CLASS(blank);
-    return File_Line(ln, bits, raw_txt_in);
+    return File_Line(linenum, bits, raw_txt_in);
   }
 
   // expand tabs in the control columns.  They shouldn't be here,
@@ -98,7 +96,7 @@ File_Line File_Line::analyze_fixed(const int ln, std::string const &raw_txt_in,
   ST ri = raw_txt.find_first_not_of(" \t\r");
   if (ri == std::string::npos) {
     SET_CLASS(blank);
-    return File_Line(ln, bits, raw_txt);
+    return File_Line(linenum, bits, raw_txt);
   }
 
   const char c = std::toupper(raw_txt[ri]);
@@ -108,12 +106,12 @@ File_Line File_Line::analyze_fixed(const int ln, std::string const &raw_txt_in,
     // Check for standard preprocessor commands
     if (ri == 0 && c == '#') {
       SET_CLASS(preprocessor);
-      return File_Line(ln, bits, raw_txt);
+      return File_Line(linenum, bits, raw_txt);
     }
     // How about a Fortran include directive? (Section 6.4 of the standard)
     if (is_include_line(raw_txt, ri)) {
       SET_CLASS(include);
-      return File_Line(ln, bits, raw_txt);
+      return File_Line(linenum, bits, raw_txt);
     }
     // Look for comment lines (or flpr preprocessor directives)
     if (c == '!' || (ri == 0 && (c == '*' || c == 'C'))) {
@@ -126,9 +124,9 @@ File_Line File_Line::analyze_fixed(const int ln, std::string const &raw_txt_in,
         SET_CLASS(flpr_pp);
       else {
         SET_CLASS(comment);
-        return File_Line(ln, bits, raw_txt);
+        return File_Line(linenum, bits, raw_txt);
       }
-      return File_Line(ln, bits, raw_txt);
+      return File_Line(linenum, bits, raw_txt);
     }
   }
 
@@ -159,7 +157,7 @@ File_Line File_Line::analyze_fixed(const int ln, std::string const &raw_txt_in,
         ri += 1;
       if (ri == raw_txt.size()) {
         SET_CLASS(blank);
-        return File_Line(ln, bits, raw_txt);
+        return File_Line(linenum, bits, raw_txt);
       }
     }
   }
@@ -171,14 +169,25 @@ File_Line File_Line::analyze_fixed(const int ln, std::string const &raw_txt_in,
 
   // We're at the first character of Fortran text.
   char open_delim_char(0);
-  ST trailing_begin =
-      find_trailing_fixed(raw_txt, ri, prev_open_delim, open_delim_char);
+  ST trailing_begin = find_trailing_fixed(raw_txt, ri, last_column,
+                                          prev_open_delim, open_delim_char);
 
   if (trailing_begin == std::string::npos) {
     main_text = raw_txt.substr(ri);
   } else {
     main_text = raw_txt.substr(ri, trailing_begin - ri);
     right_text = raw_txt.substr(trailing_begin);
+    if (last_column > 0 && trailing_begin == static_cast<ST>(last_column)) {
+      /* add a comment character if this is some col>72 implicit comment */
+      ST ri = right_text.find_first_not_of(" \t\r");
+      if (ri == std::string::npos) {
+        right_text.clear();
+      } else {
+        if (right_text[ri] != '&' && right_text[ri] != '!') {
+          right_text.insert(0, "! ");
+        }
+      }
+    }
   }
 
   if (main_text.empty()) {
@@ -195,11 +204,11 @@ File_Line File_Line::analyze_fixed(const int ln, std::string const &raw_txt_in,
     }
   }
 
-  return File_Line(ln, bits, left_text, left_sp, main_text, right_sp,
+  return File_Line(linenum, bits, left_text, left_sp, main_text, right_sp,
                    right_text, open_delim_char);
 }
 
-File_Line File_Line::analyze_free(const int ln, std::string const &raw_txt,
+File_Line File_Line::analyze_free(const int linenum, std::string const &raw_txt,
                                   const char prev_open_delim,
                                   const bool prev_line_cont,
                                   bool &in_literal_block) {
@@ -216,13 +225,13 @@ File_Line File_Line::analyze_free(const int ln, std::string const &raw_txt,
       if (is_flpr_literal(raw_txt, ri))
         in_literal_block = false;
     }
-    return File_Line(ln, bits, raw_txt);
+    return File_Line(linenum, bits, raw_txt);
   }
 
   // There isn't one...
   if (std::string::npos == ri) {
     SET_CLASS(blank);
-    return File_Line(ln, bits, raw_txt);
+    return File_Line(linenum, bits, raw_txt);
   }
 
   const char c = std::toupper(raw_txt[ri]);
@@ -230,12 +239,12 @@ File_Line File_Line::analyze_free(const int ln, std::string const &raw_txt,
   // Check for standard preprocessor commands
   if (ri == 0 && c == '#') {
     SET_CLASS(preprocessor);
-    return File_Line(ln, bits, raw_txt);
+    return File_Line(linenum, bits, raw_txt);
   }
   // How about a Fortran include directive? (Section 6.4 of the standard)
   if (is_include_line(raw_txt, ri)) {
     SET_CLASS(include);
-    return File_Line(ln, bits, raw_txt);
+    return File_Line(linenum, bits, raw_txt);
   }
 
   // Look for comment lines (or flpr preprocessor directives)
@@ -251,9 +260,9 @@ File_Line File_Line::analyze_free(const int ln, std::string const &raw_txt,
       if (prev_line_cont)
         SET_CLASS(continued);
       SET_CLASS(comment);
-      return File_Line(ln, bits, trim_back_copy(raw_txt));
+      return File_Line(linenum, bits, trim_back_copy(raw_txt));
     }
-    return File_Line(ln, bits, raw_txt);
+    return File_Line(linenum, bits, raw_txt);
   }
 
   // Now we have a standard Fortran line
@@ -316,7 +325,7 @@ File_Line File_Line::analyze_free(const int ln, std::string const &raw_txt,
   if (right_text.empty())
     right_sp.clear();
 
-  return File_Line(ln, bits, left_text, left_sp, main_text, right_sp,
+  return File_Line(linenum, bits, left_text, left_sp, main_text, right_sp,
                    right_text, open_delim);
 }
 
@@ -709,36 +718,39 @@ bool is_flpr_literal(std::string const &txt,
 
 /* Find trailing comments in fixed format.  Note that start_idx needs to be past
  any prefixed labels, continuations, or control blocks. */
-std::string::size_type
-find_trailing_fixed(std::string const &txt,
-                    std::string::size_type const start_idx,
-                    char const previous_open_delim, char &open_delim) {
+std::string::size_type find_trailing_fixed(
+    std::string const &txt, std::string::size_type const start_idx,
+    int const last_column, char const previous_open_delim, char &open_delim) {
   using ST = std::string::size_type;
   assert(previous_open_delim == '\0' || previous_open_delim == '\"' ||
          previous_open_delim == '\'');
 
   const ST N = txt.size();
+
   char char_context = previous_open_delim;
   open_delim = '\0';
 
-  for (ST i = start_idx; i < N; ++i) {
+  /* Truncate lines at the last column, if active */
+  ST const lc =
+      (last_column > 0) ? std::min(static_cast<ST>(last_column), N) : N;
+  for (ST i = start_idx; i < lc; ++i) {
     const char c = txt[i];
     if (!char_context) {
       /* Note that you shouldn't use this technique to find the extent of
-         strings, as they are allowed to contain doubled delimiters as escapes.
-         For example: 'Paul''s code' is equivalent to "Paul's code", not two
-         strings.  For our purpose, this doesn't matter. */
+         strings, as they are allowed to contain doubled delimiters as
+         escapes.  For example: 'Paul''s code' is equivalent to "Paul's code",
+         not two strings.  For our purpose, this doesn't matter. */
       if (c == '\'' || c == '"')
         char_context = c;
       else if (c == '!')
         return i;
     } else {
       if (c == char_context)
-        char_context = 0;
+        char_context = '\0';
     }
   }
   open_delim = char_context;
-  return std::string::npos;
+  return (lc < N) ? lc : std::string::npos;
 }
 
 /* Find trailing continuation and/or comments.  Note that start_idx needs to be

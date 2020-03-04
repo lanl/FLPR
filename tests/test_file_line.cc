@@ -19,7 +19,7 @@ using FLPR::File_Line;
 bool fixed_blank1() {
   //              "123456"
   std::string str("");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_blank());
   TEST_TRUE(fl.is_trivial());
   TEST_FALSE(fl.is_fortran());
@@ -29,7 +29,7 @@ bool fixed_blank1() {
 bool fixed_blank2() {
   //              "123456"
   std::string str("  ");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_blank());
   TEST_TRUE(fl.is_trivial());
   TEST_FALSE(fl.is_fortran());
@@ -39,7 +39,7 @@ bool fixed_blank2() {
 bool fixed_blank3() {
   //              "123456"
   std::string str("             \t");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_blank());
   TEST_TRUE(fl.is_trivial());
   TEST_FALSE(fl.is_fortran());
@@ -49,7 +49,7 @@ bool fixed_blank3() {
 bool fixed_comment1() {
   //              "123456"
   std::string str("C     This is an aligned comment");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_comment());
   TEST_TRUE(fl.is_trivial());
   TEST_FALSE(fl.is_fortran());
@@ -59,7 +59,7 @@ bool fixed_comment1() {
 bool fixed_comment2() {
   //              "123456"
   std::string str("c     This is an aligned comment");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_comment());
   TEST_FALSE(fl.is_fortran());
   return true;
@@ -68,7 +68,7 @@ bool fixed_comment2() {
 bool fixed_comment3() {
   //              "123456"
   std::string str("!     This is an aligned comment");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_comment());
   TEST_FALSE(fl.is_fortran());
   return true;
@@ -77,7 +77,7 @@ bool fixed_comment3() {
 bool fixed_comment4() {
   //              "123456"
   std::string str("  !     This is an aligned comment");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_comment());
   TEST_FALSE(fl.is_fortran());
   return true;
@@ -86,7 +86,7 @@ bool fixed_comment4() {
 bool fixed_comment5() {
   //              "123456"
   std::string str("       !     This is an aligned comment");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_comment());
   TEST_FALSE(fl.is_fortran());
   return true;
@@ -95,7 +95,7 @@ bool fixed_comment5() {
 bool fixed_flprpp() {
   //              "123456"
   std::string str("!#flpr ");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_FALSE(fl.is_comment());
   TEST_TRUE(fl.is_flpr_pp());
   TEST_FALSE(fl.is_fortran());
@@ -105,7 +105,7 @@ bool fixed_flprpp() {
 bool fixed_labelled() {
   //              "123456"
   std::string str(" 100  continue");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_fortran());
   TEST_TRUE(fl.has_label());
   TEST_STR(" 100", fl.left_txt);
@@ -116,7 +116,7 @@ bool fixed_labelled() {
 bool fixed_indent() {
   //              "123456"
   std::string str("        call foo()");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_fortran());
   TEST_FALSE(fl.has_label());
   TEST_STR("", fl.left_txt);
@@ -128,7 +128,7 @@ bool fixed_indent() {
 bool fixed_continuation() {
   //              "123456"
   std::string str("     a   call foo()");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_fortran());
   TEST_FALSE(fl.has_label());
   TEST_TRUE(fl.is_continuation());
@@ -144,7 +144,7 @@ bool fixed_not_a_continuation() {
   /* section 6.3.3.3 points out that a '0' in col 6 is not a continuation */
   //              "123456"
   std::string str("     0   call foo()");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_fortran());
   TEST_FALSE(fl.has_label());
   TEST_FALSE(fl.is_continuation());
@@ -159,7 +159,7 @@ bool fixed_not_a_continuation() {
 bool fixed_trailing_comment() {
   //              "123456"
   std::string str("        call foo() ! trailing ");
-  File_Line fl = File_Line::analyze_fixed(1, str, '\0');
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_fortran());
   TEST_FALSE(fl.is_blank());
   TEST_FALSE(fl.has_label());

@@ -22,6 +22,7 @@ struct Options {
   enum Filter_Tags : size_t {
     ELABORATE_END_STMTS,
     FIXED_TO_FREE,
+    COL72,
     REINDENT,
     REMOVE_EMPTY_STMTS,
     SPLIT_COMPOUND_STMTS,

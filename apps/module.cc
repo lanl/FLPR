@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 
   for (std::string const &filename : fortran_filenames) {
     /* you could change to an alternative file_type_from_ext function here */
-    FLPR_Module::do_file(filename, FLPR::file_type_from_extension(filename),
+    FLPR_Module::do_file(filename, 0, FLPR::file_type_from_extension(filename),
                          action);
   }
 

@@ -43,19 +43,21 @@ public:
   ~Logical_File() = default;
 
   //! Read in the contents of the named file and scan
-  bool read_and_scan(std::string const &filename,
+  bool read_and_scan(std::string const &filename, int const last_fixed_col,
                      File_Type file_type = File_Type::UNKNOWN);
 
   //! Read in the contents of a stream and scan
   bool read_and_scan(std::istream &is, std::string const &stream_name,
+                     int const last_fixed_col,
                      File_Type file_type = File_Type::UNKNOWN);
 
   //! Scan a list of raw lines
   bool scan(Line_Buf const &line_buffer, std::string const &buffer_name,
-            File_Type file_type = File_Type::UNKNOWN);
+            int const last_fixed_col, File_Type file_type = File_Type::UNKNOWN);
 
   //! Scan the file assuming F77-style fixed format
-  bool scan_fixed(Line_Buf const &fl);
+  bool scan_fixed(Line_Buf const &fl, int const last_col);
+
   //! Scan the file assuming F90-style free format
   bool scan_free(Line_Buf const &fl);
 
