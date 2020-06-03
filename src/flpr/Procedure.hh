@@ -196,6 +196,12 @@ public:
     file_.logical_file().replace_stmt_substr(pos, token_range, new_text);
   }
 
+  //! Insert new text after a fragment
+  void insert_text_after(Region_Iterator pos, TT_SEQ::iterator frag,
+                         std::string const &new_text) {
+    file_.logical_file().insert_text_after(pos, frag, new_text);
+  }
+
 public:
   //! An LL_Stmt iterator augmented with a Region_Tag
   class Region_Iterator : public Stmt_Iterator {

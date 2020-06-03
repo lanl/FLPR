@@ -435,6 +435,18 @@ void Logical_File::replace_stmt_substr(LL_STMT_SEQ::iterator stmt,
   stmt->unhook();
 }
 
+void Logical_File::insert_text_after(LL_STMT_SEQ::iterator stmt,
+                                     TT_SEQ::iterator frag,
+                                     std::string const &new_text) {
+  auto const frag_off = std::distance(stmt->begin(), frag);
+  isolate_stmt(stmt);
+  auto new_frag_it = std::next(stmt->ll().fragments().begin(), frag_off);
+  stmt->ll().insert_text_after(new_frag_it, new_text);
+  stmt->assign_range(stmt->ll().stmts()[0]);
+  stmt->drop_stmt_tree();
+  stmt->unhook();
+}
+
 void Logical_File::append_stmt_text(LL_STMT_SEQ::iterator stmt,
                                     std::string const &new_text) {
   /* put the stmt on its own line */
