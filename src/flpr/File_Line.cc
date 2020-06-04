@@ -321,9 +321,6 @@ File_Line File_Line::analyze_free(const int linenum, std::string const &raw_txt,
       main_text.erase(last_char + 1);
     }
   }
-  trim_back(right_text);
-  if (right_text.empty())
-    right_sp.clear();
 
   return File_Line(linenum, bits, left_text, left_sp, main_text, right_sp,
                    right_text, open_delim);

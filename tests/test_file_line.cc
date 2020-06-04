@@ -173,6 +173,24 @@ bool fixed_trailing_comment() {
   return true;
 }
 
+bool fixed_trailing_blank() {
+  //                    "123456"
+  const std::string str("      call foo()  ");
+  bool in_literal{false};
+  File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
+  TEST_TRUE(fl.is_fortran());
+  TEST_FALSE(fl.is_blank());
+  TEST_FALSE(fl.has_label());
+  TEST_FALSE(fl.is_continuation());
+  TEST_FALSE(fl.is_continued());
+  TEST_TRUE(fl.left_txt.empty());
+  TEST_TRUE(fl.left_space.empty());
+  TEST_STR("call foo()", fl.main_txt);
+  TEST_STR("  ", fl.right_space);
+  TEST_TRUE(fl.right_txt.empty());
+  return true;
+}
+
 bool free_blank1() {
   const std::string str("");
   bool in_literal{false};
@@ -284,7 +302,7 @@ bool free_continuation() {
   TEST_STR("        ", fl.left_space);
   TEST_STR("call foo(", fl.main_txt);
   TEST_STR("", fl.right_space);
-  TEST_STR("&", fl.right_txt);
+  TEST_STR("& ", fl.right_txt);
   TEST_CHAR('\0', fl.open_delim);
   return true;
 }
@@ -301,7 +319,7 @@ bool free_char_context_continue1() {
   TEST_STR("        ", fl.left_space);
   TEST_STR("call foo(' ", fl.main_txt);
   TEST_STR("", fl.right_space);
-  TEST_STR("&", fl.right_txt);
+  TEST_STR("& ", fl.right_txt);
   TEST_CHAR('\'', fl.open_delim);
   return true;
 }
@@ -317,7 +335,7 @@ bool free_char_context_continue2() {
   TEST_STR("", fl.left_txt);
   TEST_STR("        ", fl.left_space);
   TEST_STR("call foo(\"", fl.main_txt);
-  TEST_STR("&", fl.right_txt);
+  TEST_STR("& ", fl.right_txt);
   TEST_CHAR('"', fl.open_delim);
   return true;
 }
@@ -364,7 +382,7 @@ bool free_lead_follow_cont2() {
   TEST_STR("   &", fl.left_txt);
   TEST_STR("", fl.left_space);
   TEST_STR(" foo', foo, \" ", fl.main_txt);
-  TEST_STR("&", fl.right_txt);
+  TEST_STR("&  ", fl.right_txt);
   TEST_CHAR('\"', fl.open_delim);
   return true;
 }
@@ -398,7 +416,24 @@ bool free_trailing_comment() {
   TEST_STR("    ", fl.left_space);
   TEST_STR("call foo()", fl.main_txt);
   TEST_STR(" ", fl.right_space);
-  TEST_STR("! okay", fl.right_txt);
+  TEST_STR("! okay ", fl.right_txt);
+  return true;
+}
+
+bool free_trailing_blank() {
+  const std::string str("    call foo() ");
+  bool in_literal{false};
+  File_Line fl = File_Line::analyze_free(1, str, '\0', false, in_literal);
+  TEST_TRUE(fl.is_fortran());
+  TEST_FALSE(fl.is_blank());
+  TEST_FALSE(fl.has_label());
+  TEST_FALSE(fl.is_continuation());
+  TEST_FALSE(fl.is_continued());
+  TEST_TRUE(fl.left_txt.empty());
+  TEST_STR("    ", fl.left_space);
+  TEST_STR("call foo()", fl.main_txt);
+  TEST_STR(" ", fl.right_space);
+  TEST_TRUE(fl.right_txt.empty());
   return true;
 }
 
@@ -419,6 +454,7 @@ int main() {
   TEST(fixed_continuation);
   TEST(fixed_not_a_continuation);
   TEST(fixed_trailing_comment);
+  TEST(fixed_trailing_blank);
   TEST(free_blank1);
   TEST(free_blank2);
   TEST(free_blank3);
@@ -436,6 +472,7 @@ int main() {
   TEST(free_lead_follow_cont2);
   TEST(free_contcomment);
   TEST(free_trailing_comment);
+  TEST(free_trailing_blank);
 
   TEST_MAIN_REPORT;
 }
