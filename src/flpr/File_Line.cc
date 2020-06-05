@@ -260,7 +260,7 @@ File_Line File_Line::analyze_free(const int linenum, std::string const &raw_txt,
       if (prev_line_cont)
         SET_CLASS(continued);
       SET_CLASS(comment);
-      return File_Line(linenum, bits, trim_back_copy(raw_txt));
+      return File_Line(linenum, bits, raw_txt);
     }
     return File_Line(linenum, bits, raw_txt);
   }
