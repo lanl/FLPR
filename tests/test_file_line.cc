@@ -176,7 +176,6 @@ bool fixed_trailing_comment() {
 bool fixed_trailing_blank() {
   //                    "123456"
   const std::string str("      call foo()  ");
-  bool in_literal{false};
   File_Line fl = File_Line::analyze_fixed(1, str, '\0', 0);
   TEST_TRUE(fl.is_fortran());
   TEST_FALSE(fl.is_blank());
@@ -239,8 +238,7 @@ bool free_comment2() {
   TEST_TRUE(fl.is_comment());
   TEST_TRUE(fl.is_trivial());
   TEST_FALSE(fl.is_fortran());
-  // It is supposed to trim trailing whitespace
-  TEST_STR("    !     Boring comment", fl.left_txt);
+  TEST_STR("    !     Boring comment ", fl.left_txt);
   return true;
 }
 
