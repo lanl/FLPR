@@ -377,6 +377,7 @@
   X(SG_DERIVED_TYPE_SPEC, "derived-type-spec", 1)                       \
   X(SG_DERIVED_TYPE_STMT, "derived-type-stmt", 5)                       \
   X(SG_DESIGNATOR, "designator", 1)                                     \
+  X(SG_DIGIT_STRING, "digit-string", 1)                                 \
   X(SG_DIMENSION_STMT, "dimension-stmt", 5)                             \
   X(SG_DO_STMT, "do-stmt", 5)                                           \
   X(SG_DUMMY_ARG, "dummy-arg", 1)                                       \
@@ -425,6 +426,8 @@
   X(SG_EXPLICIT_COSHAPE_SPEC, "explicit-coshape-spec", 1)               \
   X(SG_EXPLICIT_SHAPE_SPEC, "explicit-shape-spec", 1)                   \
   X(SG_EXPLICIT_SHAPE_SPEC_LIST, "explicit-shape-spec-list", 1)         \
+  X(SG_EXPONENT, "exponent", 1)                                         \
+  X(SG_EXPONENT_LETTER, "exponent-letter", 1)                           \
   X(SG_EXPR, "expr", 2)                                                 \
   X(SG_EXTENDED_INTRINSIC_OP, "extended-intrinsic-op", 1)               \
   X(SG_EXTERNAL_NAME_LIST, "external-name-list", 1)                     \
@@ -480,6 +483,7 @@
   X(SG_IO_IMPLIED_DO_CONTROL, "io-implied-do-control", 1)               \
   X(SG_IO_IMPLIED_DO_OBJECT, "io-implied-do-object", 1)                 \
   X(SG_IO_IMPLIED_DO_OBJECT_LIST, "io_implied-do-object-list", 1)       \
+  X(SG_KIND_PARAM, "kind-param", 1)                                     \
   X(SG_KIND_SELECTOR, "kind-selector", 1)                               \
   X(SG_LABEL, "label", 1)                                               \
   X(SG_LABEL_DO_STMT, "label-do-stmt", 5)                               \
@@ -566,6 +570,8 @@
   X(SG_SELECT_TYPE_STMT, "select-type-stmt", 5)                         \
   X(SG_SEQUENCE_STMT, "sequence-stmt", 5)                               \
   X(SG_SIGN, "sign", 1)                                                 \
+  X(SG_SIGNED_REAL_LITERAL_CONSTANT, "signed-real-literal-constant", 1) \
+  X(SG_SIGNIFICAND, "significand", 1)                                   \
   X(SG_SPECIFIC_PROCEDURE, "specific-procedure", 1)                     \
   X(SG_SPECIFIC_PROCEDURE_LIST, "specific-procedure-list", 1)           \
   X(SG_STOP_STMT, "stop-stmt", 5)                                       \
@@ -652,6 +658,7 @@
   X(TK_SEMICOLON, ";", 3)                                               \
   X(TK_SLASHF, "/", 3)                                                  \
   X(TK_TRUE_CONSTANT, ".TRUE.", 3)                                      \
+  X(TK_UNDERSCORE, "_", 3)                                              \
   X(TK_VBAR, "|", 3)                                                    \
   X(TK_ZZZ_UB, "<token grammar enum upper bound>", 0)                   \
   X(CLIENT_EXTENSION, "<CLIENT EXTENSION>", 0)

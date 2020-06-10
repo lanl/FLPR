@@ -54,10 +54,9 @@ namespace Stmt {
 
 //! Subparser to consume until the end of an expression
 Stmt_Tree consume_until_break(TT_Stream &ts, int const rule_tag) {
-  // FIX: may need a pattern more like consume_parens
   INIT_FAIL;
   int nesting_depth = 1;
-  auto cap = ts.capture_begin();
+  Stmt_Tree root{rule_tag};
   while (nesting_depth > 0) {
     if (Syntax_Tags::TK_PARENL == ts.peek()) {
       nesting_depth += 1;
@@ -81,15 +80,25 @@ Stmt_Tree consume_until_break(TT_Stream &ts, int const rule_tag) {
         break;
       if (Syntax_Tags::TK_EQUAL == ts.peek()) {
         FAIL;
+        root.clear();
         break;
       }
     }
-    ts.consume();
+    /* See if we can collapse some multi-token sequences that can appear 
+       in an expression */
+    if (Syntax_Tags::SG_SIGNIFICAND == ts.peek()) {
+      root.graft_back(real_literal_constant(ts));
+    } else {
+      /* Fall back to just adding a branch for this token. */
+      root.graft_back(Stmt_Tree{ts.peek(), ts.digest(1)});
+    }
   }
-  ts.capture_end(cap);
-  if (cap.empty())
-    return Stmt_Tree{};
-  return Stmt_Tree{rule_tag, ts.capture_to_range(cap)};
+  if (root->num_branches() == 0)
+    root.clear();
+  if (!root.empty()) {
+    cover_branches(*root);
+  }
+  return root;
 }
 
 //! helper function to consume until the matching PARENR
@@ -109,6 +118,9 @@ Stmt_Tree consume_parens(TT_Stream &ts) {
       assert(Syntax_Tags::BAD != ts.peek());
     }
     root.graft_back(Stmt_Tree{ts.peek(), ts.digest(1)});
+  }
+  if (!root.empty()) {
+    cover_branches(*root);
   }
   return root;
 }
@@ -1035,7 +1047,7 @@ Stmt_Tree data_stmt_constant(TT_Stream &ts) {
   constexpr auto p =
     alts(rule_tag,
          TOK(SG_CHAR_LITERAL_CONSTANT),
-         h_seq(opt(rule(sign)), TOK(SG_REAL_LITERAL_CONSTANT)),
+         rule(signed_real_literal_constant),
          h_seq(opt(rule(sign)), TOK(SG_INT_LITERAL_CONSTANT)),
          rule(logical_literal_constant),
          tag_if(TAG(SG_NULL_INIT), rule(function_reference)),
@@ -3029,6 +3041,21 @@ Stmt_Tree read_stmt(TT_Stream &ts) {
   EVAL(SG_READ_STMT, p(ts));
 }
 
+//! R714: real-literal-constant (7.4.3.2)
+Stmt_Tree real_literal_constant(TT_Stream &ts) {
+  RULE(SG_REAL_LITERAL_CONSTANT);
+  constexpr auto p =
+    seq(rule_tag,
+        TOK(SG_SIGNIFICAND),
+        opt(h_seq(TOK(SG_EXPONENT_LETTER),
+                  opt(rule(sign)),
+                  TOK(SG_EXPONENT))),
+        opt(h_seq(TOK(TK_UNDERSCORE),
+                  TOK(SG_KIND_PARAM)))
+        );
+  EVAL(SG_REAL_LITERAL_CONSTANT, p(ts));
+}
+
 //! R1031: rel-op (6.2.4)
 Stmt_Tree rel_op(TT_Stream &ts) {
   RULE(SG_REL_OP);
@@ -3194,6 +3221,16 @@ Stmt_Tree sign(TT_Stream &ts) {
          TOK(TK_PLUS),
          TOK(TK_MINUS));
   EVAL(SG_SIGN, p(ts));
+}
+
+//! R713: signed-real-literal-constant (7.4.3.2)
+Stmt_Tree signed_real_literal_constant(TT_Stream &ts) {
+  RULE(SG_SIGNED_REAL_LITERAL_CONSTANT);
+  constexpr auto p =
+    seq(rule_tag,
+        opt(rule(sign)),
+        rule(real_literal_constant));
+  EVAL(SG_SIGNED_REAL_LITERAL_CONSTANT, p(ts));
 }
 
 //! R1160: stop-stmt (11.4)

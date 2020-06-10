@@ -131,6 +131,56 @@ bool procedure_designator() {
   return true;
 }
 
+bool signed_real_literal_constant() {
+  /* The first 1 is a label to feed to the File_Line parser so it doesn't
+     eat the first scalar-int */
+
+  TSS(signed_real_literal_constant, "1 1.");
+  TSS(signed_real_literal_constant, "1 +1.");
+  TSS(signed_real_literal_constant, "1 -1.");
+  TSS(signed_real_literal_constant, "1 12.");
+  TSS(signed_real_literal_constant, "1 +12.");
+  TSS(signed_real_literal_constant, "1 -12.");
+  TSS(signed_real_literal_constant, "1 12.3");
+  TSS(signed_real_literal_constant, "1 +12.3");
+  TSS(signed_real_literal_constant, "1 -12.3");
+  TSS(signed_real_literal_constant, "1 .3");
+  TSS(signed_real_literal_constant, "1 +.3");
+  TSS(signed_real_literal_constant, "1 -.3");
+  
+  TSS(signed_real_literal_constant, "1 1.e0");
+  TSS(signed_real_literal_constant, "1 +1.d0");
+  TSS(signed_real_literal_constant, "1 -1.e11");
+  TSS(signed_real_literal_constant, "1 12.d22");
+  TSS(signed_real_literal_constant, "1 +12.e+11");
+  TSS(signed_real_literal_constant, "1 -12.e-11");
+  TSS(signed_real_literal_constant, "1 12.3d+11");
+  TSS(signed_real_literal_constant, "1 +12d-11");
+  TSS(signed_real_literal_constant, "1 -12E0");
+  TSS(signed_real_literal_constant, "1 3D-11");
+  TSS(signed_real_literal_constant, "1 +.3e-1");
+  TSS(signed_real_literal_constant, "1 -.3e-2");
+
+  TSS(signed_real_literal_constant, "1 1._8");
+  TSS(signed_real_literal_constant, "1 +1._82332");
+  TSS(signed_real_literal_constant, "1 -1._e");
+  TSS(signed_real_literal_constant, "1 12._c_double");
+  TSS(signed_real_literal_constant, "1 12.3_q5");
+  TSS(signed_real_literal_constant, "1 +12.3_dunn0");
+
+  TSS(signed_real_literal_constant, "1 1.e0_8");
+  TSS(signed_real_literal_constant, "1 -1.e11_c_double");
+  TSS(signed_real_literal_constant, "1 +12.e+11_11");
+  TSS(signed_real_literal_constant, "1 -12.e-11_minus11");
+  TSS(signed_real_literal_constant, "1 -12E0_nadda");
+  TSS(signed_real_literal_constant, "1 3e-11_33");
+  TSS(signed_real_literal_constant, "1 +.3e-1_v");
+  TSS(signed_real_literal_constant, "1 -.3e-2_h1");
+
+
+  return true;
+}
+  
 bool variable() {
   TPS(variable, "a", BAD);
   TPS(variable, "a+", TK_PLUS);
@@ -164,11 +214,12 @@ int main() {
   TEST(array_element);
   TEST(coarray_spec);
   TEST(expr);
+  TEST(generic_spec);
   TEST(image_selector);
   TEST(loop_control);
   TEST(proc_component_ref);
   TEST(procedure_designator);
-  TEST(generic_spec);
+  TEST(signed_real_literal_constant);
   TEST(variable);
   TEST(wait_spec);
   TEST_MAIN_REPORT;
