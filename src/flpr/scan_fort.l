@@ -19,12 +19,14 @@ using FLPR::Syntax_Tags;
 %option full
 %option case-insensitive
 %option noyywrap
+%option stack
+%x real_parse exp_parse kind_parse
+DIGIT       [0-9]
+NAME        [a-z][a-z0-9_]*
+KIND        ([0-9]+)|({NAME})
+SIGNIFICAND ([0-9]+\.[0-9]*)|(\.[0-9]+)
+EXPONENT    [ed][-+]?{DIGIT}+
 
-DIGIT  [0-9]
-NAME   [a-z][a-z0-9_]*
-KIND   ([0-9]+)|({NAME})
-SIGNIFICAND  ([0-9]+\.[0-9]*)|(\.[0-9]+)
-EXPONENT     [ed][-+]?{DIGIT}+
 %%
   /* Keywords */
 abstract { return Syntax_Tags::KW_ABSTRACT; }
@@ -227,27 +229,45 @@ write { return Syntax_Tags::KW_WRITE; }
   /* R724: char-literal-constant (7.4.4.3) */
 ({KIND}_)?\"(\"\"|[^"])*\" /* non-greedy  */ {
    return Syntax_Tags::SG_CHAR_LITERAL_CONSTANT;
-} 
-    
+}     
 ({KIND}_)?'(''|[^'])*'  /* non-greedy */   { 
    return Syntax_Tags::SG_CHAR_LITERAL_CONSTANT; 
-} 
-  /* " */
+}
+
+
+<exp_parse>{
+  e|d      { return Syntax_Tags::SG_EXPONENT_LETTER; }
+  "+"      { return Syntax_Tags::TK_PLUS; }
+  "-"      { return Syntax_Tags::TK_MINUS; }
+  {DIGIT}+ { yy_pop_state(); return Syntax_Tags::SG_EXPONENT; }
+}
+
+<kind_parse>{
+  "_"    { return Syntax_Tags::TK_UNDERSCORE; }
+  {KIND} { yy_pop_state(); return Syntax_Tags::SG_KIND_PARAM; }
+}
+
+  /* Note that this definition will identify the "digit-string exponent-letter
+     ..." variant of 7.4.3.2 as "significand exponent-letter ...",
+     even though there is no decimal place.  This just makes it easier to
+     spot real-literal-constant patterns in the token stream without
+     lookahead. */
+<real_parse>{
+  {SIGNIFICAND}  { return Syntax_Tags::SG_SIGNIFICAND;  }
+  {DIGIT}+       { return Syntax_Tags::SG_SIGNIFICAND;  }
+  {EXPONENT}     { yyless(0); yy_push_state(exp_parse);  }
+  _{KIND}        { yyless(0); yy_push_state(kind_parse); }
+  .|\n           { yyless(0);  BEGIN(INITIAL); }
+}
 
   /* R714: real-literal-constant (7.4.3.2) */
   /* significand [exponent-letter exponent] [_ kind-param] */
-{SIGNIFICAND}{EXPONENT}?(_{KIND})? { 
-   return Syntax_Tags::SG_REAL_LITERAL_CONSTANT; 
-}
+{SIGNIFICAND}{EXPONENT}?(_{KIND})?   { yyless(0); BEGIN(real_parse); }
   /* digit-string exponent-letter exponent [_ kind-param] */
-{DIGIT}+{EXPONENT}(_{KIND})?       { 
-   return Syntax_Tags::SG_REAL_LITERAL_CONSTANT; 
-}
+{DIGIT}+{EXPONENT}(_{KIND})?  { yyless(0); BEGIN(real_parse); }
+  				  
   /* R708: int-literal-constant (7.4.3.1) */
-{DIGIT}+(_{KIND})?            {
-   return Syntax_Tags::SG_INT_LITERAL_CONSTANT; 
-}
-
+{DIGIT}+(_{KIND})?   { return Syntax_Tags::SG_INT_LITERAL_CONSTANT; }
 
   /* These must be last to allow keyword and operator completion */
 
