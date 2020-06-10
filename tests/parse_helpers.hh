@@ -36,7 +36,7 @@ inline bool expect_tag(Syntax_Tags::Tags const expected_val, int const test_val,
 //! Error out if a tree wasn't returned
 #define TEST_TREE(T, P, LLH)                                                   \
   if (!T) {                                                                    \
-    std::cerr << "Expecting " #P " to parse: ";                                \
+    std::cerr << "Expecting " #P " to parse:\n";                               \
     LLH.print(std::cerr);                                                      \
     return false;                                                              \
   }
