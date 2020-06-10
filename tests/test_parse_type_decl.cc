@@ -153,9 +153,10 @@ bool test_dimension() {
 bool test_mixed_attr() {
   TDTEST("integer, parameter :: N = 1000000");
   TDTEST("integer, private, parameter :: N = 1000000, q=3");
-  TDTEST("real(real64), save, dimension(2) :: accum = (/ 0.d0, 0.d0 /)");
-  TDTEST("real(real64), save, dimension(2) :: accum = [0.d0, 0.d0]");
-  TDTEST("real(real64), save, target, dimension(2) :: accum = [0.d0, 0.d0]");
+  TDTEST("real(real64), save, dimension(2) :: accum = (/ 0.0d0, 0.d0 /)");
+  TDTEST("real(real64), save, dimension(2) :: accum = [0.0_8, 0d0]");
+  TDTEST("real(real64), save, target, dimension(2) :: accum = "
+         "[0._c_double,0.d0]");
   TDTEST("complex, volatile, public, allocatable :: foo");
   TDTEST("real(c_double), pointer, dimension(:,:) :: foo");
   TDTEST("real, external :: f");
