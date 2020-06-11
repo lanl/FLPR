@@ -3048,7 +3048,6 @@ Stmt_Tree real_literal_constant(TT_Stream &ts) {
     seq(rule_tag,
         TOK(SG_SIGNIFICAND),
         opt(h_seq(TOK(SG_EXPONENT_LETTER),
-                  opt(rule(sign)),
                   TOK(SG_EXPONENT))),
         opt(h_seq(TOK(TK_UNDERSCORE),
                   TOK(SG_KIND_PARAM)))

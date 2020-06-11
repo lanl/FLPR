@@ -448,6 +448,59 @@ bool type_declaration_stmt() {
   return true;
 }
 
+bool real_literal_constant() {
+  PARSE(assignment_stmt, "a=11.e-50_d_p");
+  auto c{st.cursor()};
+  TEST_INT(c.num_branches(), 3);
+  c.down();
+  c.next(2);
+  TEST_TAG(c->syntag, SG_EXPR);
+  TEST_INT(c.num_branches(), 1);
+  c.down();
+  TEST_TAG(c->syntag, SG_REAL_LITERAL_CONSTANT);
+  TEST_INT(c.num_branches(), 5);
+  TEST_INT(c->token_range.size(), 5);
+  TEST_EQ(&(FIRST_LL), &(l.lines().front()));
+  TEST_EQ(&(c->token_range.ll()), &(l.lines().front()));
+  auto tr_it = c->token_range.begin();
+  TEST_TAG(tr_it->token, SG_SIGNIFICAND);
+  TEST_STR("11.", tr_it->text());
+  TEST_INT(tr_it->main_txt_line(), 0);
+  TEST_INT(tr_it->main_txt_eline(), 0);
+  TEST_INT(tr_it->main_txt_col(), 2);
+  TEST_INT(tr_it->main_txt_ecol(), 5);
+  ++tr_it;
+  TEST_TAG(tr_it->token, SG_EXPONENT_LETTER);
+  TEST_STR("e", tr_it->text());
+  TEST_INT(tr_it->main_txt_line(), 0);
+  TEST_INT(tr_it->main_txt_eline(), 0);
+  TEST_INT(tr_it->main_txt_col(), 5);
+  TEST_INT(tr_it->main_txt_ecol(), 6);
+  ++tr_it;
+  TEST_TAG(tr_it->token, SG_EXPONENT);
+  TEST_STR("-50", tr_it->text());
+  TEST_INT(tr_it->main_txt_line(), 0);
+  TEST_INT(tr_it->main_txt_eline(), 0);
+  TEST_INT(tr_it->main_txt_col(), 6);
+  TEST_INT(tr_it->main_txt_ecol(), 9);
+  ++tr_it;
+  TEST_TAG(tr_it->token, TK_UNDERSCORE);
+  TEST_STR("_", tr_it->text());
+  TEST_INT(tr_it->main_txt_line(), 0);
+  TEST_INT(tr_it->main_txt_eline(), 0);
+  TEST_INT(tr_it->main_txt_col(), 9);
+  TEST_INT(tr_it->main_txt_ecol(), 10);
+  ++tr_it;
+  TEST_TAG(tr_it->token, SG_KIND_PARAM);
+  TEST_STR("d_p", tr_it->text());
+  TEST_INT(tr_it->main_txt_line(), 0);
+  TEST_INT(tr_it->main_txt_eline(), 0);
+  TEST_INT(tr_it->main_txt_col(), 10);
+  TEST_INT(tr_it->main_txt_ecol(), 13);
+
+  return true;
+}
+
 int main() {
   TEST_MAIN_DECL;
   TEST(one_tok);
@@ -456,5 +509,6 @@ int main() {
   TEST(opt_tok);
   TEST(function_stmt);
   TEST(type_declaration_stmt);
+  TEST(real_literal_constant);
   TEST_MAIN_REPORT;
 }
