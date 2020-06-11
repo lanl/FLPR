@@ -236,10 +236,8 @@ write { return Syntax_Tags::KW_WRITE; }
 
 
 <exp_parse>{
-  e|d      { return Syntax_Tags::SG_EXPONENT_LETTER; }
-  "+"      { return Syntax_Tags::TK_PLUS; }
-  "-"      { return Syntax_Tags::TK_MINUS; }
-  {DIGIT}+ { yy_pop_state(); return Syntax_Tags::SG_EXPONENT; }
+  e|d           { return Syntax_Tags::SG_EXPONENT_LETTER; }
+  [-+]?{DIGIT}+ { yy_pop_state(); return Syntax_Tags::SG_EXPONENT; }
 }
 
 <kind_parse>{
@@ -255,16 +253,22 @@ write { return Syntax_Tags::KW_WRITE; }
 <real_parse>{
   {SIGNIFICAND}  { return Syntax_Tags::SG_SIGNIFICAND;  }
   {DIGIT}+       { return Syntax_Tags::SG_SIGNIFICAND;  }
-  {EXPONENT}     { yyless(0); yy_push_state(exp_parse);  }
-  _{KIND}        { yyless(0); yy_push_state(kind_parse); }
-  .|\n           { yyless(0);  BEGIN(INITIAL); }
+  {EXPONENT}     { curr_line_pos -= yyleng; 
+                   yyless(0);
+                   yy_push_state(exp_parse);  }
+  _{KIND}        { curr_line_pos -= yyleng;
+                   yyless(0); yy_push_state(kind_parse); }
+  .|\n           { curr_line_pos -= yyleng;
+                   yyless(0);  BEGIN(INITIAL); }
 }
 
   /* R714: real-literal-constant (7.4.3.2) */
   /* significand [exponent-letter exponent] [_ kind-param] */
-{SIGNIFICAND}{EXPONENT}?(_{KIND})?   { yyless(0); BEGIN(real_parse); }
+{SIGNIFICAND}{EXPONENT}?(_{KIND})?   { curr_line_pos -= yyleng;
+                                       yyless(0); BEGIN(real_parse); }
   /* digit-string exponent-letter exponent [_ kind-param] */
-{DIGIT}+{EXPONENT}(_{KIND})?  { yyless(0); BEGIN(real_parse); }
+{DIGIT}+{EXPONENT}(_{KIND})?  { curr_line_pos -= yyleng; 
+                                yyless(0); BEGIN(real_parse); }
   				  
   /* R708: int-literal-constant (7.4.3.1) */
 {DIGIT}+(_{KIND})?   { return Syntax_Tags::SG_INT_LITERAL_CONSTANT; }
