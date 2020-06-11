@@ -63,6 +63,8 @@ public:
   /************* Accessors for testing purposes only *******************/
   int main_txt_line() const noexcept { return mt_begin_line_; }
   int main_txt_col() const noexcept { return mt_begin_col_; }
+  int main_txt_eline() const noexcept { return mt_end_line_; }
+  int main_txt_ecol() const noexcept { return mt_end_col_; }
 
 private:
   std::string text_;          //!< The matched text (lexeme)
